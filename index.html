@@ -1194,13 +1194,7 @@
       const tab1 = document.getElementById('tab1');
       if (tab1) tab1.checked = true;
       
-      // 2. Tab 1 — "አዲስ ምርት ጨምር" + "ምድቦችን አስተዳድር" መደበቅ
-      const secAddProduct = document.getElementById('secAddProduct');
-      const secCatMgr = document.getElementById('secCatMgr');
-      if (secAddProduct) secAddProduct.style.display = 'none';
-      if (secCatMgr) secCatMgr.style.display = 'none';
-      
-      // 3. Tab 2 — ቶፕ, ያልተሸጡ, ታሪክ መደበቅ
+      // 2. Tab 2 — ቶፕ ሴለር, ያልተሸጡ, ታሪክ መደበቅ (ሪፖርቶች)
       const secTodayTop = document.getElementById('secTodayTop');
       const secTodayUnsold = document.getElementById('secTodayUnsold');
       const secHistory = document.getElementById('secHistory');
@@ -1208,9 +1202,7 @@
       if (secTodayUnsold) secTodayUnsold.style.display = 'none';
       if (secHistory) secHistory.style.display = 'none';
       
-      // 4. Tab 2 — "የወጪ ምድቦች" መደበቅ
-      const secExpCats = document.getElementById('secExpCats');
-      if (secExpCats) secExpCats.style.display = 'none';
+      // ✅ አካውንታንትም ምርት ይጨምራል + ምድቦች ያስተዳድራል + የወጪ ምድቦች ያስተዳድራል
     }
   }
 
