@@ -3,1354 +3,444 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>የሆቴል ሽያጭ እና ወጪ መከታተያ</title>
-<link rel="manifest" href="manifest.json">
+<title>Login — የሆቴል ሽያጭ እና ወጪ መከታተያ</title>
 <meta name="theme-color" content="#2c5282">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Hotel Tracker">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #f2f4f8; color: #1a202c; font-size: 15px; padding-bottom: 80px; }
-  header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 16px 14px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-  header h1 { font-size: 17px; font-weight: 600; }
-  header p { font-size: 11px; opacity: 0.8; margin-top: 2px; }
-  .tabs { display: flex; background: #fff; position: sticky; top: 68px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-  .tabs input[type="radio"] { display: none; }
-  .tabs label { flex: 1; text-align: center; padding: 14px 4px; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; user-select: none; }
-  #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"] { color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff; }
-  .panel { display: none; padding: 14px; }
-  #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
-  .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-  label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
-  label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; appearance: none; -webkit-appearance: none; }
-  select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
-  input:focus, select:focus { border-color: #3182ce; background: #fff; }
-  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; }
-  .btn:active { transform: scale(0.97); }
-  .btn-primary { background: #2c5282; color: #fff; }
-  .btn-success { background: #276749; color: #fff; }
-  .btn-danger { background: #c53030; color: #fff; }
-  .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
-  .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
-  .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; }
-  .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); }
-  .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); }
-  .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); }
-  .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
-  .summary-box .value { font-size: 26px; font-weight: 800; }
-  .summary-box .value small { font-size: 14px; font-weight: 600; opacity: 0.9; }
-  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
-  .list-item .info { flex: 1; min-width: 0; }
-  .list-item .name { font-size: 14px; font-weight: 600; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .list-item .meta { font-size: 11.5px; color: #718096; margin-top: 2px; }
-  .list-item .amount { font-size: 14px; font-weight: 700; color: #2c5282; margin-left: 10px; white-space: nowrap; }
-  .list-item .amount.red { color: #c53030; }
-  .list-item .amount.green { color: #276749; }
-  .list-item .qty-input { width: 70px; padding: 8px; font-size: 15px; text-align: center; border: 1.5px solid #cbd5e0; border-radius: 8px; margin-left: 8px; font-weight: 700; color: #2c5282; background: #fff; }
-  .empty-msg { text-align: center; color: #a0aec0; font-size: 13px; padding: 20px 10px; font-style: italic; }
-  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .row-flex { display: flex; gap: 8px; align-items: flex-end; }
-  .row-flex > div { flex: 1; }
-  .row-flex .btn { margin-top: 0; width: auto; padding: 13px 18px; }
-  .divider { height: 1px; background: #edf2f7; margin: 12px 0; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3748; color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: all 0.35s; z-index: 999; pointer-events: none; max-width: 90%; text-align: center; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .cat-tag { display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 1px solid #bee3f8; color: #2c5282; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-  .cat-tag .del { cursor: pointer; color: #c53030; font-weight: 800; font-size: 14px; padding: 0 2px; }
-  .cat-add-row { display: flex; gap: 6px; align-items: center; }
-  .cat-add-row input { padding: 9px 10px; font-size: 13.5px; flex: 1; }
-  .cat-add-row button { background: #2c5282; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
-  .month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
-  .month-nav .month-label { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: #2c5282; }
-  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; font-size: 14px; }
-  .stat-row .stat-label { color: #4a5568; font-weight: 600; }
-  .stat-row .stat-value { font-weight: 800; color: #2d3748; }
-  .stat-row .stat-value.red { color: #c53030; }
-  .stat-row .stat-value.green { color: #276749; }
-  .history-item { background: #f7fafc; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid #edf2f7; }
-  .history-item .h-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .history-item .h-date { font-size: 13.5px; font-weight: 700; color: #2c5282; }
-  .history-item .h-net { font-size: 15px; font-weight: 800; }
-  .history-item .h-net.green { color: #276749; }
-  .history-item .h-net.red { color: #c53030; }
-  .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; align-items: center; }
-  .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
-  .seller-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
-  .seller-item.gold { background: linear-gradient(135deg, #fffaf0, #fefcbf); border-color: #f6e05e; }
-  .seller-item.silver { background: linear-gradient(135deg, #f7fafc, #e2e8f0); border-color: #cbd5e0; }
-  .seller-item.bronze { background: linear-gradient(135deg, #fff5f0, #fed7aa); border-color: #ed8936; }
-  .seller-item .rank { font-size: 22px; font-weight: 900; min-width: 35px; text-align: center; }
-  .seller-item .seller-info { flex: 1; min-width: 0; }
-  .seller-item .seller-name { font-size: 14px; font-weight: 700; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .seller-item .seller-meta { font-size: 11.5px; color: #718096; margin-top: 2px; }
-  .seller-item .seller-amount { font-size: 14px; font-weight: 800; color: #276749; white-space: nowrap; margin-left: 8px; }
-  .unsold-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: #fff5f5; border-radius: 10px; margin-bottom: 6px; border: 1px solid #fed7d7; }
-  .unsold-item .u-name { font-size: 13.5px; font-weight: 600; color: #742a2a; }
-  .unsold-item .u-cat { font-size: 11px; color: #a0aec0; margin-top: 2px; }
-  .unsold-item .u-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #fed7d7; color: #742a2a; }
-  /* Collapsible Category */
-  .cat-section { margin-bottom: 10px; }
-  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #ebf4ff, #bee3f8); border-radius: 12px; cursor: pointer; border: 1px solid #90cdf4; }
-  .cat-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-  .cat-header .cat-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-  .cat-header .cat-arrow { font-size: 14px; font-weight: 900; color: #2c5282; transition: transform 0.2s; display: inline-block; }
-  .cat-header.open .cat-arrow { transform: rotate(90deg); }
-  .cat-header .cat-icon { font-size: 18px; }
-  .cat-header .cat-name { font-size: 14px; font-weight: 800; color: #1a365d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cat-header .cat-count { font-size: 11px; font-weight: 700; background: #fff; color: #2c5282; padding: 3px 9px; border-radius: 12px; }
-  .cat-header .cat-total { font-size: 13px; font-weight: 800; color: #276749; }
-  .cat-body { display: none; padding: 8px 6px 6px 6px; background: #fff; border: 1px solid #90cdf4; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
-  .cat-body.open { display: block; }
-  .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f7fafc; border-radius: 8px; margin: 6px 4px; cursor: pointer; }
-  .sub-header .sub-left { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #4a5568; }
-  .sub-header .sub-arrow { font-size: 10px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
-  .sub-header.open .sub-arrow { transform: rotate(90deg); }
-  .sub-header .sub-count { font-size: 10.5px; font-weight: 700; background: #fff; color: #4a5568; padding: 2px 7px; border-radius: 10px; border: 1px solid #e2e8f0; }
-  .sub-body { display: none; padding: 2px 0 4px 0; }
-  .sub-body.open { display: block; }
-  .expand-controls { display: flex; gap: 8px; margin-bottom: 12px; }
-  .expand-controls button { flex: 1; padding: 10px; font-size: 12.5px; font-weight: 700; border-radius: 10px; border: 1.5px solid #2c5282; background: #fff; color: #2c5282; cursor: pointer; }
-  /* Collapsible Sections (Top/Unsold/Summary) */
-  .section-collapsible { background: #fff; border-radius: 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
-  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
-  .section-header .sec-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-  .section-header .sec-arrow { font-size: 12px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
-  .section-header.open .sec-arrow { transform: rotate(90deg); }
-  .section-header .sec-icon { font-size: 20px; }
-  .section-header .sec-title { font-size: 14.5px; font-weight: 800; color: #2c5282; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .section-header .sec-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
-  .section-header .sec-badge.gold { background: #fefcbf; color: #744210; }
-  .section-header .sec-badge.red { background: #fed7d7; color: #742a2a; }
-  .section-header .sec-badge.green { background: #c6f6d5; color: #22543d; }
-  .section-header .sec-badge.blue { background: #bee3f8; color: #2a4365; }
-  .section-body { display: none; padding: 0 16px 16px 16px; }
-  .section-body.open { display: block; }
-  .section-body.no-pad { padding: 0; }
+  body {
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #1a202c;
+  }
+  .login-box {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 400px;
+    animation: slideUp 0.5s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .logo {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .logo-icon {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .logo h1 {
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a365d;
+    letter-spacing: 0.3px;
+  }
+  .logo p {
+    font-size: 12px;
+    color: #718096;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 14px 14px;
+    font-size: 15px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f7fafc;
+    outline: none;
+    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input:focus {
+    border-color: #3182ce;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+  }
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a365d, #2c5282);
+    color: #fff;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(26, 54, 93, 0.3);
+  }
+  .btn-login:active { transform: scale(0.98); }
+  .btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .error-box {
+    background: #fff5f5;
+    border: 1.5px solid #fc8181;
+    color: #c53030;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+    animation: shake 0.3s ease;
+  }
+  .error-box.show { display: block; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .info-box {
+    background: #ebf8ff;
+    border: 1px solid #90cdf4;
+    color: #2c5282;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 20px;
+  }
+  .info-box strong { color: #1a365d; }
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  /* Dashboard preview */
+  .dashboard {
+    display: none;
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .dashboard.show { display: block; }
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #edf2f7;
+  }
+  .dash-header h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1a365d;
+  }
+  .dash-user {
+    font-size: 12px;
+    color: #718096;
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+  .badge.owner { background: #fefcbf; color: #744210; }
+  .badge.accountant { background: #c6f6d5; color: #22543d; }
+  .btn-logout {
+    background: #c53030;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .btn-logout:active { transform: scale(0.98); }
+  .success-box {
+    background: #f0fff4;
+    border: 1px solid #68d391;
+    color: #22543d;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .success-box strong { color: #276749; }
+  .role-info {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #4a5568;
+  }
+  .role-info h3 {
+    font-size: 14px;
+    color: #2c5282;
+    margin-bottom: 10px;
+  }
+  .role-info ul {
+    padding-left: 20px;
+  }
+  .role-info li { margin-bottom: 4px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🏨 የሆቴል ሽያጭ እና ወጪ መከታተያ</h1>
-  <p>Sales &amp; Expense Tracker</p>
-</header>
-
-<div class="tabs-wrapper">
-  <input type="radio" name="tabs" id="tab1" checked>
-  <input type="radio" name="tabs" id="tab2">
-  <input type="radio" name="tabs" id="tab3">
-
-  <div class="tabs">
-    <label for="tab1">🍽️ ምርቶች</label>
-    <label for="tab2">📋 የቀን ሂሳብ</label>
-    <label for="tab3">📅 የወር ሂሳብ</label>
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-box" id="loginBox">
+  <div class="logo">
+    <div class="logo-icon">🏨</div>
+    <h1>የሆቴል ሽያጭ እና ወጪ መከታተያ</h1>
+    <p>Sales &amp; Expense Tracker</p>
   </div>
 
-  <div class="panels">
+  <div class="error-box" id="errorBox"></div>
 
-    <!-- ===== TAB 1 — PRODUCTS ===== -->
-    <div class="panel" id="panel1">
+  <div class="form-group">
+    <label>📧 Email</label>
+    <input type="email" id="emailInput" placeholder="owner@hotel.com" autocomplete="email" autocomplete="off">
+  </div>
 
-      <!-- Collapsible: Add Product -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrAddProduct" onclick="toggleSection('hdrAddProduct','bodyAddProduct')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">➕</span>
-            <span class="sec-title">አዲስ ምርት ጨምር</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodyAddProduct" style="padding:0 16px 16px 16px;">
-          <label class="field-label">ዋና ምድብ</label>
-          <select id="prodMainCat" onchange="onMainCatChange()"></select>
-          <label class="field-label">ንዑስ ምድብ</label>
-          <select id="prodSubCat" onchange="onSubCatChange()"></select>
-          <label class="field-label">የምርት ስም</label>
-          <input type="text" id="prodName" placeholder="ለምሳሌ፦ ዶሮ ወጥ" autocomplete="off">
-          <label class="field-label">ዋጋ (ብር)</label>
-          <input type="number" id="prodPrice" placeholder="0.00" inputmode="decimal" step="any" min="0">
-          <button class="btn btn-primary" onclick="addProduct()">ምርት ጨምር</button>
-        </div>
-      </div>
+  <div class="form-group">
+    <label>🔒 Password</label>
+    <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password">
+  </div>
 
-      <!-- Collapsible: Category Manager -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrCatMgr" onclick="toggleSection('hdrCatMgr','bodyCatMgr')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🗂️</span>
-            <span class="sec-title">ምድቦችን አስተዳድር</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodyCatMgr" style="padding:0 16px 16px 16px;">
-          <label class="field-label" style="margin-top:0;">አዲስ ዋና ምድብ</label>
-          <div class="cat-add-row">
-            <input type="text" id="newMainCat" placeholder="ለምሳሌ፦ ምግብ" autocomplete="off">
-            <button onclick="addMainCat()">+ ጨምር</button>
-          </div>
-          <div class="cat-tags" id="mainCatTags" style="margin-top:10px;"></div>
-          <div class="divider"></div>
-          <label class="field-label" style="margin-top:0;">አዲስ ንዑስ ምድብ ለ፦</label>
-          <select id="subCatParent" onchange="renderSubCatTags()"></select>
-          <div class="cat-add-row" style="margin-top:8px;">
-            <input type="text" id="newSubCat" placeholder="ለምሳሌ፦ ቀይ ወጥ" autocomplete="off">
-            <button onclick="addSubCat()">+ ጨምር</button>
-          </div>
-          <div class="cat-tags" id="subCatTags" style="margin-top:10px;"></div>
-        </div>
-      </div>
+  <button class="btn-login" id="loginBtn" onclick="doLogin()">
+    <span id="loginBtnText">🔓 ግባ</span>
+  </button>
 
-      <!-- Collapsible: Today's Sale Entry -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrSaleEntry" onclick="toggleSection('hdrSaleEntry','bodySaleEntry')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📦</span>
-            <span class="sec-title">የዛሬ ሽያጭ አስገባ</span>
-          </div>
-          <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
-        </div>
-        <div class="section-body" id="bodySaleEntry" style="padding:0 16px 16px 16px;">
-          <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ።</p>
-          <div class="expand-controls">
-            <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
-            <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
-          </div>
-          <div id="productList"></div>
-          <div class="divider"></div>
-          <div class="row-between">
-            <span style="font-size:13px;font-weight:700;color:#2d3748;">የዛሬ ጠቅላላ ሽያጭ፦</span>
-            <span id="todaySalesTotal" style="font-size:16px;font-weight:800;color:#276749;">0.00 ብር</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ===== TAB 2 — DAILY ===== -->
-    <div class="panel" id="panel2">
-
-      <!-- Collapsible: Daily Income -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrDailyIncome" onclick="toggleSection('hdrDailyIncome','bodyDailyIncome')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💰</span>
-            <span class="sec-title">የዕለቱ ጠቅላላ ገቢ</span>
-          </div>
-          <span class="sec-badge green" id="hdrDailyIncomeBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body open" id="bodyDailyIncome">
-          <div class="summary-box green" style="margin:0;">
-            <div class="label">የዕለቱ ጠቅላላ ገቢ</div>
-            <div class="value" id="dailyIncome">0.00 <small>ብር</small></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Daily Expenses -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrDailyExp" onclick="toggleSection('hdrDailyExp','bodyDailyExp')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💸</span>
-            <span class="sec-title">የዕለት ተለዋዋጭ ወጪዎች</span>
-          </div>
-          <span class="sec-badge red" id="hdrDailyExpBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body open" id="bodyDailyExp">
-          <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
-          <select id="expCat"></select>
-          <label class="field-label">ዝርዝር (አማራጭ)</label>
-          <input type="text" id="expName" placeholder="ለምሳሌ፦ ከገበያ ተመላሽ" autocomplete="off">
-          <label class="field-label">ብር</label>
-          <div class="row-flex">
-            <div><input type="number" id="expAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
-            <button class="btn btn-danger" onclick="addExpense()">አድ አድርግ</button>
-          </div>
-          <div id="expenseList" style="margin-top:14px;"></div>
-          <div class="divider"></div>
-          <div class="row-between">
-            <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ወጪ፦</span>
-            <span id="dailyExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Expense Categories -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrExpCats" onclick="toggleSection('hdrExpCats','bodyExpCats')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🗂️</span>
-            <span class="sec-title">የወጪ ምድቦች</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodyExpCats" style="padding:0 16px 16px 16px;">
-          <div class="cat-add-row">
-            <input type="text" id="newExpCat" placeholder="አዲስ የወጪ ምድብ" autocomplete="off">
-            <button onclick="addExpCat()">+ ጨምር</button>
-          </div>
-          <div class="cat-tags" id="expCatTags" style="margin-top:10px;"></div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Daily Net Profit -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrDailyNet" onclick="toggleSection('hdrDailyNet','bodyDailyNet')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💰</span>
-            <span class="sec-title">የዕለቱ የተጣራ ትርፍ</span>
-          </div>
-          <span class="sec-badge green" id="hdrDailyNetBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body open" id="bodyDailyNet">
-          <div class="summary-box" id="netProfitBox" style="margin:0;">
-            <div class="label">የዕለቱ የተጣራ ትርፍ</div>
-            <div class="value" id="dailyNet">0.00 <small>ብር</small></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Today's Top Sellers -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrTodayTop" onclick="toggleSection('hdrTodayTop','bodyTodayTop')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🏆</span>
-            <span class="sec-title">የዛሬ ቶፕ የተሸጡ (Top 5)</span>
-          </div>
-          <span class="sec-badge gold" id="hdrTodayTopBadge">0</span>
-        </div>
-        <div class="section-body" id="bodyTodayTop">
-          <div id="todayTopSellers"></div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Today's Unsold -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrTodayUnsold" onclick="toggleSection('hdrTodayUnsold','bodyTodayUnsold')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📉</span>
-            <span class="sec-title">የዛሬ ያልተሸጡ ምርቶች</span>
-          </div>
-          <span class="sec-badge red" id="hdrTodayUnsoldBadge">0</span>
-        </div>
-        <div class="section-body" id="bodyTodayUnsold">
-          <div id="todayUnsold"></div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Save Today -->
-      <div class="section-collapsible" style="border:2px solid #276749;">
-        <div class="section-header" id="hdrSaveToday" onclick="toggleSection('hdrSaveToday','bodySaveToday')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💾</span>
-            <span class="sec-title">የዛሬን ሂሳብ አስቀምጥ</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodySaveToday" style="padding:0 16px 16px 16px;">
-          <div class="info-banner">
-            የዛሬን ገቢ፣ ወጪ፣ ትርፍ <b>እና ምን እንደተሸጠ</b> በታሪክ ያስቀምጣል።
-          </div>
-          <div class="row-between" style="margin-bottom:10px;">
-            <span style="font-size:13px;color:#4a5568;">ገቢ፦</span>
-            <span id="savePreviewIncome" style="font-weight:700;color:#276749;">0.00 ብር</span>
-          </div>
-          <div class="row-between" style="margin-bottom:10px;">
-            <span style="font-size:13px;color:#4a5568;">ወጪ፦</span>
-            <span id="savePreviewExp" style="font-weight:700;color:#c53030;">0.00 ብር</span>
-          </div>
-          <div class="row-between" style="margin-bottom:10px;">
-            <span style="font-size:13px;color:#4a5568;">ትርፍ፦</span>
-            <span id="savePreviewNet" style="font-weight:800;color:#2c5282;">0.00 ብር</span>
-          </div>
-          <div class="row-between" style="margin-bottom:10px;">
-            <span style="font-size:13px;color:#4a5568;">የተሸጡ ምርቶች፦</span>
-            <span id="savePreviewItems" style="font-weight:700;color:#2c5282;">0</span>
-          </div>
-          <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
-        </div>
-      </div>
-
-      <!-- Collapsible: History -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrHistory" onclick="toggleSection('hdrHistory','bodyHistory')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📚</span>
-            <span class="sec-title">የቀን ታሪክ (History)</span>
-          </div>
-          <span class="sec-badge blue" id="hdrHistoryBadge">0</span>
-        </div>
-        <div class="section-body" id="bodyHistory">
-          <div id="historyList"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ===== TAB 3 — MONTHLY ===== -->
-    <div class="panel" id="panel3">
-
-      <!-- Collapsible: Month Picker -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrMonthPick" onclick="toggleSection('hdrMonthPick','bodyMonthPick')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📅</span>
-            <span class="sec-title">ወር ምረጥ</span>
-          </div>
-          <span class="sec-badge blue" id="hdrMonthLabel">—</span>
-        </div>
-        <div class="section-body open" id="bodyMonthPick">
-          <div class="month-nav" style="margin-bottom:0;">
-            <button onclick="changeMonth(-1)">◀</button>
-            <div class="month-label" id="monthLabel">—</div>
-            <button onclick="changeMonth(1)">▶</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Monthly Income -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrMonIncome" onclick="toggleSection('hdrMonIncome','bodyMonIncome')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💰</span>
-            <span class="sec-title">የወሩ ጠቅላላ ገቢ</span>
-          </div>
-          <span class="sec-badge green" id="hdrMonIncomeBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body open" id="bodyMonIncome">
-          <div class="summary-box" style="margin:0;">
-            <div class="label">የወሩ ጠቅላላ ገቢ</div>
-            <div class="value" id="monthlyIncome">0.00 <small>ብር</small></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Monthly Summary -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrMonSummary" onclick="toggleSection('hdrMonSummary','bodyMonSummary')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📊</span>
-            <span class="sec-title">የወሩ ማጠቃለያ</span>
-          </div>
-        </div>
-        <div class="section-body open" id="bodyMonSummary">
-          <div class="stat-row">
-            <span class="stat-label">📅 የወሩ ጠቅላላ ገቢ</span>
-            <span class="stat-value green" id="statIncome">0.00 ብር</span>
-          </div>
-          <div class="divider"></div>
-          <div class="stat-row">
-            <span class="stat-label">💸 የቀን ወጪዎች ድምር</span>
-            <span class="stat-value red" id="statDailyExp">0.00 ብር</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">🏢 ቋሚ ወጪዎች</span>
-            <span class="stat-value red" id="statFixedExp">0.00 ብር</span>
-          </div>
-          <div class="divider"></div>
-          <div class="stat-row">
-            <span class="stat-label" style="font-weight:800;">💰 ጠቅላላ ወጪ</span>
-            <span class="stat-value red" id="statTotalExp">0.00 ብር</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Monthly Net -->
-      <div class="section-collapsible">
-        <div class="section-header open" id="hdrMonNet" onclick="toggleSection('hdrMonNet','bodyMonNet')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">💰</span>
-            <span class="sec-title">የወሩ የተጣራ ትርፍ</span>
-          </div>
-          <span class="sec-badge green" id="hdrMonNetBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body open" id="bodyMonNet">
-          <div class="summary-box green" id="monthlyNetBox" style="margin:0;">
-            <div class="label">የወሩ የተጣራ ትርፍ</div>
-            <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Monthly Top Sellers -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrMonTop" onclick="toggleSection('hdrMonTop','bodyMonTop')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🏆</span>
-            <span class="sec-title">የወሩ ቶፕ የተሸጡ (Top 5)</span>
-          </div>
-          <span class="sec-badge gold" id="hdrMonTopBadge">0</span>
-        </div>
-        <div class="section-body" id="bodyMonTop">
-          <div id="monthlyTopSellers"></div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Monthly Unsold -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrMonUnsold" onclick="toggleSection('hdrMonUnsold','bodyMonUnsold')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">📉</span>
-            <span class="sec-title">የወሩ ያልተሸጡ ምርቶች</span>
-          </div>
-          <span class="sec-badge red" id="hdrMonUnsoldBadge">0</span>
-        </div>
-        <div class="section-body" id="bodyMonUnsold">
-          <div id="monthlyUnsold"></div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Fixed Expenses -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrFixExp" onclick="toggleSection('hdrFixExp','bodyFixExp')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🏢</span>
-            <span class="sec-title">የወር ቋሚ ወጪዎች</span>
-          </div>
-          <span class="sec-badge red" id="hdrFixExpBadge">0.00 ብር</span>
-        </div>
-        <div class="section-body" id="bodyFixExp" style="padding:0 16px 16px 16px;">
-          <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
-          <select id="fixCat"></select>
-          <label class="field-label">ዝርዝር (አማራጭ)</label>
-          <input type="text" id="fixName" placeholder="ለምሳሌ፦ የጥቅምት ደሞዝ" autocomplete="off">
-          <label class="field-label">ብር</label>
-          <div class="row-flex">
-            <div><input type="number" id="fixAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
-            <button class="btn btn-danger" onclick="addFixedExpense()">አድ አድርግ</button>
-          </div>
-          <div id="fixedExpenseList" style="margin-top:14px;"></div>
-          <div class="divider"></div>
-          <div class="row-between">
-            <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ቋሚ ወጪ፦</span>
-            <span id="fixedExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible: Fixed Expense Categories -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrFixCats" onclick="toggleSection('hdrFixCats','bodyFixCats')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🗂️</span>
-            <span class="sec-title">የቋሚ ወጪ ምድቦች</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodyFixCats" style="padding:0 16px 16px 16px;">
-          <div class="cat-add-row">
-            <input type="text" id="newFixCat" placeholder="አዲስ የቋሚ ወጪ ምድብ" autocomplete="off">
-            <button onclick="addFixCat()">+ ጨምር</button>
-          </div>
-          <div class="cat-tags" id="fixCatTags" style="margin-top:10px;"></div>
-        </div>
-      </div>
-
-      <!-- Reset -->
-      <div class="section-collapsible">
-        <div class="section-header" id="hdrReset" onclick="toggleSection('hdrReset','bodyReset')">
-          <div class="sec-left">
-            <span class="sec-arrow">▶</span>
-            <span class="sec-icon">🔄</span>
-            <span class="sec-title">አዲስ ቀን ጀምር (Reset)</span>
-          </div>
-        </div>
-        <div class="section-body" id="bodyReset" style="padding:0 16px 16px 16px;">
-          <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">የዛሬን ሽያጭ እና የዕለት ወጪዎችን ብቻ ያጠፋል። ምርቶች፣ ምድቦች፣ ቋሚ ወጪዎች እና ታሪክ አይጠፉም።</p>
-          <button class="btn btn-outline" onclick="resetDailySales()">🔄 የዛሬን ሽያጭ አጥፋ</button>
-        </div>
-      </div>
-
-    </div>
-
+  <div class="info-box">
+    <strong>ℹ️ የሙከራ መረጃ፦</strong><br>
+    👤 ባለቤት: <strong>owner@hotel.com</strong> / <strong>owner123456</strong><br>
+    💼 አካውንታንት: <strong>accountant@hotel.com</strong> / <strong>acc123456</strong>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-<script>
-const K_PROD = 'hotel_products_v8';
-const K_SALE = 'hotel_sales_v8';
-const K_EXP  = 'hotel_expenses_v8';
-const K_FIX  = 'hotel_fixed_v8';
-const K_CAT  = 'hotel_categories_v8';
-const K_EXPC = 'hotel_expcats_v8';
-const K_FIXC = 'hotel_fixcats_v8';
-const K_HIST = 'hotel_history_v8';
-const K_OPEN = 'hotel_opencats_v8';
-const K_SECT = 'hotel_sections_v8';
+<!-- ===== DASHBOARD PREVIEW ===== -->
+<div class="dashboard" id="dashboardBox">
+  <div class="dash-header">
+    <div>
+      <h2>🏨 Dashboard</h2>
+      <div class="dash-user" id="userEmail">—</div>
+    </div>
+    <span class="badge" id="userRoleBadge">—</span>
+  </div>
 
-const DEF_CATEGORIES = {
-  'ምግብ':        ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
-  'መጠጥ':        ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
-  'ባህላዊ ምግብ': ['ደረቅ ጥብስ', 'ክትፎ', 'ጥራህ', 'ሽሮ ወጥ', 'ፍርፍር', 'ጎመን']
-};
-const DEF_EXPC = ['ትራንስፖርት', 'የዕቃ ግዢ', 'ጥገና', 'ነዳጅ', 'ሌላ'];
-const DEF_FIXC = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
+  <div class="success-box">
+    ✅ <strong>በተከበረ ሁኔታ ገብተሃል!</strong><br>
+    🎯 <strong>ደረጃ 1 ተሳክቷል</strong> — Firebase Login ይሰራል!
+  </div>
 
-function load(key, def) {
-  try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : def; }
-  catch(e) { return def; }
-}
-function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
-}
+  <div class="role-info" id="roleInfo"></div>
 
-let products   = load(K_PROD, []);
-let sales      = load(K_SALE, {});
-let expenses   = load(K_EXP, []);
-let fixed      = load(K_FIX, []);
-let categories = load(K_CAT, null);
-let expCats    = load(K_EXPC, null);
-let fixCats    = load(K_FIXC, null);
-let history    = load(K_HIST, []);
-let openCats   = load(K_OPEN, {});
-let openSubCats = {};
-let openSections = load(K_SECT, {});
+  <button class="btn-logout" onclick="doLogout()">🚪 ውጣ (Logout)</button>
+</div>
 
-if (!categories || typeof categories !== 'object' || Object.keys(categories).length === 0) {
-  categories = JSON.parse(JSON.stringify(DEF_CATEGORIES));
-  save(K_CAT, categories);
-}
-if (!expCats || !Array.isArray(expCats) || expCats.length === 0) {
-  expCats = DEF_EXPC.slice();
-  save(K_EXPC, expCats);
-}
-if (!fixCats || !Array.isArray(fixCats) || fixCats.length === 0) {
-  fixCats = DEF_FIXC.slice();
-  save(K_FIXC, fixCats);
-}
-if (!Array.isArray(history)) history = [];
-if (!openCats || typeof openCats !== 'object') openCats = {};
-if (!openSections || typeof openSections !== 'object') openSections = {};
+<!-- ===== FIREBASE SDK ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+  // ===== Firebase Config =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
+    authDomain: "hotel-tracker-c3571.firebaseapp.com",
+    projectId: "hotel-tracker-c3571",
+    storageBucket: "hotel-tracker-c3571.firebasestorage.app",
+    messagingSenderId: "1024629386649",
+    appId: "1:1024629386649:web:c689f920c780e400797708"
+  };
 
-function money(n) {
-  return (Math.round(n * 100) / 100).toLocaleString('en-US', {
-    minimumFractionDigits: 2, maximumFractionDigits: 2
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // ===== DOM =====
+  const loginBox = document.getElementById('loginBox');
+  const dashboardBox = document.getElementById('dashboardBox');
+  const errorBox = document.getElementById('errorBox');
+  const emailInput = document.getElementById('emailInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
+  const userEmail = document.getElementById('userEmail');
+  const userRoleBadge = document.getElementById('userRoleBadge');
+  const roleInfo = document.getElementById('roleInfo');
+
+  // ===== Global Error Handler =====
+  function showError(msg) {
+    errorBox.textContent = '⚠️ ' + msg;
+    errorBox.classList.add('show');
+    setTimeout(() => errorBox.classList.remove('show'), 6000);
+  }
+
+  // ===== Role Detection =====
+  function getUserRole(email) {
+    if (!email) return 'unknown';
+    if (email.startsWith('owner@')) return 'owner';
+    if (email.startsWith('accountant@')) return 'accountant';
+    return 'unknown';
+  }
+
+  function getRoleInfo(role) {
+    if (role === 'owner') {
+      return {
+        label: '👑 ባለቤት',
+        cls: 'owner',
+        desc: `<h3>👑 እንደ ባለቤት ገብተሃል</h3>
+               <ul>
+                 <li>✅ ሁሉንም ሪፖርቶች ማየት</li>
+                 <li>✅ የቀን ሂሳብ</li>
+                 <li>✅ የወር ሂሳብ</li>
+                 <li>✅ ቶፕ ሴለር ማየት</li>
+                 <li>✅ ያልተሸጡ ምርቶች</li>
+                 <li>✅ የቀን ታሪክ</li>
+               </ul>`
+      };
+    } else if (role === 'accountant') {
+      return {
+        label: '💼 አካውንታንት',
+        cls: 'accountant',
+        desc: `<h3>💼 እንደ አካውንታንት ገብተሃል</h3>
+               <ul>
+                 <li>✅ ሽያጭ ማስገባት</li>
+                 <li>✅ ወጪ ማስገባት</li>
+                 <li>✅ የዛሬ ሂሳብ ማስቀመጥ</li>
+                 <li>✅ ሪፖርት ማየት</li>
+                 <li>❌ ሌሎች ተጠቃሚዎች ማስተዳደር</li>
+               </ul>`
+      };
+    }
+    return {
+      label: '❓ ያልታወቀ',
+      cls: 'accountant',
+      desc: '<h3>❓ ያልታወቀ የተጠቃሚ ዓይነት</h3><p>እባክህ አስተዳዳሪውን አግኝ።</p>'
+    };
+  }
+
+  // ===== Show Dashboard =====
+  function showDashboard(user) {
+    const role = getUserRole(user.email);
+    const info = getRoleInfo(role);
+
+    userEmail.textContent = user.email;
+    userRoleBadge.textContent = info.label;
+    userRoleBadge.className = 'badge ' + info.cls;
+    roleInfo.innerHTML = info.desc;
+
+    loginBox.style.display = 'none';
+    dashboardBox.classList.add('show');
+  }
+
+  // ===== Show Login =====
+  function showLogin() {
+    dashboardBox.classList.remove('show');
+    loginBox.style.display = 'block';
+    passwordInput.value = '';
+  }
+
+  // ===== Login =====
+  window.doLogin = async function() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email) { showError('Email ያስፈልጋል'); return; }
+    if (!password) { showError('Password ያስፈልጋል'); return; }
+
+    loginBtn.disabled = true;
+    loginBtnText.innerHTML = '<span class="spinner"></span> በመግባት ላይ...';
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged ይይዘዋል
+    } catch (err) {
+      console.error('Login error:', err);
+      let msg = 'የ Login ስህተት';
+      const code = err.code || '';
+      if (code.includes('invalid-email')) msg = 'Email ትክክል አይደለም';
+      else if (code.includes('user-not-found')) msg = 'ይህ ተጠቃሚ አልተገኘም';
+      else if (code.includes('wrong-password') || code.includes('invalid-credential')) msg = 'Password ትክክል አይደለም';
+      else if (code.includes('too-many-requests')) msg = 'ብዙ ሙከራ — ቆየት ብለህ ሞክር';
+      else if (code.includes('network')) msg = 'የኢንተርኔት ግንኙነት የለም';
+      else msg = msg + ': ' + (err.message || code);
+      showError(msg);
+      loginBtn.disabled = false;
+      loginBtnText.textContent = '🔓 ግባ';
+    }
+  };
+
+  // ===== Logout =====
+  window.doLogout = async function() {
+    if (!confirm('እርግጠኛ ነህ መውጣት ትፈልጋለህ?')) return;
+    try {
+      await signOut(auth);
+      showLogin();
+    } catch (err) {
+      showError('የ Logout ስህተት: ' + err.message);
+    }
+  };
+
+  // ===== Auth State =====
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      showDashboard(user);
+    } else {
+      showLogin();
+    }
+    loginBtn.disabled = false;
+    loginBtnText.textContent = '🔓 ግባ';
   });
-}
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-let toastTimer;
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function escJs(s) {
-  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-}
-function todayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
-/* ===== Collapsible Sections ===== */
-function toggleSection(headerId, bodyId) {
-  const hdr = document.getElementById(headerId);
-  const body = document.getElementById(bodyId);
-  if (!hdr || !body) return;
-  const isOpen = body.classList.toggle('open');
-  hdr.classList.toggle('open', isOpen);
-  openSections[bodyId] = isOpen;
-  save(K_SECT, openSections);
-}
-
-function applySavedSections() {
-  Object.keys(openSections).forEach(bodyId => {
-    if (openSections[bodyId]) {
-      const body = document.getElementById(bodyId);
-      if (body) {
-        body.classList.add('open');
-        const hdr = body.previousElementSibling;
-        if (hdr) hdr.classList.add('open');
-      }
+  // ===== Enter key =====
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && loginBox.style.display !== 'none') {
+      doLogin();
     }
   });
-}
-
-/* ===== CATEGORY MANAGEMENT ===== */
-function renderMainCatDropdown() {
-  const sel = document.getElementById('prodMainCat');
-  const cur = sel.value;
-  let html = '<option value="">— ይምረጡ —</option>';
-  Object.keys(categories).forEach(c => {
-    html += '<option value="' + esc(c) + '">' + esc(c) + '</option>';
-  });
-  sel.innerHTML = html;
-  if (categories[cur]) sel.value = cur;
-
-  const parentSel = document.getElementById('subCatParent');
-  const cur2 = parentSel.value;
-  let html2 = '<option value="">— ዋና ምድብ ይምረጡ —</option>';
-  Object.keys(categories).forEach(c => {
-    html2 += '<option value="' + esc(c) + '">' + esc(c) + '</option>';
-  });
-  parentSel.innerHTML = html2;
-  if (categories[cur2]) parentSel.value = cur2;
-}
-
-function onMainCatChange() {
-  const main = document.getElementById('prodMainCat').value;
-  const subSel = document.getElementById('prodSubCat');
-  const nameInput = document.getElementById('prodName');
-  nameInput.value = '';
-  if (!main || !categories[main]) {
-    subSel.innerHTML = '<option value="">— መጀመሪያ ዋና ምድብ ይምረጡ —</option>';
-    return;
-  }
-  let html = '<option value="">— ንዑስ ምድብ ይምረጡ —</option>';
-  categories[main].forEach(s => {
-    html += '<option value="' + esc(s) + '">' + esc(s) + '</option>';
-  });
-  subSel.innerHTML = html;
-}
-
-function onSubCatChange() {
-  const sub = document.getElementById('prodSubCat').value;
-  if (sub) document.getElementById('prodName').value = sub;
-}
-
-function addMainCat() {
-  const inp = document.getElementById('newMainCat');
-  const name = inp.value.trim();
-  if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
-  if (categories[name]) { toast('⚠️ ይህ ምድብ አስቀድሞ አለ'); return; }
-  categories[name] = [];
-  save(K_CAT, categories);
-  inp.value = '';
-  renderMainCatDropdown();
-  renderMainCatTags();
-  renderSubCatTags();
-  toast('✅ ዋና ምድብ ተጨምሯል');
-}
-
-function deleteMainCat(name) {
-  if (!confirm('"' + name + '" የሚለውን ዋና ምድብ እና ንዑስ ምድቦቹን ማጥፋት ይፈልጋሉ?')) return;
-  delete categories[name];
-  save(K_CAT, categories);
-  renderMainCatDropdown();
-  renderMainCatTags();
-  renderSubCatTags();
-  onMainCatChange();
-  toast('🗑️ ምድብ ተሰርዟል');
-}
-
-function addSubCat() {
-  const parent = document.getElementById('subCatParent').value;
-  const inp = document.getElementById('newSubCat');
-  const name = inp.value.trim();
-  if (!parent) { toast('⚠️ መጀመሪያ ዋና ምድብ ይምረጡ'); return; }
-  if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
-  if (!categories[parent]) categories[parent] = [];
-  if (categories[parent].includes(name)) { toast('⚠️ ይህ ንዑስ ምድብ አስቀድሞ አለ'); return; }
-  categories[parent].push(name);
-  save(K_CAT, categories);
-  inp.value = '';
-  renderSubCatTags();
-  if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
-  toast('✅ ንዑስ ምድብ ተጨምሯል');
-}
-
-function deleteSubCat(parent, name) {
-  if (!categories[parent]) return;
-  categories[parent] = categories[parent].filter(s => s !== name);
-  save(K_CAT, categories);
-  renderSubCatTags();
-  if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
-  toast('🗑️ ንዑስ ምድብ ተሰርዟል');
-}
-
-function renderMainCatTags() {
-  const wrap = document.getElementById('mainCatTags');
-  const cats = Object.keys(categories);
-  if (cats.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ዋና ምድብ የለም።</div>';
-    return;
-  }
-  wrap.innerHTML = cats.map(c =>
-    '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteMainCat(\'' + escJs(c) + '\')">×</span></span>'
-  ).join('');
-}
-
-function renderSubCatTags() {
-  const parent = document.getElementById('subCatParent').value;
-  const wrap = document.getElementById('subCatTags');
-  if (!parent || !categories[parent]) {
-    wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ዋና ምድብ ይምረጡ።</div>';
-    return;
-  }
-  const subs = categories[parent];
-  if (subs.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ንዑስ ምድብ የለም።</div>';
-    return;
-  }
-  wrap.innerHTML = subs.map(s =>
-    '<span class="cat-tag">' + esc(s) + ' <span class="del" onclick="deleteSubCat(\'' + escJs(parent) + '\',\'' + escJs(s) + '\')">×</span></span>'
-  ).join('');
-}
-
-function renderExpCatDropdown() {
-  const sel = document.getElementById('expCat');
-  const cur = sel.value;
-  let html = '';
-  expCats.forEach(c => { html += '<option value="' + esc(c) + '">' + esc(c) + '</option>'; });
-  sel.innerHTML = html;
-  if (expCats.includes(cur)) sel.value = cur;
-}
-function renderExpCatTags() {
-  const wrap = document.getElementById('expCatTags');
-  if (expCats.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ምድብ የለም።</div>';
-    return;
-  }
-  wrap.innerHTML = expCats.map(c =>
-    '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteExpCat(\'' + escJs(c) + '\')">×</span></span>'
-  ).join('');
-}
-function addExpCat() {
-  const inp = document.getElementById('newExpCat');
-  const name = inp.value.trim();
-  if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
-  if (expCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
-  expCats.push(name);
-  save(K_EXPC, expCats);
-  inp.value = '';
-  renderExpCatDropdown();
-  renderExpCatTags();
-  toast('✅ ምድብ ተጨምሯል');
-}
-function deleteExpCat(name) {
-  if (!confirm('"' + name + '" ምድብ ማጥፋት ይፈልጋሉ?')) return;
-  expCats = expCats.filter(c => c !== name);
-  save(K_EXPC, expCats);
-  renderExpCatDropdown();
-  renderExpCatTags();
-  toast('🗑️ ምድብ ተሰርዟል');
-}
-
-function renderFixCatDropdown() {
-  const sel = document.getElementById('fixCat');
-  const cur = sel.value;
-  let html = '';
-  fixCats.forEach(c => { html += '<option value="' + esc(c) + '">' + esc(c) + '</option>'; });
-  sel.innerHTML = html;
-  if (fixCats.includes(cur)) sel.value = cur;
-}
-function renderFixCatTags() {
-  const wrap = document.getElementById('fixCatTags');
-  if (fixCats.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ምድብ የለም።</div>';
-    return;
-  }
-  wrap.innerHTML = fixCats.map(c =>
-    '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteFixCat(\'' + escJs(c) + '\')">×</span></span>'
-  ).join('');
-}
-function addFixCat() {
-  const inp = document.getElementById('newFixCat');
-  const name = inp.value.trim();
-  if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
-  if (fixCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
-  fixCats.push(name);
-  save(K_FIXC, fixCats);
-  inp.value = '';
-  renderFixCatDropdown();
-  renderFixCatTags();
-  toast('✅ ምድብ ተጨምሯል');
-}
-function deleteFixCat(name) {
-  if (!confirm('"' + name + '" ምድብ ማጥፋት ይፈልጋሉ?')) return;
-  fixCats = fixCats.filter(c => c !== name);
-  save(K_FIXC, fixCats);
-  renderFixCatDropdown();
-  renderFixCatTags();
-  toast('🗑️ ምድብ ተሰርዟል');
-}
-
-/* ===== PRODUCTS ===== */
-function addProduct() {
-  const name  = document.getElementById('prodName').value.trim();
-  const price = parseFloat(document.getElementById('prodPrice').value);
-  const main  = document.getElementById('prodMainCat').value;
-  const sub   = document.getElementById('prodSubCat').value;
-
-  if (!main) { toast('⚠️ ዋና ምድብ ይምረጡ'); return; }
-  if (!sub) { toast('⚠️ ንዑስ ምድብ ይምረጡ'); return; }
-  if (!name) { toast('⚠️ የምርት ስም ያስፈልጋል'); return; }
-  if (isNaN(price) || price < 0) { toast('⚠️ ትክክለኛ ዋጋ ያስገቡ'); return; }
-  if (products.some(p => p.name === name && p.main === main && p.sub === sub)) {
-    toast('⚠️ ይህ ምርት አስቀድሞ አለ'); return;
-  }
-
-  products.push({ id: uid(), name, price, main, sub });
-  save(K_PROD, products);
-  document.getElementById('prodName').value = '';
-  document.getElementById('prodPrice').value = '';
-  renderProducts();
-  toast('✅ ምርት ተጨምሯል');
-}
-
-function deleteProduct(id) {
-  if (!confirm('ይህን ምርት ማጥፋት ይፈልጋሉ?')) return;
-  products = products.filter(p => p.id !== id);
-  delete sales[id];
-  save(K_PROD, products);
-  save(K_SALE, sales);
-  renderProducts();
-  renderDaily();
-  toast('🗑️ ምርት ተሰርዟል');
-}
-
-function setQty(id, qty) {
-  qty = parseInt(qty, 10);
-  if (isNaN(qty) || qty < 0) qty = 0;
-  if (qty === 0) delete sales[id];
-  else sales[id] = qty;
-  save(K_SALE, sales);
-  updateSalesTotals();
-}
-
-function toggleCategory(main) {
-  openCats[main] = !openCats[main];
-  save(K_OPEN, openCats);
-  renderProducts();
-}
-function toggleSubCategory(main, sub) {
-  const key = main + '||' + sub;
-  openSubCats[key] = !openSubCats[key];
-  renderProducts();
-}
-function toggleAllCategories(open) {
-  Object.keys(categories).forEach(c => { openCats[c] = open; });
-  save(K_OPEN, openCats);
-  openSubCats = {};
-  if (open) {
-    Object.keys(categories).forEach(c => {
-      categories[c].forEach(s => { openSubCats[c + '||' + s] = true; });
-    });
-  }
-  renderProducts();
-  toast(open ? '📂 ሁሉም ተከፍቷል' : '📁 ሁሉም ተዘግቷል');
-}
-
-function renderProducts() {
-  const wrap = document.getElementById('productList');
-  if (products.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ምንም ምርት አልተጨመረም።<br>አዲስ ምርት ይጨምሩ።</div>';
-    updateSalesTotals();
-    return;
-  }
-  const grouped = {};
-  products.forEach(p => {
-    if (!grouped[p.main]) grouped[p.main] = {};
-    if (!grouped[p.main][p.sub]) grouped[p.main][p.sub] = [];
-    grouped[p.main][p.sub].push(p);
-  });
-
-  let html = '';
-  Object.keys(grouped).forEach(main => {
-    const mainOpen = !!openCats[main];
-    let mainTotal = 0, mainCount = 0;
-    Object.keys(grouped[main]).forEach(sub => {
-      grouped[main][sub].forEach(p => {
-        mainTotal += (sales[p.id] || 0) * p.price;
-        mainCount++;
-      });
-    });
-    html += '<div class="cat-section">';
-    html += '<div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
-    html += '<div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">' + esc(main) + '</span></div>';
-    html += '<div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">' + mainCount + ' ምርቶች</span><span class="cat-total">' + money(mainTotal) + ' ብር</span></div>';
-    html += '</div>';
-    html += '<div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
-    Object.keys(grouped[main]).forEach(sub => {
-      const subKey = main + '||' + sub;
-      const subOpen = !!openSubCats[subKey];
-      const subCount = grouped[main][sub].length;
-      html += '<div class="sub-header ' + (subOpen ? 'open' : '') + '" onclick="toggleSubCategory(\'' + escJs(main) + '\',\'' + escJs(sub) + '\')">';
-      html += '<div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ' + esc(sub) + '</span></div>';
-      html += '<span class="sub-count">' + subCount + '</span></div>';
-      html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
-      grouped[main][sub].forEach(p => {
-        const q = sales[p.id] || '';
-        html += '<div class="list-item" style="margin-left:14px;">' +
-          '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
-          '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" ' +
-                 'onchange="setQty(\'' + p.id + '\', this.value)" oninput="setQty(\'' + p.id + '\', this.value)" onclick="event.stopPropagation()">' +
-          '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button>' +
-        '</div>';
-      });
-      html += '</div>';
-    });
-    html += '</div></div>';
-  });
-  wrap.innerHTML = html;
-  updateSalesTotals();
-}
-
-function updateSalesTotals() {
-  let total = 0;
-  products.forEach(p => { total += (sales[p.id] || 0) * p.price; });
-  document.getElementById('todaySalesTotal').textContent = money(total) + ' ብር';
-  document.getElementById('hdrSaleTotal').textContent = money(total) + ' ብር';
-  renderDaily();
-}
-
-/* ===== DAILY ===== */
-function addExpense() {
-  const cat = document.getElementById('expCat').value;
-  const note = document.getElementById('expName').value.trim();
-  const amt  = parseFloat(document.getElementById('expAmount').value);
-  if (!cat) { toast('⚠️ የወጪ ምድብ ይምረጡ'); return; }
-  if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-  expenses.push({ id: uid(), cat, note, amount: amt });
-  save(K_EXP, expenses);
-  document.getElementById('expName').value = '';
-  document.getElementById('expAmount').value = '';
-  renderDaily();
-  toast('✅ ወጪ ተጨምሯል');
-}
-function deleteExpense(id) {
-  expenses = expenses.filter(e => e.id !== id);
-  save(K_EXP, expenses);
-  renderDaily();
-  toast('🗑️ ወጪ ተሰርዟል');
-}
-function getTodaySaleItems() {
-  const items = [];
-  products.forEach(p => {
-    const qty = sales[p.id] || 0;
-    if (qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty, total: qty * p.price });
-  });
-  return items;
-}
-
-function renderDaily() {
-  let income = 0;
-  products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
-  document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
-  document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
-
-  const wrap = document.getElementById('expenseList');
-  let expTotal = 0;
-  if (expenses.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ወጪ አልተመዘገበም።</div>';
-  } else {
-    let html = '';
-    expenses.forEach(e => {
-      expTotal += e.amount;
-      html += '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
-        '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense(\'' + e.id + '\')">✕</button></div>';
-    });
-    wrap.innerHTML = html;
-  }
-  document.getElementById('dailyExpTotal').textContent = money(expTotal) + ' ብር';
-  document.getElementById('hdrDailyExpBadge').textContent = money(expTotal) + ' ብር';
-
-  const net = income - expTotal;
-  document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>';
-  document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር';
-  const box = document.getElementById('netProfitBox');
-  box.classList.remove('green', 'red');
-  box.classList.add(net >= 0 ? 'green' : 'red');
-
-  document.getElementById('savePreviewIncome').textContent = money(income) + ' ብር';
-  document.getElementById('savePreviewExp').textContent = money(expTotal) + ' ብር';
-  document.getElementById('savePreviewNet').textContent = money(net) + ' ብር';
-  document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length;
-
-  renderTodayTopSellers();
-  renderTodayUnsold();
-  renderHistory();
-  renderMonthly();
-}
-
-function renderTodayTopSellers() {
-  const wrap = document.getElementById('todayTopSellers');
-  const items = getTodaySaleItems();
-  document.getElementById('hdrTodayTopBadge').textContent = items.length;
-  if (items.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">ዛሬ ምንም አልተሸጠም።</div>';
-    return;
-  }
-  items.sort((a, b) => b.qty - a.qty);
-  const top = items.slice(0, 5);
-  const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-  const classes = ['gold', 'silver', 'bronze', '', ''];
-  let html = '';
-  top.forEach((item, i) => {
-    html += '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
-      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት × ' + money(item.price) + ' ብር</div></div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>';
-  });
-  wrap.innerHTML = html;
-}
-
-function renderTodayUnsold() {
-  const wrap = document.getElementById('todayUnsold');
-  const unsold = products.filter(p => (sales[p.id] || 0) === 0);
-  document.getElementById('hdrTodayUnsoldBadge').textContent = unsold.length;
-  if (unsold.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ምርቶች ተሸጠዋል!</div>';
-    return;
-  }
-  let html = '';
-  unsold.forEach(p => {
-    html += '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
-      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
-      '<div class="u-badge">0 ብዛት</div></div>';
-  });
-  wrap.innerHTML = html;
-}
-
-/* ===== SAVE TODAY ===== */
-function saveTodayToHistory() {
-  const dateStr = todayStr();
-  let income = 0;
-  products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
-  let expTotal = 0;
-  expenses.forEach(e => { expTotal += e.amount; });
-  const net = income - expTotal;
-  if (income === 0 && expTotal === 0) { toast('⚠️ ምንም ውሂብ የለም'); return; }
-  const items = getTodaySaleItems();
-  const existing = history.findIndex(h => h.date === dateStr);
-  const record = { id: uid(), date: dateStr, income, expense: expTotal, net, items };
-  if (existing >= 0) {
-    if (!confirm('የዛሬ ሂሳብ ተቀምጧል። በአዲሱ ይተካ?')) return;
-    history[existing] = record;
-    toast('✅ ተሻሽሏል');
-  } else {
-    history.push(record);
-    toast('✅ ተቀምጧል');
-  }
-  save(K_HIST, history);
-  renderHistory();
-  renderMonthly();
-}
-
-function deleteHistory(id) {
-  if (!confirm('ይህን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
-  history = history.filter(h => h.id !== id);
-  save(K_HIST, history);
-  renderHistory();
-  renderMonthly();
-  toast('🗑️ ተሰርዟል');
-}
-
-function renderHistory() {
-  const wrap = document.getElementById('historyList');
-  document.getElementById('hdrHistoryBadge').textContent = history.length;
-  if (history.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ታሪክ የለም።</div>';
-    return;
-  }
-  const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
-  let html = '';
-  sorted.forEach(h => {
-    const netClass = h.net >= 0 ? 'green' : 'red';
-    const itemCount = (h.items && Array.isArray(h.items)) ? h.items.length : 0;
-    html += '<div class="history-item"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + '</span>' +
-      '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span></div>' +
-      '<div class="h-details"><span>💰 ' + money(h.income) + '</span><span>💸 ' + money(h.expense) + '</span><span>📦 ' + itemCount + '</span>' +
-      '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory(\'' + h.id + '\')">✕</button></div></div>';
-  });
-  wrap.innerHTML = html;
-}
-
-function formatDate(dateStr) {
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
-  const y = parts[0], m = parseInt(parts[1],10), d = parseInt(parts[2],10);
-  const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
-  return names[m-1] + ' ' + d + ', ' + y;
-}
-
-/* ===== MONTHLY ===== */
-function changeMonth(delta) {
-  currentMonth += delta;
-  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-  renderMonthly();
-}
-
-function addFixedExpense() {
-  const cat = document.getElementById('fixCat').value;
-  const note = document.getElementById('fixName').value.trim();
-  const amt  = parseFloat(document.getElementById('fixAmount').value);
-  if (!cat) { toast('⚠️ የወጪ ምድብ ይምረጡ'); return; }
-  if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-  fixed.push({ id: uid(), cat, note, amount: amt });
-  save(K_FIX, fixed);
-  document.getElementById('fixName').value = '';
-  document.getElementById('fixAmount').value = '';
-  renderMonthly();
-  toast('✅ ቋሚ ወጪ ተጨምሯል');
-}
-function deleteFixedExpense(id) {
-  fixed = fixed.filter(e => e.id !== id);
-  save(K_FIX, fixed);
-  renderMonthly();
-  toast('🗑️ ተሰርዟል');
-}
-
-function renderMonthly() {
-  const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
-  document.getElementById('monthLabel').textContent = monthLabel;
-  document.getElementById('hdrMonthLabel').textContent = monthLabel;
-
-  const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
-  const monthRecords = history.filter(h => h.date.startsWith(monthPrefix));
-
-  let monthlyIncome = 0, monthlyDailyExp = 0;
-  const productSales = {};
-  monthRecords.forEach(h => {
-    monthlyIncome += h.income;
-    monthlyDailyExp += h.expense;
-    if (h.items && Array.isArray(h.items)) {
-      h.items.forEach(item => {
-        if (!productSales[item.productId]) {
-          productSales[item.productId] = { productId: item.productId, name: item.name, main: item.main, sub: item.sub, qty: 0, total: 0 };
-        }
-        productSales[item.productId].qty += item.qty;
-        productSales[item.productId].total += item.total;
-      });
-    }
-  });
-
-  let fixedTotal = 0;
-  fixed.forEach(f => { fixedTotal += f.amount; });
-  const totalExp = monthlyDailyExp + fixedTotal;
-  const net = monthlyIncome - totalExp;
-
-  document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
-  document.getElementById('hdrMonIncomeBadge').textContent = money(monthlyIncome) + ' ብር';
-  document.getElementById('statIncome').textContent = money(monthlyIncome) + ' ብር';
-  document.getElementById('statDailyExp').textContent = money(monthlyDailyExp) + ' ብር';
-  document.getElementById('statFixedExp').textContent = money(fixedTotal) + ' ብር';
-  document.getElementById('statTotalExp').textContent = money(totalExp) + ' ብር';
-  document.getElementById('monthlyNet').innerHTML = money(net) + ' <small>ብር</small>';
-  document.getElementById('hdrMonNetBadge').textContent = money(net) + ' ብር';
-
-  const box = document.getElementById('monthlyNetBox');
-  box.classList.remove('green', 'red');
-  box.classList.add(net >= 0 ? 'green' : 'red');
-
-  renderMonthlyTopSellers(productSales);
-  renderMonthlyUnsold(productSales);
-
-  const wrap = document.getElementById('fixedExpenseList');
-  document.getElementById('hdrFixExpBadge').textContent = money(fixedTotal) + ' ብር';
-  if (fixed.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ቋሚ ወጪ አልተመዘገበም።</div>';
-  } else {
-    let html = '';
-    fixed.forEach(e => {
-      html += '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' +
-        (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
-        '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button></div>';
-    });
-    wrap.innerHTML = html;
-  }
-  document.getElementById('fixedExpTotal').textContent = money(fixedTotal) + ' ብር';
-}
-
-function renderMonthlyTopSellers(productSales) {
-  const wrap = document.getElementById('monthlyTopSellers');
-  const items = Object.values(productSales);
-  document.getElementById('hdrMonTopBadge').textContent = items.length;
-  if (items.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">በዚህ ወር ምንም አልተሸጠም።</div>';
-    return;
-  }
-  items.sort((a, b) => b.qty - a.qty);
-  const top = items.slice(0, 5);
-  const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-  const classes = ['gold', 'silver', 'bronze', '', ''];
-  let html = '';
-  top.forEach((item, i) => {
-    html += '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
-      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት</div></div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>';
-  });
-  wrap.innerHTML = html;
-}
-
-function renderMonthlyUnsold(productSales) {
-  const wrap = document.getElementById('monthlyUnsold');
-  const unsold = products.filter(p => !productSales[p.id] || productSales[p.id].qty === 0);
-  document.getElementById('hdrMonUnsoldBadge').textContent = unsold.length;
-  if (unsold.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ምርቶች ተሸጠዋል!</div>';
-    return;
-  }
-  let html = '';
-  unsold.forEach(p => {
-    html += '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
-      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
-      '<div class="u-badge">0 ብዛት</div></div>';
-  });
-  wrap.innerHTML = html;
-}
-
-/* ===== RESET ===== */
-function resetDailySales() {
-  if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?')) return;
-  sales = {};
-  expenses = [];
-  save(K_SALE, sales);
-  save(K_EXP, expenses);
-  renderProducts();
-  renderDaily();
-  toast('🔄 አዲስ ቀን ተጀምሯል');
-}
-
-/* ===== INIT ===== */
-renderMainCatDropdown();
-renderMainCatTags();
-renderSubCatTags();
-onMainCatChange();
-renderExpCatDropdown();
-renderExpCatTags();
-renderFixCatDropdown();
-renderFixCatTags();
-renderProducts();
-renderDaily();
-renderMonthly();
-applySavedSections();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(err => console.log('SW err', err));
-}
 </script>
+
 </body>
 </html>
