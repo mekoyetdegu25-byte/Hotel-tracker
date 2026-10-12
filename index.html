@@ -42,7 +42,6 @@
   .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); box-shadow: 0 4px 12px rgba(39,103,73,0.25); }
   .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); box-shadow: 0 4px 12px rgba(197,48,48,0.25); }
   .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); box-shadow: 0 4px 12px rgba(192,86,33,0.25); }
-  .summary-box.purple { background: linear-gradient(135deg, #553c9a, #44337a); box-shadow: 0 4px 12px rgba(85,60,154,0.25); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .summary-box .value { font-size: 26px; font-weight: 800; letter-spacing: 0.5px; }
   .summary-box .value small { font-size: 14px; font-weight: 600; opacity: 0.9; }
@@ -99,6 +98,33 @@
   .unsold-item .u-name { font-size: 13.5px; font-weight: 600; color: #742a2a; }
   .unsold-item .u-cat { font-size: 11px; color: #a0aec0; margin-top: 2px; }
   .unsold-item .u-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #fed7d7; color: #742a2a; }
+
+  /* ===== Collapsible Category ===== */
+  .cat-section { margin-bottom: 10px; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #ebf4ff, #bee3f8); border-radius: 12px; cursor: pointer; user-select: none; border: 1px solid #90cdf4; transition: all 0.2s; }
+  .cat-header:active { transform: scale(0.98); }
+  .cat-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(135deg, #bee3f8, #90cdf4); }
+  .cat-header .cat-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .cat-header .cat-arrow { font-size: 14px; font-weight: 900; color: #2c5282; transition: transform 0.2s; display: inline-block; }
+  .cat-header.open .cat-arrow { transform: rotate(90deg); }
+  .cat-header .cat-icon { font-size: 18px; }
+  .cat-header .cat-name { font-size: 14px; font-weight: 800; color: #1a365d; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-header .cat-right { display: flex; align-items: center; gap: 8px; }
+  .cat-header .cat-count { font-size: 11px; font-weight: 700; background: #fff; color: #2c5282; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
+  .cat-header .cat-total { font-size: 13px; font-weight: 800; color: #276749; white-space: nowrap; }
+  .cat-body { display: none; padding: 8px 6px 6px 6px; background: #fff; border: 1px solid #90cdf4; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; margin-top: -1px; }
+  .cat-body.open { display: block; }
+  .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f7fafc; border-radius: 8px; margin: 6px 4px; cursor: pointer; user-select: none; }
+  .sub-header:active { background: #edf2f7; }
+  .sub-header .sub-left { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #4a5568; }
+  .sub-header .sub-arrow { font-size: 10px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
+  .sub-header.open .sub-arrow { transform: rotate(90deg); }
+  .sub-header .sub-count { font-size: 10.5px; font-weight: 700; background: #fff; color: #4a5568; padding: 2px 7px; border-radius: 10px; border: 1px solid #e2e8f0; }
+  .sub-body { display: none; padding: 2px 0 4px 0; }
+  .sub-body.open { display: block; }
+  .expand-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+  .expand-controls button { flex: 1; padding: 10px; font-size: 12.5px; font-weight: 700; border-radius: 10px; border: 1.5px solid #2c5282; background: #fff; color: #2c5282; cursor: pointer; }
+  .expand-controls button:active { background: #ebf4ff; }
 </style>
 </head>
 <body>
@@ -158,6 +184,13 @@
       <div class="card">
         <h2><span class="icon">📦</span> የዛሬ ሽያጭ አስገባ</h2>
         <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ — ዋጋው በራሱ ይሰላል።</p>
+
+        <!-- Expand/Collapse controls -->
+        <div class="expand-controls">
+          <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
+          <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
+        </div>
+
         <div id="productList"></div>
         <div class="divider"></div>
         <div class="row-between">
@@ -207,19 +240,16 @@
         <div class="value" id="dailyNet">0.00 <small>ብር</small></div>
       </div>
 
-      <!-- 🏆 የዛሬ ቶፕ የተሸጡ -->
       <div class="card">
         <h2><span class="icon">🏆</span> የዛሬ ቶፕ የተሸጡ (Top 5)</h2>
         <div id="todayTopSellers"></div>
       </div>
 
-      <!-- 📉 የዛሬ ያልተሸጡ -->
       <div class="card">
         <h2><span class="icon">📉</span> የዛሬ ያልተሸጡ ምርቶች</h2>
         <div id="todayUnsold"></div>
       </div>
 
-      <!-- 💾 የዛሬን ሂሳብ አስቀምጥ -->
       <div class="card" style="border: 2px solid #276749;">
         <h2><span class="icon">💾</span> የዛሬን ሂሳብ አስቀምጥ</h2>
         <div class="info-banner">
@@ -244,7 +274,6 @@
         <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
       </div>
 
-      <!-- 📚 የቀን ታሪክ -->
       <div class="card">
         <h2><span class="icon">📚</span> የቀን ታሪክ (History)</h2>
         <div id="historyList"></div>
@@ -254,7 +283,6 @@
     <!-- TAB 3 -->
     <div class="panel" id="panel3">
       
-      <!-- ወር መምረጥ -->
       <div class="card">
         <h2><span class="icon">📅</span> ወር ምረጥ</h2>
         <div class="month-nav">
@@ -269,7 +297,6 @@
         <div class="value" id="monthlyIncome">0.00 <small>ብር</small></div>
       </div>
 
-      <!-- የወር ማጠቃለያ -->
       <div class="card">
         <h2><span class="icon">📊</span> የወሩ ማጠቃለያ</h2>
         <div class="stat-row">
@@ -297,19 +324,16 @@
         <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
       </div>
 
-      <!-- 🏆 የወሩ ቶፕ የተሸጡ -->
       <div class="card">
         <h2><span class="icon">🏆</span> የወሩ ቶፕ የተሸጡ (Top 5)</h2>
         <div id="monthlyTopSellers"></div>
       </div>
 
-      <!-- 📉 የወሩ ያልተሸጡ -->
       <div class="card">
         <h2><span class="icon">📉</span> የወሩ ያልተሸጡ ምርቶች</h2>
         <div id="monthlyUnsold"></div>
       </div>
 
-      <!-- የወር ቋሚ ወጪዎች -->
       <div class="card">
         <h2><span class="icon">🏢</span> የወር ቋሚ ወጪዎች</h2>
         <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
@@ -329,7 +353,6 @@
         </div>
       </div>
 
-      <!-- የቋሚ ወጪ ምድቦች -->
       <div class="card">
         <h2><span class="icon">🗂️</span> የቋሚ ወጪ ምድቦች</h2>
         <div class="cat-add-row">
@@ -348,14 +371,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const K_PROD = 'hotel_products_v6';
-const K_SALE = 'hotel_sales_v6';
-const K_EXP  = 'hotel_expenses_v6';
-const K_FIX  = 'hotel_fixed_v6';
-const K_CAT  = 'hotel_categories_v6';
-const K_EXPC = 'hotel_expcats_v6';
-const K_FIXC = 'hotel_fixcats_v6';
-const K_HIST = 'hotel_history_v6';
+const K_PROD = 'hotel_products_v7';
+const K_SALE = 'hotel_sales_v7';
+const K_EXP  = 'hotel_expenses_v7';
+const K_FIX  = 'hotel_fixed_v7';
+const K_CAT  = 'hotel_categories_v7';
+const K_EXPC = 'hotel_expcats_v7';
+const K_FIXC = 'hotel_fixcats_v7';
+const K_HIST = 'hotel_history_v7';
+const K_OPEN = 'hotel_opencats_v7';
 
 const DEF_CATEGORIES = {
   'ምግብ':        ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -381,6 +405,10 @@ let categories = load(K_CAT, null);
 let expCats    = load(K_EXPC, null);
 let fixCats    = load(K_FIXC, null);
 let history    = load(K_HIST, []);
+/* ክፍት የሆኑ ዋና ምድቦች */
+let openCats   = load(K_OPEN, {});
+/* ክፍት የሆኑ ንዑስ ምድቦች */
+let openSubCats = {};
 
 if (!categories || typeof categories !== 'object' || Object.keys(categories).length === 0) {
   categories = JSON.parse(JSON.stringify(DEF_CATEGORIES));
@@ -395,6 +423,7 @@ if (!fixCats || !Array.isArray(fixCats) || fixCats.length === 0) {
   save(K_FIXC, fixCats);
 }
 if (!Array.isArray(history)) history = [];
+if (!openCats || typeof openCats !== 'object') openCats = {};
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -675,6 +704,42 @@ function setQty(id, qty) {
   updateSalesTotals();
 }
 
+/* ============================================================
+   TOGGLE CATEGORY
+   ============================================================ */
+function toggleCategory(main) {
+  openCats[main] = !openCats[main];
+  save(K_OPEN, openCats);
+  renderProducts();
+}
+
+function toggleSubCategory(main, sub) {
+  const key = main + '||' + sub;
+  openSubCats[key] = !openSubCats[key];
+  renderProducts();
+}
+
+function toggleAllCategories(open) {
+  Object.keys(categories).forEach(c => {
+    openCats[c] = open;
+  });
+  save(K_OPEN, openCats);
+  /* ንዑስ ምድቦችም */
+  openSubCats = {};
+  if (open) {
+    Object.keys(categories).forEach(c => {
+      categories[c].forEach(s => {
+        openSubCats[c + '||' + s] = true;
+      });
+    });
+  }
+  renderProducts();
+  toast(open ? '📂 ሁሉም ተከፍቷል' : '📁 ሁሉም ተዘግቷል');
+}
+
+/* ============================================================
+   RENDER PRODUCTS (Collapsible)
+   ============================================================ */
 function renderProducts() {
   const wrap = document.getElementById('productList');
   if (products.length === 0) {
@@ -683,6 +748,7 @@ function renderProducts() {
     return;
   }
 
+  /* በምድብ ሰብስብ */
   const grouped = {};
   products.forEach(p => {
     if (!grouped[p.main]) grouped[p.main] = {};
@@ -692,25 +758,66 @@ function renderProducts() {
 
   let html = '';
   Object.keys(grouped).forEach(main => {
-    html += '<div style="font-size:12px;font-weight:800;color:#2c5282;text-transform:uppercase;letter-spacing:0.6px;margin:12px 0 6px 4px;">📁 ' + esc(main) + '</div>';
+    const mainOpen = !!openCats[main];
+    /* ምድብ ድምር */
+    let mainTotal = 0;
+    let mainCount = 0;
     Object.keys(grouped[main]).forEach(sub => {
-      html += '<div style="font-size:12px;font-weight:700;color:#4a5568;margin:6px 0 4px 8px;">↳ ' + esc(sub) + '</div>';
+      grouped[main][sub].forEach(p => {
+        mainTotal += (sales[p.id] || 0) * p.price;
+        mainCount++;
+      });
+    });
+
+    html += '<div class="cat-section">';
+    html += '<div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
+    html += '<div class="cat-left">';
+    html += '<span class="cat-arrow">▶</span>';
+    html += '<span class="cat-icon">📁</span>';
+    html += '<span class="cat-name">' + esc(main) + '</span>';
+    html += '</div>';
+    html += '<div class="cat-right">';
+    html += '<span class="cat-count">' + mainCount + ' ምርቶች</span>';
+    html += '<span class="cat-total">' + money(mainTotal) + ' ብር</span>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
+    Object.keys(grouped[main]).forEach(sub => {
+      const subKey = main + '||' + sub;
+      const subOpen = !!openSubCats[subKey];
+      const subCount = grouped[main][sub].length;
+
+      html += '<div class="sub-header ' + (subOpen ? 'open' : '') + '" onclick="toggleSubCategory(\'' + escJs(main) + '\',\'' + escJs(sub) + '\')">';
+      html += '<div class="sub-left">';
+      html += '<span class="sub-arrow">▶</span>';
+      html += '<span>↳ ' + esc(sub) + '</span>';
+      html += '</div>';
+      html += '<span class="sub-count">' + subCount + '</span>';
+      html += '</div>';
+
+      html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
       grouped[main][sub].forEach(p => {
         const q = sales[p.id] || '';
-        html += '<div class="list-item" style="margin-left:8px;">' +
+        html += '<div class="list-item" style="margin-left:14px;">' +
           '<div class="info">' +
             '<div class="name">' + esc(p.name) + '</div>' +
             '<div class="meta">' + money(p.price) + ' ብር</div>' +
           '</div>' +
           '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" ' +
                  'onchange="setQty(\'' + p.id + '\', this.value)" ' +
-                 'oninput="setQty(\'' + p.id + '\', this.value)">' +
+                 'oninput="setQty(\'' + p.id + '\', this.value)" ' +
+                 'onclick="event.stopPropagation()">' +
           '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" ' +
-                  'onclick="deleteProduct(\'' + p.id + '\')">✕</button>' +
+                  'onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button>' +
         '</div>';
       });
+      html += '</div>';
     });
+    html += '</div>';
+    html += '</div>';
   });
+
   wrap.innerHTML = html;
   updateSalesTotals();
 }
@@ -748,7 +855,6 @@ function deleteExpense(id) {
   toast('🗑️ ወጪ ተሰርዟል');
 }
 
-/* የዛሬ ሽያጭ ዝርዝር */
 function getTodaySaleItems() {
   const items = [];
   products.forEach(p => {
@@ -801,13 +907,11 @@ function renderDaily() {
   box.classList.remove('green', 'red');
   box.classList.add(net >= 0 ? 'green' : 'red');
 
-  // preview
   document.getElementById('savePreviewIncome').textContent = money(income) + ' ብር';
   document.getElementById('savePreviewExp').textContent = money(expTotal) + ' ብር';
   document.getElementById('savePreviewNet').textContent = money(net) + ' ብር';
   document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length;
 
-  // Top sellers + unsold today
   renderTodayTopSellers();
   renderTodayUnsold();
 
@@ -815,7 +919,6 @@ function renderDaily() {
   renderMonthly();
 }
 
-/* 🏆 የዛሬ ቶፕ የተሸጡ */
 function renderTodayTopSellers() {
   const wrap = document.getElementById('todayTopSellers');
   const items = getTodaySaleItems();
@@ -841,7 +944,6 @@ function renderTodayTopSellers() {
   wrap.innerHTML = html;
 }
 
-/* 📉 የዛሬ ያልተሸጡ */
 function renderTodayUnsold() {
   const wrap = document.getElementById('todayUnsold');
   const unsold = products.filter(p => (sales[p.id] || 0) === 0);
@@ -992,9 +1094,7 @@ function renderMonthly() {
 
   let monthlyIncome = 0;
   let monthlyDailyExp = 0;
-
-  // ሁሉንም ምርቶች ሰብስብ
-  const productSales = {}; // productId → { name, main, sub, qty, total }
+  const productSales = {};
 
   monthRecords.forEach(h => {
     monthlyIncome += h.income;
@@ -1034,12 +1134,9 @@ function renderMonthly() {
   box.classList.remove('green', 'red');
   box.classList.add(net >= 0 ? 'green' : 'red');
 
-  /* 🏆 የወሩ ቶፕ */
   renderMonthlyTopSellers(productSales);
-  /* 📉 የወሩ ያልተሸጡ */
   renderMonthlyUnsold(productSales);
 
-  /* የቋሚ ወጪ ዝርዝር */
   const wrap = document.getElementById('fixedExpenseList');
   if (fixed.length === 0) {
     wrap.innerHTML = '<div class="empty-msg">እስካሁን ቋሚ ወጪ አልተመዘገበም።</div>';
