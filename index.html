@@ -13,63 +13,59 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: #f2f4f8; color: #1a202c; font-size: 15px; padding-bottom: 80px; }
   header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 16px 14px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-  header h1 { font-size: 17px; font-weight: 600; letter-spacing: 0.3px; }
+  header h1 { font-size: 17px; font-weight: 600; }
   header p { font-size: 11px; opacity: 0.8; margin-top: 2px; }
   .tabs { display: flex; background: #fff; position: sticky; top: 68px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
   .tabs input[type="radio"] { display: none; }
-  .tabs label { flex: 1; text-align: center; padding: 14px 4px; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; user-select: none; }
-  .tabs label:active { background: #edf2f7; }
+  .tabs label { flex: 1; text-align: center; padding: 14px 4px; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; user-select: none; }
   #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"] { color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff; }
   .panel { display: none; padding: 14px; }
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
   .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-  .card h2 { font-size: 15px; font-weight: 700; color: #2c5282; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .card h2 .icon { font-size: 18px; }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: border-color 0.2s, background 0.2s; appearance: none; -webkit-appearance: none; }
+  input[type="text"], input[type="number"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; appearance: none; -webkit-appearance: none; }
   select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; transition: transform 0.1s; letter-spacing: 0.2px; }
+  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: #2c5282; color: #fff; }
   .btn-success { background: #276749; color: #fff; }
   .btn-danger { background: #c53030; color: #fff; }
   .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
   .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
-  .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; box-shadow: 0 4px 12px rgba(26,54,93,0.25); }
-  .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); box-shadow: 0 4px 12px rgba(39,103,73,0.25); }
-  .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); box-shadow: 0 4px 12px rgba(197,48,48,0.25); }
-  .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); box-shadow: 0 4px 12px rgba(192,86,33,0.25); }
+  .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; }
+  .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); }
+  .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); }
+  .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
-  .summary-box .value { font-size: 26px; font-weight: 800; letter-spacing: 0.5px; }
+  .summary-box .value { font-size: 26px; font-weight: 800; }
   .summary-box .value small { font-size: 14px; font-weight: 600; opacity: 0.9; }
   .list-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .list-item .info { flex: 1; min-width: 0; }
   .list-item .name { font-size: 14px; font-weight: 600; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .list-item .meta { font-size: 11.5px; color: #718096; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .list-item .meta { font-size: 11.5px; color: #718096; margin-top: 2px; }
   .list-item .amount { font-size: 14px; font-weight: 700; color: #2c5282; margin-left: 10px; white-space: nowrap; }
   .list-item .amount.red { color: #c53030; }
   .list-item .amount.green { color: #276749; }
   .list-item .qty-input { width: 70px; padding: 8px; font-size: 15px; text-align: center; border: 1.5px solid #cbd5e0; border-radius: 8px; margin-left: 8px; font-weight: 700; color: #2c5282; background: #fff; }
-  .list-item .qty-input:focus { border-color: #3182ce; }
   .empty-msg { text-align: center; color: #a0aec0; font-size: 13px; padding: 20px 10px; font-style: italic; }
   .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .row-flex { display: flex; gap: 8px; align-items: flex-end; }
   .row-flex > div { flex: 1; }
-  .row-flex .btn { margin-top: 0; flex: 0 0 auto; width: auto; padding: 13px 18px; }
+  .row-flex .btn { margin-top: 0; width: auto; padding: 13px 18px; }
   .divider { height: 1px; background: #edf2f7; margin: 12px 0; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3748; color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: all 0.35s; z-index: 999; box-shadow: 0 6px 20px rgba(0,0,0,0.3); pointer-events: none; max-width: 90%; text-align: center; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3748; color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: all 0.35s; z-index: 999; pointer-events: none; max-width: 90%; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .cat-tag { display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 1px solid #bee3f8; color: #2c5282; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-  .cat-tag .del { cursor: pointer; color: #c53030; font-weight: 800; font-size: 14px; line-height: 1; padding: 0 2px; }
+  .cat-tag .del { cursor: pointer; color: #c53030; font-weight: 800; font-size: 14px; padding: 0 2px; }
   .cat-add-row { display: flex; gap: 6px; align-items: center; }
   .cat-add-row input { padding: 9px 10px; font-size: 13.5px; flex: 1; }
-  .cat-add-row button { background: #2c5282; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
+  .cat-add-row button { background: #2c5282; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
   .month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
+  .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
   .month-nav .month-label { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: #2c5282; }
   .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; font-size: 14px; }
   .stat-row .stat-label { color: #4a5568; font-weight: 600; }
@@ -82,8 +78,7 @@
   .history-item .h-net { font-size: 15px; font-weight: 800; }
   .history-item .h-net.green { color: #276749; }
   .history-item .h-net.red { color: #c53030; }
-  .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; }
-  .history-item .h-details span { display: flex; align-items: center; gap: 4px; }
+  .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; align-items: center; }
   .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
   .seller-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .seller-item.gold { background: linear-gradient(135deg, #fffaf0, #fefcbf); border-color: #f6e05e; }
@@ -98,24 +93,20 @@
   .unsold-item .u-name { font-size: 13.5px; font-weight: 600; color: #742a2a; }
   .unsold-item .u-cat { font-size: 11px; color: #a0aec0; margin-top: 2px; }
   .unsold-item .u-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #fed7d7; color: #742a2a; }
-
-  /* ===== Collapsible Category ===== */
+  /* Collapsible Category */
   .cat-section { margin-bottom: 10px; }
-  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #ebf4ff, #bee3f8); border-radius: 12px; cursor: pointer; user-select: none; border: 1px solid #90cdf4; transition: all 0.2s; }
-  .cat-header:active { transform: scale(0.98); }
-  .cat-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(135deg, #bee3f8, #90cdf4); }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #ebf4ff, #bee3f8); border-radius: 12px; cursor: pointer; border: 1px solid #90cdf4; }
+  .cat-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
   .cat-header .cat-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
   .cat-header .cat-arrow { font-size: 14px; font-weight: 900; color: #2c5282; transition: transform 0.2s; display: inline-block; }
   .cat-header.open .cat-arrow { transform: rotate(90deg); }
   .cat-header .cat-icon { font-size: 18px; }
-  .cat-header .cat-name { font-size: 14px; font-weight: 800; color: #1a365d; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cat-header .cat-right { display: flex; align-items: center; gap: 8px; }
-  .cat-header .cat-count { font-size: 11px; font-weight: 700; background: #fff; color: #2c5282; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
-  .cat-header .cat-total { font-size: 13px; font-weight: 800; color: #276749; white-space: nowrap; }
-  .cat-body { display: none; padding: 8px 6px 6px 6px; background: #fff; border: 1px solid #90cdf4; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; margin-top: -1px; }
+  .cat-header .cat-name { font-size: 14px; font-weight: 800; color: #1a365d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-header .cat-count { font-size: 11px; font-weight: 700; background: #fff; color: #2c5282; padding: 3px 9px; border-radius: 12px; }
+  .cat-header .cat-total { font-size: 13px; font-weight: 800; color: #276749; }
+  .cat-body { display: none; padding: 8px 6px 6px 6px; background: #fff; border: 1px solid #90cdf4; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
   .cat-body.open { display: block; }
-  .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f7fafc; border-radius: 8px; margin: 6px 4px; cursor: pointer; user-select: none; }
-  .sub-header:active { background: #edf2f7; }
+  .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f7fafc; border-radius: 8px; margin: 6px 4px; cursor: pointer; }
   .sub-header .sub-left { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #4a5568; }
   .sub-header .sub-arrow { font-size: 10px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
   .sub-header.open .sub-arrow { transform: rotate(90deg); }
@@ -124,7 +115,22 @@
   .sub-body.open { display: block; }
   .expand-controls { display: flex; gap: 8px; margin-bottom: 12px; }
   .expand-controls button { flex: 1; padding: 10px; font-size: 12.5px; font-weight: 700; border-radius: 10px; border: 1.5px solid #2c5282; background: #fff; color: #2c5282; cursor: pointer; }
-  .expand-controls button:active { background: #ebf4ff; }
+  /* Collapsible Sections (Top/Unsold/Summary) */
+  .section-collapsible { background: #fff; border-radius: 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
+  .section-header .sec-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .section-header .sec-arrow { font-size: 12px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
+  .section-header.open .sec-arrow { transform: rotate(90deg); }
+  .section-header .sec-icon { font-size: 20px; }
+  .section-header .sec-title { font-size: 14.5px; font-weight: 800; color: #2c5282; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .section-header .sec-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
+  .section-header .sec-badge.gold { background: #fefcbf; color: #744210; }
+  .section-header .sec-badge.red { background: #fed7d7; color: #742a2a; }
+  .section-header .sec-badge.green { background: #c6f6d5; color: #22543d; }
+  .section-header .sec-badge.blue { background: #bee3f8; color: #2a4365; }
+  .section-body { display: none; padding: 0 16px 16px 16px; }
+  .section-body.open { display: block; }
+  .section-body.no-pad { padding: 0; }
 </style>
 </head>
 <body>
@@ -147,239 +153,449 @@
 
   <div class="panels">
 
-    <!-- TAB 1 -->
+    <!-- ===== TAB 1 — PRODUCTS ===== -->
     <div class="panel" id="panel1">
-      <div class="card">
-        <h2><span class="icon">➕</span> አዲስ ምርት ጨምር</h2>
-        <label class="field-label">ዋና ምድብ (Category)</label>
-        <select id="prodMainCat" onchange="onMainCatChange()"></select>
-        <label class="field-label">ንዑስ ምድብ (Sub Category)</label>
-        <select id="prodSubCat" onchange="onSubCatChange()"></select>
-        <label class="field-label">የምርት ስም</label>
-        <input type="text" id="prodName" placeholder="ለምሳሌ፦ ዶሮ ወጥ" autocomplete="off">
-        <label class="field-label">ዋጋ (ብር)</label>
-        <input type="number" id="prodPrice" placeholder="0.00" inputmode="decimal" step="any" min="0">
-        <button class="btn btn-primary" onclick="addProduct()">ምርት ጨምር</button>
-      </div>
 
-      <div class="card">
-        <h2><span class="icon">🗂️</span> ምድቦችን አስተዳድር</h2>
-        <p style="font-size:12px;color:#718096;margin-bottom:10px;">አዲስ ዋና ምድብ ወይም ንዑስ ምድብ መጨመር / መሰረዝ ይችላሉ።</p>
-        <label class="field-label" style="margin-top:0;">አዲስ ዋና ምድብ</label>
-        <div class="cat-add-row">
-          <input type="text" id="newMainCat" placeholder="ለምሳሌ፦ ምግብ" autocomplete="off">
-          <button onclick="addMainCat()">+ ጨምር</button>
+      <!-- Collapsible: Add Product -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrAddProduct" onclick="toggleSection('hdrAddProduct','bodyAddProduct')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">➕</span>
+            <span class="sec-title">አዲስ ምርት ጨምር</span>
+          </div>
         </div>
-        <div class="cat-tags" id="mainCatTags" style="margin-top:10px;"></div>
-        <div class="divider"></div>
-        <label class="field-label" style="margin-top:0;">አዲስ ንዑስ ምድብ ለ፦</label>
-        <select id="subCatParent" onchange="renderSubCatTags()"></select>
-        <div class="cat-add-row" style="margin-top:8px;">
-          <input type="text" id="newSubCat" placeholder="ለምሳሌ፦ ቀይ ወጥ" autocomplete="off">
-          <button onclick="addSubCat()">+ ጨምር</button>
-        </div>
-        <div class="cat-tags" id="subCatTags" style="margin-top:10px;"></div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">📦</span> የዛሬ ሽያጭ አስገባ</h2>
-        <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ — ዋጋው በራሱ ይሰላል።</p>
-
-        <!-- Expand/Collapse controls -->
-        <div class="expand-controls">
-          <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
-          <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
-        </div>
-
-        <div id="productList"></div>
-        <div class="divider"></div>
-        <div class="row-between">
-          <span style="font-size:13px;font-weight:700;color:#2d3748;">የዛሬ ጠቅላላ ሽያጭ፦</span>
-          <span id="todaySalesTotal" style="font-size:16px;font-weight:800;color:#276749;">0.00 ብር</span>
+        <div class="section-body" id="bodyAddProduct" style="padding:0 16px 16px 16px;">
+          <label class="field-label">ዋና ምድብ</label>
+          <select id="prodMainCat" onchange="onMainCatChange()"></select>
+          <label class="field-label">ንዑስ ምድብ</label>
+          <select id="prodSubCat" onchange="onSubCatChange()"></select>
+          <label class="field-label">የምርት ስም</label>
+          <input type="text" id="prodName" placeholder="ለምሳሌ፦ ዶሮ ወጥ" autocomplete="off">
+          <label class="field-label">ዋጋ (ብር)</label>
+          <input type="number" id="prodPrice" placeholder="0.00" inputmode="decimal" step="any" min="0">
+          <button class="btn btn-primary" onclick="addProduct()">ምርት ጨምር</button>
         </div>
       </div>
+
+      <!-- Collapsible: Category Manager -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrCatMgr" onclick="toggleSection('hdrCatMgr','bodyCatMgr')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🗂️</span>
+            <span class="sec-title">ምድቦችን አስተዳድር</span>
+          </div>
+        </div>
+        <div class="section-body" id="bodyCatMgr" style="padding:0 16px 16px 16px;">
+          <label class="field-label" style="margin-top:0;">አዲስ ዋና ምድብ</label>
+          <div class="cat-add-row">
+            <input type="text" id="newMainCat" placeholder="ለምሳሌ፦ ምግብ" autocomplete="off">
+            <button onclick="addMainCat()">+ ጨምር</button>
+          </div>
+          <div class="cat-tags" id="mainCatTags" style="margin-top:10px;"></div>
+          <div class="divider"></div>
+          <label class="field-label" style="margin-top:0;">አዲስ ንዑስ ምድብ ለ፦</label>
+          <select id="subCatParent" onchange="renderSubCatTags()"></select>
+          <div class="cat-add-row" style="margin-top:8px;">
+            <input type="text" id="newSubCat" placeholder="ለምሳሌ፦ ቀይ ወጥ" autocomplete="off">
+            <button onclick="addSubCat()">+ ጨምር</button>
+          </div>
+          <div class="cat-tags" id="subCatTags" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- Collapsible: Today's Sale Entry -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrSaleEntry" onclick="toggleSection('hdrSaleEntry','bodySaleEntry')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📦</span>
+            <span class="sec-title">የዛሬ ሽያጭ አስገባ</span>
+          </div>
+          <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
+        </div>
+        <div class="section-body" id="bodySaleEntry" style="padding:0 16px 16px 16px;">
+          <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ።</p>
+          <div class="expand-controls">
+            <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
+            <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
+          </div>
+          <div id="productList"></div>
+          <div class="divider"></div>
+          <div class="row-between">
+            <span style="font-size:13px;font-weight:700;color:#2d3748;">የዛሬ ጠቅላላ ሽያጭ፦</span>
+            <span id="todaySalesTotal" style="font-size:16px;font-weight:800;color:#276749;">0.00 ብር</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- TAB 2 -->
+    <!-- ===== TAB 2 — DAILY ===== -->
     <div class="panel" id="panel2">
-      <div class="summary-box green">
-        <div class="label">የዕለቱ ጠቅላላ ገቢ</div>
-        <div class="value" id="dailyIncome">0.00 <small>ብር</small></div>
-      </div>
 
-      <div class="card">
-        <h2><span class="icon">💸</span> የዕለት ተለዋዋጭ ወጪዎች</h2>
-        <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
-        <select id="expCat"></select>
-        <label class="field-label">ዝርዝር (አማራጭ)</label>
-        <input type="text" id="expName" placeholder="ለምሳሌ፦ ከገበያ ተመላሽ" autocomplete="off">
-        <label class="field-label">ብር</label>
-        <div class="row-flex">
-          <div><input type="number" id="expAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
-          <button class="btn btn-danger" onclick="addExpense()">አድ አድርግ</button>
+      <!-- Collapsible: Daily Income -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrDailyIncome" onclick="toggleSection('hdrDailyIncome','bodyDailyIncome')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💰</span>
+            <span class="sec-title">የዕለቱ ጠቅላላ ገቢ</span>
+          </div>
+          <span class="sec-badge green" id="hdrDailyIncomeBadge">0.00 ብር</span>
         </div>
-        <div id="expenseList" style="margin-top:14px;"></div>
-        <div class="divider"></div>
-        <div class="row-between">
-          <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ወጪ፦</span>
-          <span id="dailyExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
+        <div class="section-body open" id="bodyDailyIncome">
+          <div class="summary-box green" style="margin:0;">
+            <div class="label">የዕለቱ ጠቅላላ ገቢ</div>
+            <div class="value" id="dailyIncome">0.00 <small>ብር</small></div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <h2><span class="icon">🗂️</span> የወጪ ምድቦች</h2>
-        <div class="cat-add-row">
-          <input type="text" id="newExpCat" placeholder="አዲስ የወጪ ምድብ" autocomplete="off">
-          <button onclick="addExpCat()">+ ጨምር</button>
+      <!-- Collapsible: Daily Expenses -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrDailyExp" onclick="toggleSection('hdrDailyExp','bodyDailyExp')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💸</span>
+            <span class="sec-title">የዕለት ተለዋዋጭ ወጪዎች</span>
+          </div>
+          <span class="sec-badge red" id="hdrDailyExpBadge">0.00 ብር</span>
         </div>
-        <div class="cat-tags" id="expCatTags" style="margin-top:10px;"></div>
+        <div class="section-body open" id="bodyDailyExp">
+          <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
+          <select id="expCat"></select>
+          <label class="field-label">ዝርዝር (አማራጭ)</label>
+          <input type="text" id="expName" placeholder="ለምሳሌ፦ ከገበያ ተመላሽ" autocomplete="off">
+          <label class="field-label">ብር</label>
+          <div class="row-flex">
+            <div><input type="number" id="expAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
+            <button class="btn btn-danger" onclick="addExpense()">አድ አድርግ</button>
+          </div>
+          <div id="expenseList" style="margin-top:14px;"></div>
+          <div class="divider"></div>
+          <div class="row-between">
+            <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ወጪ፦</span>
+            <span id="dailyExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
+          </div>
+        </div>
       </div>
 
-      <div class="summary-box" id="netProfitBox">
-        <div class="label">የዕለቱ የተጣራ ትርፍ</div>
-        <div class="value" id="dailyNet">0.00 <small>ብር</small></div>
+      <!-- Collapsible: Expense Categories -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrExpCats" onclick="toggleSection('hdrExpCats','bodyExpCats')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🗂️</span>
+            <span class="sec-title">የወጪ ምድቦች</span>
+          </div>
+        </div>
+        <div class="section-body" id="bodyExpCats" style="padding:0 16px 16px 16px;">
+          <div class="cat-add-row">
+            <input type="text" id="newExpCat" placeholder="አዲስ የወጪ ምድብ" autocomplete="off">
+            <button onclick="addExpCat()">+ ጨምር</button>
+          </div>
+          <div class="cat-tags" id="expCatTags" style="margin-top:10px;"></div>
+        </div>
       </div>
 
-      <div class="card">
-        <h2><span class="icon">🏆</span> የዛሬ ቶፕ የተሸጡ (Top 5)</h2>
-        <div id="todayTopSellers"></div>
+      <!-- Collapsible: Daily Net Profit -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrDailyNet" onclick="toggleSection('hdrDailyNet','bodyDailyNet')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💰</span>
+            <span class="sec-title">የዕለቱ የተጣራ ትርፍ</span>
+          </div>
+          <span class="sec-badge green" id="hdrDailyNetBadge">0.00 ብር</span>
+        </div>
+        <div class="section-body open" id="bodyDailyNet">
+          <div class="summary-box" id="netProfitBox" style="margin:0;">
+            <div class="label">የዕለቱ የተጣራ ትርፍ</div>
+            <div class="value" id="dailyNet">0.00 <small>ብር</small></div>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
-        <h2><span class="icon">📉</span> የዛሬ ያልተሸጡ ምርቶች</h2>
-        <div id="todayUnsold"></div>
+      <!-- Collapsible: Today's Top Sellers -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrTodayTop" onclick="toggleSection('hdrTodayTop','bodyTodayTop')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🏆</span>
+            <span class="sec-title">የዛሬ ቶፕ የተሸጡ (Top 5)</span>
+          </div>
+          <span class="sec-badge gold" id="hdrTodayTopBadge">0</span>
+        </div>
+        <div class="section-body" id="bodyTodayTop">
+          <div id="todayTopSellers"></div>
+        </div>
       </div>
 
-      <div class="card" style="border: 2px solid #276749;">
-        <h2><span class="icon">💾</span> የዛሬን ሂሳብ አስቀምጥ</h2>
-        <div class="info-banner">
-          የዛሬን ገቢ፣ ወጪ፣ ትርፍ <b>እና ምን እንደተሸጠ</b> በታሪክ ያስቀምጣል።
+      <!-- Collapsible: Today's Unsold -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrTodayUnsold" onclick="toggleSection('hdrTodayUnsold','bodyTodayUnsold')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📉</span>
+            <span class="sec-title">የዛሬ ያልተሸጡ ምርቶች</span>
+          </div>
+          <span class="sec-badge red" id="hdrTodayUnsoldBadge">0</span>
         </div>
-        <div class="row-between" style="margin-bottom:10px;">
-          <span style="font-size:13px;color:#4a5568;">ገቢ፦</span>
-          <span id="savePreviewIncome" style="font-weight:700;color:#276749;">0.00 ብር</span>
+        <div class="section-body" id="bodyTodayUnsold">
+          <div id="todayUnsold"></div>
         </div>
-        <div class="row-between" style="margin-bottom:10px;">
-          <span style="font-size:13px;color:#4a5568;">ወጪ፦</span>
-          <span id="savePreviewExp" style="font-weight:700;color:#c53030;">0.00 ብር</span>
-        </div>
-        <div class="row-between" style="margin-bottom:10px;">
-          <span style="font-size:13px;color:#4a5568;">ትርፍ፦</span>
-          <span id="savePreviewNet" style="font-weight:800;color:#2c5282;">0.00 ብር</span>
-        </div>
-        <div class="row-between" style="margin-bottom:10px;">
-          <span style="font-size:13px;color:#4a5568;">የተሸጡ ምርቶች፦</span>
-          <span id="savePreviewItems" style="font-weight:700;color:#2c5282;">0</span>
-        </div>
-        <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
       </div>
 
-      <div class="card">
-        <h2><span class="icon">📚</span> የቀን ታሪክ (History)</h2>
-        <div id="historyList"></div>
+      <!-- Collapsible: Save Today -->
+      <div class="section-collapsible" style="border:2px solid #276749;">
+        <div class="section-header" id="hdrSaveToday" onclick="toggleSection('hdrSaveToday','bodySaveToday')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💾</span>
+            <span class="sec-title">የዛሬን ሂሳብ አስቀምጥ</span>
+          </div>
+        </div>
+        <div class="section-body" id="bodySaveToday" style="padding:0 16px 16px 16px;">
+          <div class="info-banner">
+            የዛሬን ገቢ፣ ወጪ፣ ትርፍ <b>እና ምን እንደተሸጠ</b> በታሪክ ያስቀምጣል።
+          </div>
+          <div class="row-between" style="margin-bottom:10px;">
+            <span style="font-size:13px;color:#4a5568;">ገቢ፦</span>
+            <span id="savePreviewIncome" style="font-weight:700;color:#276749;">0.00 ብር</span>
+          </div>
+          <div class="row-between" style="margin-bottom:10px;">
+            <span style="font-size:13px;color:#4a5568;">ወጪ፦</span>
+            <span id="savePreviewExp" style="font-weight:700;color:#c53030;">0.00 ብር</span>
+          </div>
+          <div class="row-between" style="margin-bottom:10px;">
+            <span style="font-size:13px;color:#4a5568;">ትርፍ፦</span>
+            <span id="savePreviewNet" style="font-weight:800;color:#2c5282;">0.00 ብር</span>
+          </div>
+          <div class="row-between" style="margin-bottom:10px;">
+            <span style="font-size:13px;color:#4a5568;">የተሸጡ ምርቶች፦</span>
+            <span id="savePreviewItems" style="font-weight:700;color:#2c5282;">0</span>
+          </div>
+          <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
+        </div>
       </div>
+
+      <!-- Collapsible: History -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrHistory" onclick="toggleSection('hdrHistory','bodyHistory')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📚</span>
+            <span class="sec-title">የቀን ታሪክ (History)</span>
+          </div>
+          <span class="sec-badge blue" id="hdrHistoryBadge">0</span>
+        </div>
+        <div class="section-body" id="bodyHistory">
+          <div id="historyList"></div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- TAB 3 -->
+    <!-- ===== TAB 3 — MONTHLY ===== -->
     <div class="panel" id="panel3">
-      
-      <div class="card">
-        <h2><span class="icon">📅</span> ወር ምረጥ</h2>
-        <div class="month-nav">
-          <button onclick="changeMonth(-1)">◀</button>
-          <div class="month-label" id="monthLabel">—</div>
-          <button onclick="changeMonth(1)">▶</button>
+
+      <!-- Collapsible: Month Picker -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrMonthPick" onclick="toggleSection('hdrMonthPick','bodyMonthPick')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📅</span>
+            <span class="sec-title">ወር ምረጥ</span>
+          </div>
+          <span class="sec-badge blue" id="hdrMonthLabel">—</span>
+        </div>
+        <div class="section-body open" id="bodyMonthPick">
+          <div class="month-nav" style="margin-bottom:0;">
+            <button onclick="changeMonth(-1)">◀</button>
+            <div class="month-label" id="monthLabel">—</div>
+            <button onclick="changeMonth(1)">▶</button>
+          </div>
         </div>
       </div>
 
-      <div class="summary-box">
-        <div class="label">የወሩ ጠቅላላ ገቢ</div>
-        <div class="value" id="monthlyIncome">0.00 <small>ብር</small></div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">📊</span> የወሩ ማጠቃለያ</h2>
-        <div class="stat-row">
-          <span class="stat-label">📅 የወሩ ጠቅላላ ገቢ</span>
-          <span class="stat-value green" id="statIncome">0.00 ብር</span>
+      <!-- Collapsible: Monthly Income -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrMonIncome" onclick="toggleSection('hdrMonIncome','bodyMonIncome')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💰</span>
+            <span class="sec-title">የወሩ ጠቅላላ ገቢ</span>
+          </div>
+          <span class="sec-badge green" id="hdrMonIncomeBadge">0.00 ብር</span>
         </div>
-        <div class="divider"></div>
-        <div class="stat-row">
-          <span class="stat-label">💸 የቀን ወጪዎች ድምር</span>
-          <span class="stat-value red" id="statDailyExp">0.00 ብር</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">🏢 ቋሚ ወጪዎች</span>
-          <span class="stat-value red" id="statFixedExp">0.00 ብር</span>
-        </div>
-        <div class="divider"></div>
-        <div class="stat-row">
-          <span class="stat-label" style="font-weight:800;">💰 ጠቅላላ ወጪ</span>
-          <span class="stat-value red" id="statTotalExp">0.00 ብር</span>
+        <div class="section-body open" id="bodyMonIncome">
+          <div class="summary-box" style="margin:0;">
+            <div class="label">የወሩ ጠቅላላ ገቢ</div>
+            <div class="value" id="monthlyIncome">0.00 <small>ብር</small></div>
+          </div>
         </div>
       </div>
 
-      <div class="summary-box green" id="monthlyNetBox">
-        <div class="label">የወሩ የተጣራ ትርፍ</div>
-        <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">🏆</span> የወሩ ቶፕ የተሸጡ (Top 5)</h2>
-        <div id="monthlyTopSellers"></div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">📉</span> የወሩ ያልተሸጡ ምርቶች</h2>
-        <div id="monthlyUnsold"></div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">🏢</span> የወር ቋሚ ወጪዎች</h2>
-        <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
-        <select id="fixCat"></select>
-        <label class="field-label">ዝርዝር (አማራጭ)</label>
-        <input type="text" id="fixName" placeholder="ለምሳሌ፦ የጥቅምት ደሞዝ" autocomplete="off">
-        <label class="field-label">ብር</label>
-        <div class="row-flex">
-          <div><input type="number" id="fixAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
-          <button class="btn btn-danger" onclick="addFixedExpense()">አድ አድርግ</button>
+      <!-- Collapsible: Monthly Summary -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrMonSummary" onclick="toggleSection('hdrMonSummary','bodyMonSummary')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📊</span>
+            <span class="sec-title">የወሩ ማጠቃለያ</span>
+          </div>
         </div>
-        <div id="fixedExpenseList" style="margin-top:14px;"></div>
-        <div class="divider"></div>
-        <div class="row-between">
-          <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ቋሚ ወጪ፦</span>
-          <span id="fixedExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
+        <div class="section-body open" id="bodyMonSummary">
+          <div class="stat-row">
+            <span class="stat-label">📅 የወሩ ጠቅላላ ገቢ</span>
+            <span class="stat-value green" id="statIncome">0.00 ብር</span>
+          </div>
+          <div class="divider"></div>
+          <div class="stat-row">
+            <span class="stat-label">💸 የቀን ወጪዎች ድምር</span>
+            <span class="stat-value red" id="statDailyExp">0.00 ብር</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">🏢 ቋሚ ወጪዎች</span>
+            <span class="stat-value red" id="statFixedExp">0.00 ብር</span>
+          </div>
+          <div class="divider"></div>
+          <div class="stat-row">
+            <span class="stat-label" style="font-weight:800;">💰 ጠቅላላ ወጪ</span>
+            <span class="stat-value red" id="statTotalExp">0.00 ብር</span>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <h2><span class="icon">🗂️</span> የቋሚ ወጪ ምድቦች</h2>
-        <div class="cat-add-row">
-          <input type="text" id="newFixCat" placeholder="አዲስ የቋሚ ወጪ ምድብ" autocomplete="off">
-          <button onclick="addFixCat()">+ ጨምር</button>
+      <!-- Collapsible: Monthly Net -->
+      <div class="section-collapsible">
+        <div class="section-header open" id="hdrMonNet" onclick="toggleSection('hdrMonNet','bodyMonNet')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">💰</span>
+            <span class="sec-title">የወሩ የተጣራ ትርፍ</span>
+          </div>
+          <span class="sec-badge green" id="hdrMonNetBadge">0.00 ብር</span>
         </div>
-        <div class="cat-tags" id="fixCatTags" style="margin-top:10px;"></div>
+        <div class="section-body open" id="bodyMonNet">
+          <div class="summary-box green" id="monthlyNetBox" style="margin:0;">
+            <div class="label">የወሩ የተጣራ ትርፍ</div>
+            <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
+          </div>
+        </div>
       </div>
 
-      <button class="btn btn-outline" onclick="resetDailySales()" style="margin-top:6px;">🔄 የዛሬን ሽያጭ አጥፋ (አዲስ ቀን ጀምር)</button>
+      <!-- Collapsible: Monthly Top Sellers -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrMonTop" onclick="toggleSection('hdrMonTop','bodyMonTop')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🏆</span>
+            <span class="sec-title">የወሩ ቶፕ የተሸጡ (Top 5)</span>
+          </div>
+          <span class="sec-badge gold" id="hdrMonTopBadge">0</span>
+        </div>
+        <div class="section-body" id="bodyMonTop">
+          <div id="monthlyTopSellers"></div>
+        </div>
+      </div>
+
+      <!-- Collapsible: Monthly Unsold -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrMonUnsold" onclick="toggleSection('hdrMonUnsold','bodyMonUnsold')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">📉</span>
+            <span class="sec-title">የወሩ ያልተሸጡ ምርቶች</span>
+          </div>
+          <span class="sec-badge red" id="hdrMonUnsoldBadge">0</span>
+        </div>
+        <div class="section-body" id="bodyMonUnsold">
+          <div id="monthlyUnsold"></div>
+        </div>
+      </div>
+
+      <!-- Collapsible: Fixed Expenses -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrFixExp" onclick="toggleSection('hdrFixExp','bodyFixExp')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🏢</span>
+            <span class="sec-title">የወር ቋሚ ወጪዎች</span>
+          </div>
+          <span class="sec-badge red" id="hdrFixExpBadge">0.00 ብር</span>
+        </div>
+        <div class="section-body" id="bodyFixExp" style="padding:0 16px 16px 16px;">
+          <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
+          <select id="fixCat"></select>
+          <label class="field-label">ዝርዝር (አማራጭ)</label>
+          <input type="text" id="fixName" placeholder="ለምሳሌ፦ የጥቅምት ደሞዝ" autocomplete="off">
+          <label class="field-label">ብር</label>
+          <div class="row-flex">
+            <div><input type="number" id="fixAmount" placeholder="0" inputmode="decimal" step="any" min="0"></div>
+            <button class="btn btn-danger" onclick="addFixedExpense()">አድ አድርግ</button>
+          </div>
+          <div id="fixedExpenseList" style="margin-top:14px;"></div>
+          <div class="divider"></div>
+          <div class="row-between">
+            <span style="font-size:13px;font-weight:700;color:#c53030;">ጠቅላላ ቋሚ ወጪ፦</span>
+            <span id="fixedExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible: Fixed Expense Categories -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrFixCats" onclick="toggleSection('hdrFixCats','bodyFixCats')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🗂️</span>
+            <span class="sec-title">የቋሚ ወጪ ምድቦች</span>
+          </div>
+        </div>
+        <div class="section-body" id="bodyFixCats" style="padding:0 16px 16px 16px;">
+          <div class="cat-add-row">
+            <input type="text" id="newFixCat" placeholder="አዲስ የቋሚ ወጪ ምድብ" autocomplete="off">
+            <button onclick="addFixCat()">+ ጨምር</button>
+          </div>
+          <div class="cat-tags" id="fixCatTags" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <div class="section-collapsible">
+        <div class="section-header" id="hdrReset" onclick="toggleSection('hdrReset','bodyReset')">
+          <div class="sec-left">
+            <span class="sec-arrow">▶</span>
+            <span class="sec-icon">🔄</span>
+            <span class="sec-title">አዲስ ቀን ጀምር (Reset)</span>
+          </div>
+        </div>
+        <div class="section-body" id="bodyReset" style="padding:0 16px 16px 16px;">
+          <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">የዛሬን ሽያጭ እና የዕለት ወጪዎችን ብቻ ያጠፋል። ምርቶች፣ ምድቦች፣ ቋሚ ወጪዎች እና ታሪክ አይጠፉም።</p>
+          <button class="btn btn-outline" onclick="resetDailySales()">🔄 የዛሬን ሽያጭ አጥፋ</button>
+        </div>
+      </div>
+
     </div>
 
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
-const K_PROD = 'hotel_products_v7';
-const K_SALE = 'hotel_sales_v7';
-const K_EXP  = 'hotel_expenses_v7';
-const K_FIX  = 'hotel_fixed_v7';
-const K_CAT  = 'hotel_categories_v7';
-const K_EXPC = 'hotel_expcats_v7';
-const K_FIXC = 'hotel_fixcats_v7';
-const K_HIST = 'hotel_history_v7';
-const K_OPEN = 'hotel_opencats_v7';
+const K_PROD = 'hotel_products_v8';
+const K_SALE = 'hotel_sales_v8';
+const K_EXP  = 'hotel_expenses_v8';
+const K_FIX  = 'hotel_fixed_v8';
+const K_CAT  = 'hotel_categories_v8';
+const K_EXPC = 'hotel_expcats_v8';
+const K_FIXC = 'hotel_fixcats_v8';
+const K_HIST = 'hotel_history_v8';
+const K_OPEN = 'hotel_opencats_v8';
+const K_SECT = 'hotel_sections_v8';
 
 const DEF_CATEGORIES = {
   'ምግብ':        ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -405,10 +621,9 @@ let categories = load(K_CAT, null);
 let expCats    = load(K_EXPC, null);
 let fixCats    = load(K_FIXC, null);
 let history    = load(K_HIST, []);
-/* ክፍት የሆኑ ዋና ምድቦች */
 let openCats   = load(K_OPEN, {});
-/* ክፍት የሆኑ ንዑስ ምድቦች */
 let openSubCats = {};
+let openSections = load(K_SECT, {});
 
 if (!categories || typeof categories !== 'object' || Object.keys(categories).length === 0) {
   categories = JSON.parse(JSON.stringify(DEF_CATEGORIES));
@@ -424,6 +639,7 @@ if (!fixCats || !Array.isArray(fixCats) || fixCats.length === 0) {
 }
 if (!Array.isArray(history)) history = [];
 if (!openCats || typeof openCats !== 'object') openCats = {};
+if (!openSections || typeof openSections !== 'object') openSections = {};
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -454,9 +670,31 @@ function todayStr() {
 }
 const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
-/* ============================================================
-   CATEGORY MANAGEMENT
-   ============================================================ */
+/* ===== Collapsible Sections ===== */
+function toggleSection(headerId, bodyId) {
+  const hdr = document.getElementById(headerId);
+  const body = document.getElementById(bodyId);
+  if (!hdr || !body) return;
+  const isOpen = body.classList.toggle('open');
+  hdr.classList.toggle('open', isOpen);
+  openSections[bodyId] = isOpen;
+  save(K_SECT, openSections);
+}
+
+function applySavedSections() {
+  Object.keys(openSections).forEach(bodyId => {
+    if (openSections[bodyId]) {
+      const body = document.getElementById(bodyId);
+      if (body) {
+        body.classList.add('open');
+        const hdr = body.previousElementSibling;
+        if (hdr) hdr.classList.add('open');
+      }
+    }
+  });
+}
+
+/* ===== CATEGORY MANAGEMENT ===== */
 function renderMainCatDropdown() {
   const sel = document.getElementById('prodMainCat');
   const cur = sel.value;
@@ -495,8 +733,7 @@ function onMainCatChange() {
 
 function onSubCatChange() {
   const sub = document.getElementById('prodSubCat').value;
-  const nameInput = document.getElementById('prodName');
-  if (sub) { nameInput.value = sub; }
+  if (sub) document.getElementById('prodName').value = sub;
 }
 
 function addMainCat() {
@@ -656,9 +893,7 @@ function deleteFixCat(name) {
   toast('🗑️ ምድብ ተሰርዟል');
 }
 
-/* ============================================================
-   PRODUCTS
-   ============================================================ */
+/* ===== PRODUCTS ===== */
 function addProduct() {
   const name  = document.getElementById('prodName').value.trim();
   const price = parseFloat(document.getElementById('prodPrice').value);
@@ -669,15 +904,12 @@ function addProduct() {
   if (!sub) { toast('⚠️ ንዑስ ምድብ ይምረጡ'); return; }
   if (!name) { toast('⚠️ የምርት ስም ያስፈልጋል'); return; }
   if (isNaN(price) || price < 0) { toast('⚠️ ትክክለኛ ዋጋ ያስገቡ'); return; }
-
   if (products.some(p => p.name === name && p.main === main && p.sub === sub)) {
-    toast('⚠️ ይህ ምርት በዚህ ንዑስ ምድብ ውስጥ አስቀድሞ አለ');
-    return;
+    toast('⚠️ ይህ ምርት አስቀድሞ አለ'); return;
   }
 
   products.push({ id: uid(), name, price, main, sub });
   save(K_PROD, products);
-
   document.getElementById('prodName').value = '';
   document.getElementById('prodPrice').value = '';
   renderProducts();
@@ -704,51 +936,36 @@ function setQty(id, qty) {
   updateSalesTotals();
 }
 
-/* ============================================================
-   TOGGLE CATEGORY
-   ============================================================ */
 function toggleCategory(main) {
   openCats[main] = !openCats[main];
   save(K_OPEN, openCats);
   renderProducts();
 }
-
 function toggleSubCategory(main, sub) {
   const key = main + '||' + sub;
   openSubCats[key] = !openSubCats[key];
   renderProducts();
 }
-
 function toggleAllCategories(open) {
-  Object.keys(categories).forEach(c => {
-    openCats[c] = open;
-  });
+  Object.keys(categories).forEach(c => { openCats[c] = open; });
   save(K_OPEN, openCats);
-  /* ንዑስ ምድቦችም */
   openSubCats = {};
   if (open) {
     Object.keys(categories).forEach(c => {
-      categories[c].forEach(s => {
-        openSubCats[c + '||' + s] = true;
-      });
+      categories[c].forEach(s => { openSubCats[c + '||' + s] = true; });
     });
   }
   renderProducts();
   toast(open ? '📂 ሁሉም ተከፍቷል' : '📁 ሁሉም ተዘግቷል');
 }
 
-/* ============================================================
-   RENDER PRODUCTS (Collapsible)
-   ============================================================ */
 function renderProducts() {
   const wrap = document.getElementById('productList');
   if (products.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ምንም ምርት አልተጨመረም።<br>ከላይ አዲስ ምርት ይጨምሩ።</div>';
+    wrap.innerHTML = '<div class="empty-msg">እስካሁን ምንም ምርት አልተጨመረም።<br>አዲስ ምርት ይጨምሩ።</div>';
     updateSalesTotals();
     return;
   }
-
-  /* በምድብ ሰብስብ */
   const grouped = {};
   products.forEach(p => {
     if (!grouped[p.main]) grouped[p.main] = {};
@@ -759,65 +976,40 @@ function renderProducts() {
   let html = '';
   Object.keys(grouped).forEach(main => {
     const mainOpen = !!openCats[main];
-    /* ምድብ ድምር */
-    let mainTotal = 0;
-    let mainCount = 0;
+    let mainTotal = 0, mainCount = 0;
     Object.keys(grouped[main]).forEach(sub => {
       grouped[main][sub].forEach(p => {
         mainTotal += (sales[p.id] || 0) * p.price;
         mainCount++;
       });
     });
-
     html += '<div class="cat-section">';
     html += '<div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
-    html += '<div class="cat-left">';
-    html += '<span class="cat-arrow">▶</span>';
-    html += '<span class="cat-icon">📁</span>';
-    html += '<span class="cat-name">' + esc(main) + '</span>';
+    html += '<div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">' + esc(main) + '</span></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">' + mainCount + ' ምርቶች</span><span class="cat-total">' + money(mainTotal) + ' ብር</span></div>';
     html += '</div>';
-    html += '<div class="cat-right">';
-    html += '<span class="cat-count">' + mainCount + ' ምርቶች</span>';
-    html += '<span class="cat-total">' + money(mainTotal) + ' ብር</span>';
-    html += '</div>';
-    html += '</div>';
-
     html += '<div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
     Object.keys(grouped[main]).forEach(sub => {
       const subKey = main + '||' + sub;
       const subOpen = !!openSubCats[subKey];
       const subCount = grouped[main][sub].length;
-
       html += '<div class="sub-header ' + (subOpen ? 'open' : '') + '" onclick="toggleSubCategory(\'' + escJs(main) + '\',\'' + escJs(sub) + '\')">';
-      html += '<div class="sub-left">';
-      html += '<span class="sub-arrow">▶</span>';
-      html += '<span>↳ ' + esc(sub) + '</span>';
-      html += '</div>';
-      html += '<span class="sub-count">' + subCount + '</span>';
-      html += '</div>';
-
+      html += '<div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ' + esc(sub) + '</span></div>';
+      html += '<span class="sub-count">' + subCount + '</span></div>';
       html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
       grouped[main][sub].forEach(p => {
         const q = sales[p.id] || '';
         html += '<div class="list-item" style="margin-left:14px;">' +
-          '<div class="info">' +
-            '<div class="name">' + esc(p.name) + '</div>' +
-            '<div class="meta">' + money(p.price) + ' ብር</div>' +
-          '</div>' +
+          '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
           '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" ' +
-                 'onchange="setQty(\'' + p.id + '\', this.value)" ' +
-                 'oninput="setQty(\'' + p.id + '\', this.value)" ' +
-                 'onclick="event.stopPropagation()">' +
-          '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" ' +
-                  'onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button>' +
+                 'onchange="setQty(\'' + p.id + '\', this.value)" oninput="setQty(\'' + p.id + '\', this.value)" onclick="event.stopPropagation()">' +
+          '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button>' +
         '</div>';
       });
       html += '</div>';
     });
-    html += '</div>';
-    html += '</div>';
+    html += '</div></div>';
   });
-
   wrap.innerHTML = html;
   updateSalesTotals();
 }
@@ -826,20 +1018,17 @@ function updateSalesTotals() {
   let total = 0;
   products.forEach(p => { total += (sales[p.id] || 0) * p.price; });
   document.getElementById('todaySalesTotal').textContent = money(total) + ' ብር';
+  document.getElementById('hdrSaleTotal').textContent = money(total) + ' ብር';
   renderDaily();
 }
 
-/* ============================================================
-   DAILY
-   ============================================================ */
+/* ===== DAILY ===== */
 function addExpense() {
   const cat = document.getElementById('expCat').value;
   const note = document.getElementById('expName').value.trim();
   const amt  = parseFloat(document.getElementById('expAmount').value);
-
   if (!cat) { toast('⚠️ የወጪ ምድብ ይምረጡ'); return; }
   if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-
   expenses.push({ id: uid(), cat, note, amount: amt });
   save(K_EXP, expenses);
   document.getElementById('expName').value = '';
@@ -847,29 +1036,17 @@ function addExpense() {
   renderDaily();
   toast('✅ ወጪ ተጨምሯል');
 }
-
 function deleteExpense(id) {
   expenses = expenses.filter(e => e.id !== id);
   save(K_EXP, expenses);
   renderDaily();
   toast('🗑️ ወጪ ተሰርዟል');
 }
-
 function getTodaySaleItems() {
   const items = [];
   products.forEach(p => {
     const qty = sales[p.id] || 0;
-    if (qty > 0) {
-      items.push({
-        productId: p.id,
-        name: p.name,
-        main: p.main,
-        sub: p.sub,
-        price: p.price,
-        qty: qty,
-        total: qty * p.price
-      });
-    }
+    if (qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty, total: qty * p.price });
   });
   return items;
 }
@@ -878,31 +1055,28 @@ function renderDaily() {
   let income = 0;
   products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
   document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
+  document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
 
   const wrap = document.getElementById('expenseList');
   let expTotal = 0;
   if (expenses.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን የዕለት ወጪ አልተመዘገበም።</div>';
+    wrap.innerHTML = '<div class="empty-msg">እስካሁን ወጪ አልተመዘገበም።</div>';
   } else {
     let html = '';
     expenses.forEach(e => {
       expTotal += e.amount;
-      html += '<div class="list-item">' +
-        '<div class="info">' +
-          '<div class="name">' + esc(e.cat) + '</div>' +
-          (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') +
-        '</div>' +
+      html += '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
         '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" ' +
-                'onclick="deleteExpense(\'' + e.id + '\')">✕</button>' +
-      '</div>';
+        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense(\'' + e.id + '\')">✕</button></div>';
     });
     wrap.innerHTML = html;
   }
   document.getElementById('dailyExpTotal').textContent = money(expTotal) + ' ብር';
+  document.getElementById('hdrDailyExpBadge').textContent = money(expTotal) + ' ብር';
 
   const net = income - expTotal;
   document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>';
+  document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር';
   const box = document.getElementById('netProfitBox');
   box.classList.remove('green', 'red');
   box.classList.add(net >= 0 ? 'green' : 'red');
@@ -914,7 +1088,6 @@ function renderDaily() {
 
   renderTodayTopSellers();
   renderTodayUnsold();
-
   renderHistory();
   renderMonthly();
 }
@@ -922,6 +1095,7 @@ function renderDaily() {
 function renderTodayTopSellers() {
   const wrap = document.getElementById('todayTopSellers');
   const items = getTodaySaleItems();
+  document.getElementById('hdrTodayTopBadge').textContent = items.length;
   if (items.length === 0) {
     wrap.innerHTML = '<div class="empty-msg">ዛሬ ምንም አልተሸጠም።</div>';
     return;
@@ -932,14 +1106,10 @@ function renderTodayTopSellers() {
   const classes = ['gold', 'silver', 'bronze', '', ''];
   let html = '';
   top.forEach((item, i) => {
-    html += '<div class="seller-item ' + classes[i] + '">' +
-      '<div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info">' +
-        '<div class="seller-name">' + esc(item.name) + '</div>' +
-        '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት × ' + money(item.price) + ' ብር</div>' +
-      '</div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div>' +
-    '</div>';
+    html += '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
+      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
+      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት × ' + money(item.price) + ' ብር</div></div>' +
+      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>';
   });
   wrap.innerHTML = html;
 }
@@ -947,58 +1117,39 @@ function renderTodayTopSellers() {
 function renderTodayUnsold() {
   const wrap = document.getElementById('todayUnsold');
   const unsold = products.filter(p => (sales[p.id] || 0) === 0);
+  document.getElementById('hdrTodayUnsoldBadge').textContent = unsold.length;
   if (unsold.length === 0) {
     wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ምርቶች ተሸጠዋል!</div>';
     return;
   }
   let html = '';
   unsold.forEach(p => {
-    html += '<div class="unsold-item">' +
-      '<div>' +
-        '<div class="u-name">' + esc(p.name) + '</div>' +
-        '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div>' +
-      '</div>' +
-      '<div class="u-badge">0 ብዛት</div>' +
-    '</div>';
+    html += '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
+      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
+      '<div class="u-badge">0 ብዛት</div></div>';
   });
   wrap.innerHTML = html;
 }
 
-/* ============================================================
-   SAVE TODAY TO HISTORY
-   ============================================================ */
+/* ===== SAVE TODAY ===== */
 function saveTodayToHistory() {
   const dateStr = todayStr();
-  
   let income = 0;
   products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
   let expTotal = 0;
   expenses.forEach(e => { expTotal += e.amount; });
   const net = income - expTotal;
-
-  if (income === 0 && expTotal === 0) {
-    toast('⚠️ ምንም ውሂብ የለም');
-    return;
-  }
-
+  if (income === 0 && expTotal === 0) { toast('⚠️ ምንም ውሂብ የለም'); return; }
   const items = getTodaySaleItems();
   const existing = history.findIndex(h => h.date === dateStr);
-  const record = {
-    id: uid(),
-    date: dateStr,
-    income: income,
-    expense: expTotal,
-    net: net,
-    items: items
-  };
-
+  const record = { id: uid(), date: dateStr, income, expense: expTotal, net, items };
   if (existing >= 0) {
-    if (!confirm('የዛሬ ሂሳብ አስቀድሞ ተቀምጧል። በአዲሱ ይተካ?')) return;
+    if (!confirm('የዛሬ ሂሳብ ተቀምጧል። በአዲሱ ይተካ?')) return;
     history[existing] = record;
-    toast('✅ የዛሬ ሂሳብ ተሻሽሏል');
+    toast('✅ ተሻሽሏል');
   } else {
     history.push(record);
-    toast('✅ የዛሬ ሂሳብ ተቀምጧል');
+    toast('✅ ተቀምጧል');
   }
   save(K_HIST, history);
   renderHistory();
@@ -1006,41 +1157,30 @@ function saveTodayToHistory() {
 }
 
 function deleteHistory(id) {
-  if (!confirm('ይህን የቀን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
+  if (!confirm('ይህን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
   history = history.filter(h => h.id !== id);
   save(K_HIST, history);
   renderHistory();
   renderMonthly();
-  toast('🗑️ ታሪክ ተሰርዟል');
+  toast('🗑️ ተሰርዟል');
 }
 
 function renderHistory() {
   const wrap = document.getElementById('historyList');
+  document.getElementById('hdrHistoryBadge').textContent = history.length;
   if (history.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">እስካሁን ምንም ታሪክ የለም።<br>"የዛሬን ሂሳብ አስቀምጥ" ተጭነው ይጀምሩ።</div>';
+    wrap.innerHTML = '<div class="empty-msg">እስካሁን ታሪክ የለም።</div>';
     return;
   }
-
   const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
-
   let html = '';
   sorted.forEach(h => {
     const netClass = h.net >= 0 ? 'green' : 'red';
-    const dateFormatted = formatDate(h.date);
     const itemCount = (h.items && Array.isArray(h.items)) ? h.items.length : 0;
-    html += '<div class="history-item">' +
-      '<div class="h-top">' +
-        '<span class="h-date">📆 ' + esc(dateFormatted) + '</span>' +
-        '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span>' +
-      '</div>' +
-      '<div class="h-details">' +
-        '<span>💰 ' + money(h.income) + '</span>' +
-        '<span>💸 ' + money(h.expense) + '</span>' +
-        '<span>📦 ' + itemCount + ' ምርቶች</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" ' +
-                'onclick="deleteHistory(\'' + h.id + '\')">✕ አጥፋ</button>' +
-      '</div>' +
-    '</div>';
+    html += '<div class="history-item"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + '</span>' +
+      '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span></div>' +
+      '<div class="h-details"><span>💰 ' + money(h.income) + '</span><span>💸 ' + money(h.expense) + '</span><span>📦 ' + itemCount + '</span>' +
+      '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory(\'' + h.id + '\')">✕</button></div></div>';
   });
   wrap.innerHTML = html;
 }
@@ -1049,13 +1189,11 @@ function formatDate(dateStr) {
   const parts = dateStr.split('-');
   if (parts.length !== 3) return dateStr;
   const y = parts[0], m = parseInt(parts[1],10), d = parseInt(parts[2],10);
-  const monthNames = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
-  return monthNames[m-1] + ' ' + d + ', ' + y;
+  const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
+  return names[m-1] + ' ' + d + ', ' + y;
 }
 
-/* ============================================================
-   MONTHLY
-   ============================================================ */
+/* ===== MONTHLY ===== */
 function changeMonth(delta) {
   currentMonth += delta;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -1067,10 +1205,8 @@ function addFixedExpense() {
   const cat = document.getElementById('fixCat').value;
   const note = document.getElementById('fixName').value.trim();
   const amt  = parseFloat(document.getElementById('fixAmount').value);
-
   if (!cat) { toast('⚠️ የወጪ ምድብ ይምረጡ'); return; }
   if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-
   fixed.push({ id: uid(), cat, note, amount: amt });
   save(K_FIX, fixed);
   document.getElementById('fixName').value = '';
@@ -1078,38 +1214,30 @@ function addFixedExpense() {
   renderMonthly();
   toast('✅ ቋሚ ወጪ ተጨምሯል');
 }
-
 function deleteFixedExpense(id) {
   fixed = fixed.filter(e => e.id !== id);
   save(K_FIX, fixed);
   renderMonthly();
-  toast('🗑️ ቋሚ ወጪ ተሰርዟል');
+  toast('🗑️ ተሰርዟል');
 }
 
 function renderMonthly() {
-  document.getElementById('monthLabel').textContent = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
+  const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
+  document.getElementById('monthLabel').textContent = monthLabel;
+  document.getElementById('hdrMonthLabel').textContent = monthLabel;
 
   const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
   const monthRecords = history.filter(h => h.date.startsWith(monthPrefix));
 
-  let monthlyIncome = 0;
-  let monthlyDailyExp = 0;
+  let monthlyIncome = 0, monthlyDailyExp = 0;
   const productSales = {};
-
   monthRecords.forEach(h => {
     monthlyIncome += h.income;
     monthlyDailyExp += h.expense;
     if (h.items && Array.isArray(h.items)) {
       h.items.forEach(item => {
         if (!productSales[item.productId]) {
-          productSales[item.productId] = {
-            productId: item.productId,
-            name: item.name,
-            main: item.main,
-            sub: item.sub,
-            qty: 0,
-            total: 0
-          };
+          productSales[item.productId] = { productId: item.productId, name: item.name, main: item.main, sub: item.sub, qty: 0, total: 0 };
         }
         productSales[item.productId].qty += item.qty;
         productSales[item.productId].total += item.total;
@@ -1119,16 +1247,17 @@ function renderMonthly() {
 
   let fixedTotal = 0;
   fixed.forEach(f => { fixedTotal += f.amount; });
-
   const totalExp = monthlyDailyExp + fixedTotal;
   const net = monthlyIncome - totalExp;
 
   document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
+  document.getElementById('hdrMonIncomeBadge').textContent = money(monthlyIncome) + ' ብር';
   document.getElementById('statIncome').textContent = money(monthlyIncome) + ' ብር';
   document.getElementById('statDailyExp').textContent = money(monthlyDailyExp) + ' ብር';
   document.getElementById('statFixedExp').textContent = money(fixedTotal) + ' ብር';
   document.getElementById('statTotalExp').textContent = money(totalExp) + ' ብር';
   document.getElementById('monthlyNet').innerHTML = money(net) + ' <small>ብር</small>';
+  document.getElementById('hdrMonNetBadge').textContent = money(net) + ' ብር';
 
   const box = document.getElementById('monthlyNetBox');
   box.classList.remove('green', 'red');
@@ -1138,20 +1267,16 @@ function renderMonthly() {
   renderMonthlyUnsold(productSales);
 
   const wrap = document.getElementById('fixedExpenseList');
+  document.getElementById('hdrFixExpBadge').textContent = money(fixedTotal) + ' ብር';
   if (fixed.length === 0) {
     wrap.innerHTML = '<div class="empty-msg">እስካሁን ቋሚ ወጪ አልተመዘገበም።</div>';
   } else {
     let html = '';
     fixed.forEach(e => {
-      html += '<div class="list-item">' +
-        '<div class="info">' +
-          '<div class="name">' + esc(e.cat) + '</div>' +
-          (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') +
-        '</div>' +
+      html += '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' +
+        (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
         '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" ' +
-                'onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button>' +
-      '</div>';
+        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button></div>';
     });
     wrap.innerHTML = html;
   }
@@ -1161,8 +1286,9 @@ function renderMonthly() {
 function renderMonthlyTopSellers(productSales) {
   const wrap = document.getElementById('monthlyTopSellers');
   const items = Object.values(productSales);
+  document.getElementById('hdrMonTopBadge').textContent = items.length;
   if (items.length === 0) {
-    wrap.innerHTML = '<div class="empty-msg">በዚህ ወር ምንም አልተሸጠም።<br>(የቀን ሂሳብ አስቀምጠው ይጀምሩ)</div>';
+    wrap.innerHTML = '<div class="empty-msg">በዚህ ወር ምንም አልተሸጠም።</div>';
     return;
   }
   items.sort((a, b) => b.qty - a.qty);
@@ -1171,14 +1297,10 @@ function renderMonthlyTopSellers(productSales) {
   const classes = ['gold', 'silver', 'bronze', '', ''];
   let html = '';
   top.forEach((item, i) => {
-    html += '<div class="seller-item ' + classes[i] + '">' +
-      '<div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info">' +
-        '<div class="seller-name">' + esc(item.name) + '</div>' +
-        '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት</div>' +
-      '</div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div>' +
-    '</div>';
+    html += '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
+      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
+      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' ብዛት</div></div>' +
+      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>';
   });
   wrap.innerHTML = html;
 }
@@ -1186,28 +1308,23 @@ function renderMonthlyTopSellers(productSales) {
 function renderMonthlyUnsold(productSales) {
   const wrap = document.getElementById('monthlyUnsold');
   const unsold = products.filter(p => !productSales[p.id] || productSales[p.id].qty === 0);
+  document.getElementById('hdrMonUnsoldBadge').textContent = unsold.length;
   if (unsold.length === 0) {
     wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ምርቶች ተሸጠዋል!</div>';
     return;
   }
   let html = '';
   unsold.forEach(p => {
-    html += '<div class="unsold-item">' +
-      '<div>' +
-        '<div class="u-name">' + esc(p.name) + '</div>' +
-        '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div>' +
-      '</div>' +
-      '<div class="u-badge">0 ብዛት</div>' +
-    '</div>';
+    html += '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
+      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
+      '<div class="u-badge">0 ብዛት</div></div>';
   });
   wrap.innerHTML = html;
 }
 
-/* ============================================================
-   RESET
-   ============================================================ */
+/* ===== RESET ===== */
 function resetDailySales() {
-  if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?\n\n(ምርቶች፣ ምድቦች፣ ቋሚ ወጪዎች እና የቀን ታሪክ አይጠፉም)')) return;
+  if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?')) return;
   sales = {};
   expenses = [];
   save(K_SALE, sales);
@@ -1217,9 +1334,7 @@ function resetDailySales() {
   toast('🔄 አዲስ ቀን ተጀምሯል');
 }
 
-/* ============================================================
-   INIT
-   ============================================================ */
+/* ===== INIT ===== */
 renderMainCatDropdown();
 renderMainCatTags();
 renderSubCatTags();
@@ -1231,9 +1346,10 @@ renderFixCatTags();
 renderProducts();
 renderDaily();
 renderMonthly();
+applySavedSections();
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+  navigator.serviceWorker.register('sw.js').catch(err => console.log('SW err', err));
 }
 </script>
 </body>
