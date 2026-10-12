@@ -12,137 +12,51 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: #f2f4f8; color: #1a202c; font-size: 15px; padding-bottom: 80px; }
-  
-  /* ===== LOGIN SCREEN ===== */
-  #loginScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1000;
-  }
+  #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
   #loginScreen.hidden { display: none; }
-  .login-box {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    padding: 32px 24px;
-    width: 100%;
-    max-width: 400px;
-    animation: slideUp 0.5s ease;
-  }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .login-box { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px 24px; width: 100%; max-width: 400px; animation: slideUp 0.5s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
   .logo { text-align: center; margin-bottom: 24px; }
   .logo-icon { font-size: 56px; line-height: 1; margin-bottom: 10px; }
   .logo h1 { font-size: 19px; font-weight: 800; color: #1a365d; }
   .logo p { font-size: 12px; color: #718096; margin-top: 4px; }
   .form-group { margin-bottom: 16px; }
   label { display: block; font-size: 12.5px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
-  input[type="email"], input[type="password"] {
-    width: 100%; padding: 14px; font-size: 15px;
-    border: 1.5px solid #e2e8f0; border-radius: 12px;
-    background: #f7fafc; outline: none; transition: all 0.2s;
-    appearance: none; -webkit-appearance: none;
-  }
+  input[type="email"], input[type="password"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
   input:focus { border-color: #3182ce; background: #fff; box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1); }
-  .btn-login {
-    width: 100%; padding: 15px; font-size: 16px; font-weight: 800;
-    border: none; border-radius: 12px;
-    background: linear-gradient(135deg, #1a365d, #2c5282);
-    color: #fff; cursor: pointer; margin-top: 8px;
-    box-shadow: 0 4px 14px rgba(26, 54, 93, 0.3);
-    transition: all 0.2s;
-  }
+  .btn-login { width: 100%; padding: 15px; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 14px rgba(26, 54, 93, 0.3); transition: all 0.2s; }
   .btn-login:active { transform: scale(0.98); }
   .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
-  .error-box {
-    background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030;
-    padding: 12px 14px; border-radius: 10px; font-size: 13px;
-    font-weight: 600; margin-bottom: 16px; display: none;
-    animation: shake 0.3s ease;
-  }
+  .error-box { background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: none; animation: shake 0.3s ease; }
   .error-box.show { display: block; }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-  }
-  .info-box {
-    background: #ebf8ff; border: 1px solid #90cdf4; color: #2c5282;
-    padding: 12px 14px; border-radius: 10px; font-size: 12px;
-    line-height: 1.6; margin-top: 20px;
-  }
-  .spinner {
-    display: inline-block; width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-    margin-right: 8px; vertical-align: middle;
-  }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .info-box { background: #ebf8ff; border: 1px solid #90cdf4; color: #2c5282; padding: 12px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6; margin-top: 20px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  
-  /* ===== MAIN APP ===== */
   #mainApp { display: none; }
   #mainApp.show { display: block; }
-  
-  header {
-    background: linear-gradient(135deg, #1a365d, #2c5282);
-    color: #fff; padding: 12px 14px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  }
+  header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   header .h-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
   header .h-logo { font-size: 24px; }
   header .h-title { font-size: 14px; font-weight: 700; line-height: 1.2; }
   header .h-user { font-size: 10.5px; opacity: 0.85; margin-top: 2px; }
   header .h-right { display: flex; align-items: center; gap: 8px; }
-  .role-badge {
-    padding: 4px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 800;
-    white-space: nowrap;
-  }
+  .role-badge { padding: 4px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 800; white-space: nowrap; }
   .role-badge.owner { background: #fefcbf; color: #744210; }
   .role-badge.accountant { background: #c6f6d5; color: #22543d; }
-  .btn-logout-hdr {
-    background: rgba(255,255,255,0.15); color: #fff;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 6px 12px; border-radius: 8px;
-    font-size: 12px; font-weight: 700; cursor: pointer;
-  }
+  .btn-logout-hdr { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
   .btn-logout-hdr:active { background: rgba(255,255,255,0.25); }
-  
   .tabs { display: flex; background: #fff; position: sticky; top: 60px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
   .tabs input[type="radio"] { display: none; }
-  .tabs label {
-    flex: 1; text-align: center; padding: 14px 4px;
-    font-size: 13px; font-weight: 600; color: #718096;
-    cursor: pointer; border-bottom: 3px solid transparent; user-select: none;
-  }
-  #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"] {
-    color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff;
-  }
+  .tabs label { flex: 1; text-align: center; padding: 14px 4px; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; user-select: none; }
+  #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"] { color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff; }
   .panel { display: none; padding: 14px; }
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
   .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-  .card h2 { font-size: 15px; font-weight: 700; color: #2c5282; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], select {
-    width: 100%; padding: 12px; font-size: 15px;
-    border: 1.5px solid #e2e8f0; border-radius: 10px;
-    background: #f7fafc; outline: none; transition: all 0.2s;
-    appearance: none; -webkit-appearance: none;
-  }
-  select {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
-    background-repeat: no-repeat; background-position: right 12px center;
-    background-size: 16px; padding-right: 38px;
-  }
+  input[type="text"], input[type="number"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
+  select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; }
@@ -244,29 +158,19 @@
   .history-item .h-net.red { color: #c53030; }
   .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; align-items: center; }
   .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
-  .loading-screen {
-    position: fixed; inset: 0; background: #f2f4f8;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 16px; z-index: 999;
-  }
+  .loading-screen { position: fixed; inset: 0; background: #f2f4f8; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; z-index: 999; }
   .loading-screen.hidden { display: none; }
-  .loading-spinner {
-    width: 48px; height: 48px;
-    border: 4px solid #e2e8f0; border-top-color: #2c5282;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-  }
+  .loading-spinner { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: #2c5282; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .loading-text { font-size: 14px; color: #4a5568; font-weight: 600; }
 </style>
 </head>
 <body>
 
-<!-- ===== LOADING SCREEN ===== -->
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-spinner"></div>
   <div class="loading-text">በመጫን ላይ...</div>
 </div>
 
-<!-- ===== LOGIN SCREEN ===== -->
 <div id="loginScreen" class="hidden">
   <div class="login-box">
     <div class="logo">
@@ -274,32 +178,26 @@
       <h1>የሆቴል ሽያጭ እና ወጪ መከታተያ</h1>
       <p>Sales &amp; Expense Tracker</p>
     </div>
-
     <div class="error-box" id="errorBox"></div>
-
     <div class="form-group">
       <label>📧 Email</label>
       <input type="email" id="emailInput" placeholder="owner@hotel.com" autocomplete="off">
     </div>
-
     <div class="form-group">
       <label>🔒 Password</label>
       <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password">
     </div>
-
     <button class="btn-login" id="loginBtn" onclick="doLogin()">
       <span id="loginBtnText">🔓 ግባ</span>
     </button>
-
     <div class="info-box">
       <strong>ℹ️ የሙከራ መረጃ፦</strong><br>
-      👤 ባለቤት: <strong>owner@hotel.com</strong> / <strong>owner123456</strong><br>
+      👑 ባለቤት: <strong>owner@hotel.com</strong> / <strong>owner123456</strong><br>
       💼 አካውንታንት: <strong>accountant@hotel.com</strong> / <strong>acc123456</strong>
     </div>
   </div>
 </div>
 
-<!-- ===== MAIN APP ===== -->
 <div id="mainApp">
   <header>
     <div class="h-left">
@@ -327,10 +225,8 @@
     </div>
 
     <div class="panels">
-
-      <!-- ===== TAB 1 — PRODUCTS ===== -->
       <div class="panel" id="panel1">
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secAddProduct">
           <div class="section-header" id="hdrAddProduct" onclick="toggleSection('hdrAddProduct','bodyAddProduct')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">➕</span><span class="sec-title">አዲስ ምርት ጨምር</span></div>
           </div>
@@ -347,7 +243,7 @@
           </div>
         </div>
 
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secCatMgr">
           <div class="section-header" id="hdrCatMgr" onclick="toggleSection('hdrCatMgr','bodyCatMgr')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🗂️</span><span class="sec-title">ምድቦችን አስተዳድር</span></div>
           </div>
@@ -390,7 +286,6 @@
         </div>
       </div>
 
-      <!-- ===== TAB 2 — DAILY ===== -->
       <div class="panel" id="panel2">
         <div class="section-collapsible">
           <div class="section-header open" id="hdrDailyIncome" onclick="toggleSection('hdrDailyIncome','bodyDailyIncome')">
@@ -429,7 +324,7 @@
           </div>
         </div>
 
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secExpCats">
           <div class="section-header" id="hdrExpCats" onclick="toggleSection('hdrExpCats','bodyExpCats')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🗂️</span><span class="sec-title">የወጪ ምድቦች</span></div>
           </div>
@@ -455,7 +350,7 @@
           </div>
         </div>
 
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secTodayTop">
           <div class="section-header" id="hdrTodayTop" onclick="toggleSection('hdrTodayTop','bodyTodayTop')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🏆</span><span class="sec-title">የዛሬ ቶፕ የተሸጡ (Top 5)</span></div>
             <span class="sec-badge gold" id="hdrTodayTopBadge">0</span>
@@ -463,7 +358,7 @@
           <div class="section-body" id="bodyTodayTop"><div id="todayTopSellers"></div></div>
         </div>
 
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secTodayUnsold">
           <div class="section-header" id="hdrTodayUnsold" onclick="toggleSection('hdrTodayUnsold','bodyTodayUnsold')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📉</span><span class="sec-title">የዛሬ ያልተሸጡ ምርቶች</span></div>
             <span class="sec-badge red" id="hdrTodayUnsoldBadge">0</span>
@@ -485,7 +380,7 @@
           </div>
         </div>
 
-        <div class="section-collapsible">
+        <div class="section-collapsible" id="secHistory">
           <div class="section-header" id="hdrHistory" onclick="toggleSection('hdrHistory','bodyHistory')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📚</span><span class="sec-title">የቀን ታሪክ (History)</span></div>
             <span class="sec-badge blue" id="hdrHistoryBadge">0</span>
@@ -494,7 +389,6 @@
         </div>
       </div>
 
-      <!-- ===== TAB 3 — MONTHLY ===== -->
       <div class="panel" id="panel3">
         <div class="section-collapsible">
           <div class="section-header open" id="hdrMonthPick" onclick="toggleSection('hdrMonthPick','bodyMonthPick')">
@@ -637,7 +531,6 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // ===== DOM refs =====
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
   const mainApp = document.getElementById('mainApp');
@@ -649,7 +542,6 @@
   const hdrUserEmail = document.getElementById('hdrUserEmail');
   const hdrRoleBadge = document.getElementById('hdrRoleBadge');
 
-  // ===== State =====
   let currentUser = null;
   let currentRole = 'unknown';
   let products = [];
@@ -671,7 +563,6 @@
   let currentYear = new Date().getFullYear();
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
-  // ===== Utils =====
   function money(n) {
     return (Math.round(n * 100) / 100).toLocaleString('en-US', {
       minimumFractionDigits: 2, maximumFractionDigits: 2
@@ -703,19 +594,13 @@
     const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
     return names[m-1] + ' ' + d + ', ' + y;
   }
-
-  // ===== Loading =====
   function showLoading() { loadingScreen.classList.remove('hidden'); }
   function hideLoading() { loadingScreen.classList.add('hidden'); }
-
-  // ===== Error =====
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
     errorBox.classList.add('show');
     setTimeout(() => errorBox.classList.remove('show'), 6000);
   }
-
-  // ===== Role =====
   function getUserRole(email) {
     if (!email) return 'unknown';
     if (email.startsWith('owner@')) return 'owner';
@@ -723,16 +608,13 @@
     return 'unknown';
   }
 
-  // ===== Login =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     if (!email) { showError('Email ያስፈልጋል'); return; }
     if (!password) { showError('Password ያስፈልጋል'); return; }
-
     loginBtn.disabled = true;
     loginBtnText.innerHTML = '<span class="spinner"></span> በመግባት ላይ...';
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
@@ -750,13 +632,11 @@
     }
   };
 
-  // ===== Logout =====
   window.doLogout = async function() {
     if (!confirm('እርግጠኛ ነህ መውጣት ትፈልጋለህ?')) return;
     try { await signOut(auth); } catch (err) { showError(err.message); }
   };
 
-  // ===== Show Screens =====
   function showLogin() {
     loginScreen.classList.remove('hidden');
     mainApp.classList.remove('show');
@@ -774,7 +654,6 @@
     initApp();
   }
 
-  // ===== Auth State =====
   onAuthStateChanged(auth, (user) => {
     hideLoading();
     if (user) {
@@ -786,12 +665,10 @@
     }
   });
 
-  // ===== Enter key =====
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin();
   });
 
-  // ===== Collapsible Section =====
   window.toggleSection = function(headerId, bodyId) {
     const hdr = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
@@ -801,7 +678,6 @@
     openSections[bodyId] = isOpen;
   };
 
-  // ===== Category Management =====
   function renderMainCatDropdown() {
     const sel = document.getElementById('prodMainCat');
     const cur = sel.value;
@@ -809,7 +685,6 @@
     Object.keys(categories).forEach(c => { html += '<option value="' + esc(c) + '">' + esc(c) + '</option>'; });
     sel.innerHTML = html;
     if (categories[cur]) sel.value = cur;
-
     const parentSel = document.getElementById('subCatParent');
     const cur2 = parentSel.value;
     let html2 = '<option value="">— ዋና ምድብ ይምረጡ —</option>';
@@ -959,7 +834,6 @@
     toast('🗑️ ተሰርዟል');
   };
 
-  // ===== Products =====
   window.addProduct = function() {
     const name = document.getElementById('prodName').value.trim();
     const price = parseFloat(document.getElementById('prodPrice').value);
@@ -1066,7 +940,6 @@
     renderDaily();
   }
 
-  // ===== Daily =====
   window.addExpense = function() {
     const cat = document.getElementById('expCat').value;
     const note = document.getElementById('expName').value.trim();
@@ -1097,7 +970,6 @@
     products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
     document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
     document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
-
     const wrap = document.getElementById('expenseList');
     let expTotal = 0;
     if (expenses.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም ወጪ አልተመዘገበም።</div>'; }
@@ -1111,19 +983,16 @@
     }
     document.getElementById('dailyExpTotal').textContent = money(expTotal) + ' ብር';
     document.getElementById('hdrDailyExpBadge').textContent = money(expTotal) + ' ብር';
-
     const net = income - expTotal;
     document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>';
     document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር';
     const box = document.getElementById('netProfitBox');
     box.classList.remove('green', 'red');
     box.classList.add(net >= 0 ? 'green' : 'red');
-
     document.getElementById('savePreviewIncome').textContent = money(income) + ' ብር';
     document.getElementById('savePreviewExp').textContent = money(expTotal) + ' ብር';
     document.getElementById('savePreviewNet').textContent = money(net) + ' ብር';
     document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length;
-
     renderTodayTopSellers();
     renderTodayUnsold();
     renderHistory();
@@ -1156,8 +1025,6 @@
       '<div class="u-badge">0</div></div>'
     ).join('');
   }
-
-  // ===== Save Today (LocalStorage only for now) =====
   window.saveTodayToHistory = function() {
     const dateStr = todayStr();
     let income = 0;
@@ -1202,7 +1069,6 @@
     }).join('');
   }
 
-  // ===== Monthly =====
   window.changeMonth = function(delta) {
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -1230,7 +1096,6 @@
     const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
     document.getElementById('monthLabel').textContent = monthLabel;
     document.getElementById('hdrMonthLabel').textContent = monthLabel;
-
     const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
     const monthRecords = history.filter(h => h.date.startsWith(monthPrefix));
     let monthlyIncome = 0, monthlyDailyExp = 0;
@@ -1250,7 +1115,6 @@
     fixed.forEach(f => { fixedTotal += f.amount; });
     const totalExp = monthlyDailyExp + fixedTotal;
     const net = monthlyIncome - totalExp;
-
     document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
     document.getElementById('hdrMonIncomeBadge').textContent = money(monthlyIncome) + ' ብር';
     document.getElementById('statIncome').textContent = money(monthlyIncome) + ' ብር';
@@ -1262,10 +1126,8 @@
     const box = document.getElementById('monthlyNetBox');
     box.classList.remove('green', 'red');
     box.classList.add(net >= 0 ? 'green' : 'red');
-
     renderMonthlyTopSellers(productSales);
     renderMonthlyUnsold(productSales);
-
     const wrap = document.getElementById('fixedExpenseList');
     document.getElementById('hdrFixExpBadge').textContent = money(fixedTotal) + ' ብር';
     if (fixed.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም የለም።</div>'; }
@@ -1306,7 +1168,6 @@
     ).join('');
   }
 
-  // ===== Reset =====
   window.resetDailySales = function() {
     if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?')) return;
     sales = {};
@@ -1316,8 +1177,45 @@
     toast('🔄 አዲስ ቀን ተጀምሯል');
   };
 
-  // ===== Init App =====
+  // ===== Role-based UI =====
+  function applyRolePermissions() {
+    const isAccountant = currentRole === 'accountant';
+    
+    if (isAccountant) {
+      // 1. Tab 3 (የወር ሂሳብ) መደበቅ
+      const tab3Input = document.getElementById('tab3');
+      const tab3Label = document.querySelector('label[for="tab3"]');
+      const panel3 = document.getElementById('panel3');
+      if (tab3Input) { tab3Input.disabled = true; tab3Input.checked = false; }
+      if (tab3Label) tab3Label.style.display = 'none';
+      if (panel3) panel3.style.display = 'none';
+      
+      // Tab 1 ን አስገድድ
+      const tab1 = document.getElementById('tab1');
+      if (tab1) tab1.checked = true;
+      
+      // 2. Tab 1 — "አዲስ ምርት ጨምር" + "ምድቦችን አስተዳድር" መደበቅ
+      const secAddProduct = document.getElementById('secAddProduct');
+      const secCatMgr = document.getElementById('secCatMgr');
+      if (secAddProduct) secAddProduct.style.display = 'none';
+      if (secCatMgr) secCatMgr.style.display = 'none';
+      
+      // 3. Tab 2 — ቶፕ, ያልተሸጡ, ታሪክ መደበቅ
+      const secTodayTop = document.getElementById('secTodayTop');
+      const secTodayUnsold = document.getElementById('secTodayUnsold');
+      const secHistory = document.getElementById('secHistory');
+      if (secTodayTop) secTodayTop.style.display = 'none';
+      if (secTodayUnsold) secTodayUnsold.style.display = 'none';
+      if (secHistory) secHistory.style.display = 'none';
+      
+      // 4. Tab 2 — "የወጪ ምድቦች" መደበቅ
+      const secExpCats = document.getElementById('secExpCats');
+      if (secExpCats) secExpCats.style.display = 'none';
+    }
+  }
+
   function initApp() {
+    applyRolePermissions();
     renderMainCatDropdown();
     renderMainCatTags();
     renderSubCatTags();
