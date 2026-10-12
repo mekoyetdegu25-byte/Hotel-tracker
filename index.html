@@ -27,19 +27,21 @@
   .card h2 .icon { font-size: 18px; }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], select { width: 100%; padding: 12px 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: border-color 0.2s, background 0.2s; appearance: none; -webkit-appearance: none; }
+  input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: border-color 0.2s, background 0.2s; appearance: none; -webkit-appearance: none; }
   select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; transition: transform 0.1s; letter-spacing: 0.2px; }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: #2c5282; color: #fff; }
+  .btn-success { background: #276749; color: #fff; }
   .btn-danger { background: #c53030; color: #fff; }
   .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
   .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
   .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; box-shadow: 0 4px 12px rgba(26,54,93,0.25); }
   .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); box-shadow: 0 4px 12px rgba(39,103,73,0.25); }
   .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); box-shadow: 0 4px 12px rgba(197,48,48,0.25); }
+  .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); box-shadow: 0 4px 12px rgba(192,86,33,0.25); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .summary-box .value { font-size: 26px; font-weight: 800; letter-spacing: 0.5px; }
   .summary-box .value small { font-size: 14px; font-weight: 600; opacity: 0.9; }
@@ -49,6 +51,7 @@
   .list-item .meta { font-size: 11.5px; color: #718096; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .list-item .amount { font-size: 14px; font-weight: 700; color: #2c5282; margin-left: 10px; white-space: nowrap; }
   .list-item .amount.red { color: #c53030; }
+  .list-item .amount.green { color: #276749; }
   .list-item .qty-input { width: 70px; padding: 8px; font-size: 15px; text-align: center; border: 1.5px solid #cbd5e0; border-radius: 8px; margin-left: 8px; font-weight: 700; color: #2c5282; background: #fff; }
   .list-item .qty-input:focus { border-color: #3182ce; }
   .empty-msg { text-align: center; color: #a0aec0; font-size: 13px; padding: 20px 10px; font-style: italic; }
@@ -65,6 +68,23 @@
   .cat-add-row { display: flex; gap: 6px; align-items: center; }
   .cat-add-row input { padding: 9px 10px; font-size: 13.5px; flex: 1; }
   .cat-add-row button { background: #2c5282; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
+  .month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; flex: 0 0 auto; }
+  .month-nav .month-label { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: #2c5282; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; font-size: 14px; }
+  .stat-row .stat-label { color: #4a5568; font-weight: 600; }
+  .stat-row .stat-value { font-weight: 800; color: #2d3748; }
+  .stat-row .stat-value.red { color: #c53030; }
+  .stat-row .stat-value.green { color: #276749; }
+  .history-item { background: #f7fafc; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid #edf2f7; }
+  .history-item .h-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .history-item .h-date { font-size: 13.5px; font-weight: 700; color: #2c5282; }
+  .history-item .h-net { font-size: 15px; font-weight: 800; }
+  .history-item .h-net.green { color: #276749; }
+  .history-item .h-net.red { color: #c53030; }
+  .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; }
+  .history-item .h-details span { display: flex; align-items: center; gap: 4px; }
+  .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -87,6 +107,7 @@
 
   <div class="panels">
 
+    <!-- TAB 1 -->
     <div class="panel" id="panel1">
       <div class="card">
         <h2><span class="icon">➕</span> አዲስ ምርት ጨምር</h2>
@@ -132,11 +153,13 @@
       </div>
     </div>
 
+    <!-- TAB 2 -->
     <div class="panel" id="panel2">
       <div class="summary-box green">
         <div class="label">የዕለቱ ጠቅላላ ገቢ</div>
         <div class="value" id="dailyIncome">0.00 <small>ብር</small></div>
       </div>
+
       <div class="card">
         <h2><span class="icon">💸</span> የዕለት ተለዋዋጭ ወጪዎች</h2>
         <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
@@ -155,6 +178,7 @@
           <span id="dailyExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
         </div>
       </div>
+
       <div class="card">
         <h2><span class="icon">🗂️</span> የወጪ ምድቦች</h2>
         <div class="cat-add-row">
@@ -163,17 +187,87 @@
         </div>
         <div class="cat-tags" id="expCatTags" style="margin-top:10px;"></div>
       </div>
+
       <div class="summary-box" id="netProfitBox">
         <div class="label">የዕለቱ የተጣራ ትርፍ</div>
         <div class="value" id="dailyNet">0.00 <small>ብር</small></div>
       </div>
+
+      <!-- 💾 የዛሬን ሂሳብ አስቀምጥ -->
+      <div class="card" style="border: 2px solid #276749;">
+        <h2><span class="icon">💾</span> የዛሬን ሂሳብ አስቀምጥ</h2>
+        <div class="info-banner">
+          የዛሬን ገቢ፣ ወጪ እና ትርፍ <b>በታሪክ</b> ያስቀምጣል። ከዚያ በወር ሂሳብ ላይ ይታያል።
+        </div>
+        <div class="row-between" style="margin-bottom:10px;">
+          <span style="font-size:13px;color:#4a5568;">ገቢ፦</span>
+          <span id="savePreviewIncome" style="font-weight:700;color:#276749;">0.00 ብር</span>
+        </div>
+        <div class="row-between" style="margin-bottom:10px;">
+          <span style="font-size:13px;color:#4a5568;">ወጪ፦</span>
+          <span id="savePreviewExp" style="font-weight:700;color:#c53030;">0.00 ብር</span>
+        </div>
+        <div class="row-between" style="margin-bottom:10px;">
+          <span style="font-size:13px;color:#4a5568;">ትርፍ፦</span>
+          <span id="savePreviewNet" style="font-weight:800;color:#2c5282;">0.00 ብር</span>
+        </div>
+        <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
+      </div>
+
+      <!-- 📚 የቀን ታሪክ -->
+      <div class="card">
+        <h2><span class="icon">📚</span> የቀን ታሪክ (History)</h2>
+        <div id="historyList"></div>
+      </div>
     </div>
 
+    <!-- TAB 3 -->
     <div class="panel" id="panel3">
+      
+      <!-- ወር መምረጥ -->
+      <div class="card">
+        <h2><span class="icon">📅</span> ወር ምረጥ</h2>
+        <div class="month-nav">
+          <button onclick="changeMonth(-1)">◀</button>
+          <div class="month-label" id="monthLabel">—</div>
+          <button onclick="changeMonth(1)">▶</button>
+        </div>
+      </div>
+
       <div class="summary-box">
-        <div class="label">የወሩ ጠቅላላ ገቢ (የቀን ገቢ × 30)</div>
+        <div class="label">የወሩ ጠቅላላ ገቢ</div>
         <div class="value" id="monthlyIncome">0.00 <small>ብር</small></div>
       </div>
+
+      <!-- የወር ማጠቃለያ -->
+      <div class="card">
+        <h2><span class="icon">📊</span> የወሩ ማጠቃለያ</h2>
+        <div class="stat-row">
+          <span class="stat-label">📅 የወሩ ጠቅላላ ገቢ</span>
+          <span class="stat-value green" id="statIncome">0.00 ብር</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat-row">
+          <span class="stat-label">💸 የቀን ወጪዎች ድምር</span>
+          <span class="stat-value red" id="statDailyExp">0.00 ብር</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🏢 ቋሚ ወጪዎች</span>
+          <span class="stat-value red" id="statFixedExp">0.00 ብር</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat-row">
+          <span class="stat-label" style="font-weight:800;">💰 ጠቅላላ ወጪ</span>
+          <span class="stat-value red" id="statTotalExp">0.00 ብር</span>
+        </div>
+      </div>
+
+      <div class="summary-box green" id="monthlyNetBox">
+        <div class="label">የወሩ የተጣራ ትርፍ</div>
+        <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
+      </div>
+
+      <!-- የወር ቋሚ ወጪዎች -->
       <div class="card">
         <h2><span class="icon">🏢</span> የወር ቋሚ ወጪዎች</h2>
         <label class="field-label" style="margin-top:0;">የወጪ ምድብ</label>
@@ -192,6 +286,8 @@
           <span id="fixedExpTotal" style="font-size:16px;font-weight:800;color:#c53030;">0.00 ብር</span>
         </div>
       </div>
+
+      <!-- የቋሚ ወጪ ምድቦች -->
       <div class="card">
         <h2><span class="icon">🗂️</span> የቋሚ ወጪ ምድቦች</h2>
         <div class="cat-add-row">
@@ -200,10 +296,7 @@
         </div>
         <div class="cat-tags" id="fixCatTags" style="margin-top:10px;"></div>
       </div>
-      <div class="summary-box green" id="monthlyNetBox">
-        <div class="label">የወሩ የተጣራ ገቢ</div>
-        <div class="value" id="monthlyNet">0.00 <small>ብር</small></div>
-      </div>
+
       <button class="btn btn-outline" onclick="resetDailySales()" style="margin-top:6px;">🔄 የዛሬን ሽያጭ አጥፋ (አዲስ ቀን ጀምር)</button>
     </div>
 
@@ -213,13 +306,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const K_PROD = 'hotel_products_v4';
-const K_SALE = 'hotel_sales_v4';
-const K_EXP  = 'hotel_expenses_v4';
-const K_FIX  = 'hotel_fixed_v4';
-const K_CAT  = 'hotel_categories_v4';
-const K_EXPC = 'hotel_expcats_v4';
-const K_FIXC = 'hotel_fixcats_v4';
+const K_PROD = 'hotel_products_v5';
+const K_SALE = 'hotel_sales_v5';
+const K_EXP  = 'hotel_expenses_v5';
+const K_FIX  = 'hotel_fixed_v5';
+const K_CAT  = 'hotel_categories_v5';
+const K_EXPC = 'hotel_expcats_v5';
+const K_FIXC = 'hotel_fixcats_v5';
+const K_HIST = 'hotel_history_v5';
 
 const DEF_CATEGORIES = {
   'ምግብ':        ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -244,6 +338,7 @@ let fixed      = load(K_FIX, []);
 let categories = load(K_CAT, null);
 let expCats    = load(K_EXPC, null);
 let fixCats    = load(K_FIXC, null);
+let history    = load(K_HIST, []);
 
 if (!categories || typeof categories !== 'object' || Object.keys(categories).length === 0) {
   categories = JSON.parse(JSON.stringify(DEF_CATEGORIES));
@@ -257,6 +352,11 @@ if (!fixCats || !Array.isArray(fixCats) || fixCats.length === 0) {
   fixCats = DEF_FIXC.slice();
   save(K_FIXC, fixCats);
 }
+if (!Array.isArray(history)) history = [];
+
+/* የወር ምርጫ */
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 function money(n) {
   return (Math.round(n * 100) / 100).toLocaleString('en-US', {
@@ -278,7 +378,16 @@ function esc(s) {
 function escJs(s) {
   return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+const MONTH_NAMES = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
+const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
+/* ============================================================
+   CATEGORY MANAGEMENT
+   ============================================================ */
 function renderMainCatDropdown() {
   const sel = document.getElementById('prodMainCat');
   const cur = sel.value;
@@ -478,6 +587,9 @@ function deleteFixCat(name) {
   toast('🗑️ ምድብ ተሰርዟል');
 }
 
+/* ============================================================
+   PRODUCTS
+   ============================================================ */
 function addProduct() {
   const name  = document.getElementById('prodName').value.trim();
   const price = parseFloat(document.getElementById('prodPrice').value);
@@ -570,6 +682,9 @@ function updateSalesTotals() {
   renderDaily();
 }
 
+/* ============================================================
+   DAILY
+   ============================================================ */
 function addExpense() {
   const cat = document.getElementById('expCat').value;
   const note = document.getElementById('expName').value.trim();
@@ -626,7 +741,109 @@ function renderDaily() {
   box.classList.remove('green', 'red');
   box.classList.add(net >= 0 ? 'green' : 'red');
 
-  renderMonthly(income);
+  // ማስቀመጫ preview
+  document.getElementById('savePreviewIncome').textContent = money(income) + ' ብር';
+  document.getElementById('savePreviewExp').textContent = money(expTotal) + ' ብር';
+  document.getElementById('savePreviewNet').textContent = money(net) + ' ብር';
+
+  renderHistory();
+  renderMonthly();
+}
+
+/* ============================================================
+   SAVE TODAY TO HISTORY
+   ============================================================ */
+function saveTodayToHistory() {
+  const dateStr = todayStr();
+  
+  let income = 0;
+  products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
+  let expTotal = 0;
+  expenses.forEach(e => { expTotal += e.amount; });
+  const net = income - expTotal;
+
+  if (income === 0 && expTotal === 0) {
+    toast('⚠️ ምንም ውሂብ የለም');
+    return;
+  }
+
+  const existing = history.findIndex(h => h.date === dateStr);
+  const record = {
+    id: uid(),
+    date: dateStr,
+    income: income,
+    expense: expTotal,
+    net: net
+  };
+
+  if (existing >= 0) {
+    if (!confirm('የዛሬ ሂሳብ አስቀድሞ ተቀምጧል። በአዲሱ ይተካ?')) return;
+    history[existing] = record;
+    toast('✅ የዛሬ ሂሳብ ተሻሽሏል');
+  } else {
+    history.push(record);
+    toast('✅ የዛሬ ሂሳብ ተቀምጧል');
+  }
+  save(K_HIST, history);
+  renderHistory();
+  renderMonthly();
+}
+
+function deleteHistory(id) {
+  if (!confirm('ይህን የቀን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
+  history = history.filter(h => h.id !== id);
+  save(K_HIST, history);
+  renderHistory();
+  renderMonthly();
+  toast('🗑️ ታሪክ ተሰርዟል');
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('historyList');
+  if (history.length === 0) {
+    wrap.innerHTML = '<div class="empty-msg">እስካሁን ምንም ታሪክ የለም።<br>"የዛሬን ሂሳብ አስቀምጥ" ተጭነው ይጀምሩ።</div>';
+    return;
+  }
+
+  // በቀን ወረዳ (ቅርብ ቀን ከላይ)
+  const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
+
+  let html = '';
+  sorted.forEach(h => {
+    const netClass = h.net >= 0 ? 'green' : 'red';
+    const dateFormatted = formatDate(h.date);
+    html += '<div class="history-item">' +
+      '<div class="h-top">' +
+        '<span class="h-date">📆 ' + esc(dateFormatted) + '</span>' +
+        '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span>' +
+      '</div>' +
+      '<div class="h-details">' +
+        '<span>💰 ገቢ: ' + money(h.income) + '</span>' +
+        '<span>💸 ወጪ: ' + money(h.expense) + '</span>' +
+        '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" ' +
+                'onclick="deleteHistory(\'' + h.id + '\')">✕ አጥፋ</button>' +
+      '</div>' +
+    '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function formatDate(dateStr) {
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  const y = parts[0], m = parseInt(parts[1],10), d = parseInt(parts[2],10);
+  const monthNames = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
+  return monthNames[m-1] + ' ' + d + ', ' + y;
+}
+
+/* ============================================================
+   MONTHLY
+   ============================================================ */
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  renderMonthly();
 }
 
 function addFixedExpense() {
@@ -652,23 +869,47 @@ function deleteFixedExpense(id) {
   toast('🗑️ ቋሚ ወጪ ተሰርዟል');
 }
 
-function renderMonthly(dailyIncomeOverride) {
-  let dailyIncome = dailyIncomeOverride;
-  if (dailyIncome === undefined) {
-    dailyIncome = 0;
-    products.forEach(p => { dailyIncome += (sales[p.id] || 0) * p.price; });
-  }
-  const monthlyIncome = dailyIncome * 30;
-  document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
+function renderMonthly() {
+  // የወር label
+  document.getElementById('monthLabel').textContent = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
 
+  // የወሩ ታሪክ ማጣሪያ
+  const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+  const monthRecords = history.filter(h => h.date.startsWith(monthPrefix));
+
+  let monthlyIncome = 0;
+  let monthlyDailyExp = 0;
+  monthRecords.forEach(h => {
+    monthlyIncome += h.income;
+    monthlyDailyExp += h.expense;
+  });
+
+  // ቋሚ ወጪዎች
+  let fixedTotal = 0;
+  fixed.forEach(f => { fixedTotal += f.amount; });
+
+  const totalExp = monthlyDailyExp + fixedTotal;
+  const net = monthlyIncome - totalExp;
+
+  // ማሳያ
+  document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
+  document.getElementById('statIncome').textContent = money(monthlyIncome) + ' ብር';
+  document.getElementById('statDailyExp').textContent = money(monthlyDailyExp) + ' ብር';
+  document.getElementById('statFixedExp').textContent = money(fixedTotal) + ' ብር';
+  document.getElementById('statTotalExp').textContent = money(totalExp) + ' ብር';
+  document.getElementById('monthlyNet').innerHTML = money(net) + ' <small>ብር</small>';
+
+  const box = document.getElementById('monthlyNetBox');
+  box.classList.remove('green', 'red');
+  box.classList.add(net >= 0 ? 'green' : 'red');
+
+  // የቋሚ ወጪ ዝርዝር
   const wrap = document.getElementById('fixedExpenseList');
-  let fixTotal = 0;
   if (fixed.length === 0) {
     wrap.innerHTML = '<div class="empty-msg">እስካሁን ቋሚ ወጪ አልተመዘገበም።</div>';
   } else {
     let html = '';
     fixed.forEach(e => {
-      fixTotal += e.amount;
       html += '<div class="list-item">' +
         '<div class="info">' +
           '<div class="name">' + esc(e.cat) + '</div>' +
@@ -681,17 +922,14 @@ function renderMonthly(dailyIncomeOverride) {
     });
     wrap.innerHTML = html;
   }
-  document.getElementById('fixedExpTotal').textContent = money(fixTotal) + ' ብር';
-
-  const net = monthlyIncome - fixTotal;
-  document.getElementById('monthlyNet').innerHTML = money(net) + ' <small>ብር</small>';
-  const box = document.getElementById('monthlyNetBox');
-  box.classList.remove('green', 'red');
-  box.classList.add(net >= 0 ? 'green' : 'red');
+  document.getElementById('fixedExpTotal').textContent = money(fixedTotal) + ' ብር';
 }
 
+/* ============================================================
+   RESET
+   ============================================================ */
 function resetDailySales() {
-  if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ? (ምርቶች፣ ምድቦች እና ቋሚ ወጪዎች አይጠፉም)')) return;
+  if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?\n\n(ምርቶች፣ ምድቦች፣ ቋሚ ወጪዎች እና የቀን ታሪክ አይጠፉም)')) return;
   sales = {};
   expenses = [];
   save(K_SALE, sales);
@@ -701,6 +939,9 @@ function resetDailySales() {
   toast('🔄 አዲስ ቀን ተጀምሯል');
 }
 
+/* ============================================================
+   INIT
+   ============================================================ */
 renderMainCatDropdown();
 renderMainCatTags();
 renderSubCatTags();
