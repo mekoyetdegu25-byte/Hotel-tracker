@@ -206,7 +206,7 @@
     <div class="h-left">
       <div class="h-logo">🏨</div>
       <div>
-        <div class="h-title">የሆቴል ሽያጭ መከታተያ</div>
+        <div class="h-title" id="hdrHotelName">የሆቴል ሽያጭ መከታተያ</div>
         <div class="h-user" id="hdrUserEmail">—</div>
       </div>
     </div>
@@ -275,7 +275,7 @@
             <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
           </div>
           <div class="section-body" id="bodySaleEntry">
-            <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ።</p>
+            <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ። ✏️ ተጭነው ስም/ዋጋ ማሻሻል ይችላሉ።</p>
             <div class="expand-controls">
               <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
               <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
@@ -501,6 +501,18 @@
           </div>
         </div>
 
+        <div class="section-collapsible" id="secHotelSettings">
+          <div class="section-header" id="hdrHotelSettings" onclick="toggleSection('hdrHotelSettings','bodyHotelSettings')">
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🏨</span><span class="sec-title">የሆቴል ስም (Settings)</span></div>
+          </div>
+          <div class="section-body" id="bodyHotelSettings">
+            <label class="field-label">የሆቴል ስም</label>
+            <input type="text" id="hotelNameInput" placeholder="ለምሳሌ፦ ሆቴል አበበ" autocomplete="off">
+            <button class="btn btn-primary" onclick="saveHotelName()">💾 አስቀምጥ</button>
+            <div id="hotelNameStatus" style="margin-top:10px;font-size:12.5px;color:#718096;"></div>
+          </div>
+        </div>
+
         <div class="section-collapsible">
           <div class="section-header" id="hdrReset" onclick="toggleSection('hdrReset','bodyReset')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🔄</span><span class="sec-title">አዲስ ቀን ጀምር (Reset)</span></div>
@@ -541,17 +553,12 @@
   const db = getFirestore(app);
 
   // ===== Firestore Offline Persistence =====
-  // Offline ውሂብ ማስገባት + Auto Sync
   enableIndexedDbPersistence(db)
     .then(() => console.log('✅ Offline persistence enabled'))
     .catch(err => {
-      if (err.code === 'failed-precondition') {
-        console.warn('⚠️ Offline persistence: ብዙ Tabs ክፍት ናቸው');
-      } else if (err.code === 'unimplemented') {
-        console.warn('⚠️ Offline persistence: Browser አይደግፍም');
-      } else {
-        console.warn('⚠️ Offline persistence error:', err);
-      }
+      if (err.code === 'failed-precondition') console.warn('⚠️ Persistence: ብዙ Tabs');
+      else if (err.code === 'unimplemented') console.warn('⚠️ Persistence: Browser አይደግፍም');
+      else console.warn('⚠️ Persistence error:', err);
     });
 
   const HOTEL_ID = 'hotel-main';
@@ -566,6 +573,7 @@
   const loginBtnText = document.getElementById('loginBtnText');
   const hdrUserEmail = document.getElementById('hdrUserEmail');
   const hdrRoleBadge = document.getElementById('hdrRoleBadge');
+  const hdrHotelName = document.getElementById('hdrHotelName');
   const syncStatus = document.getElementById('syncStatus');
 
   let currentUser = null;
@@ -607,6 +615,9 @@
   }
   function escJs(s) {
     return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  }
+  function escAttr(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
   function todayStr() {
     const d = new Date();
@@ -654,6 +665,20 @@
         await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
       }
     } catch (e) { console.warn('ensureHotelDoc:', e); }
+  }
+
+  async function loadHotelName() {
+    try {
+      const snap = await getDoc(hotelRef());
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.name) {
+          hdrHotelName.textContent = data.name;
+          const inp = document.getElementById('hotelNameInput');
+          if (inp) inp.value = data.name;
+        }
+      }
+    } catch (e) { console.warn('loadHotelName:', e); }
   }
 
   async function saveDoc(colRef, id, data) {
@@ -715,6 +740,7 @@
     hdrRoleBadge.textContent = roleLabels[currentRole] || '❓';
     hdrRoleBadge.className = 'role-badge ' + currentRole;
     await ensureHotelDoc();
+    await loadHotelName();
     applyRolePermissions();
     setupRealtimeListeners();
     renderAll();
@@ -799,6 +825,25 @@
     if (!hdr || !body) return;
     const isOpen = body.classList.toggle('open');
     hdr.classList.toggle('open', isOpen);
+  };
+
+  // ===== Hotel Name =====
+  window.saveHotelName = async function() {
+    const name = document.getElementById('hotelNameInput').value.trim();
+    if (!name) { toast('⚠️ የሆቴል ስም ያስፈልጋል'); return; }
+    setSyncStatus('syncing');
+    try {
+      await setDoc(hotelRef(), { name: name, updatedAt: serverTimestamp() }, { merge: true });
+      hdrHotelName.textContent = name;
+      document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል';
+      setTimeout(() => { document.getElementById('hotelNameStatus').textContent = ''; }, 3000);
+      setSyncStatus('online');
+      toast('✅ የሆቴል ስም ተቀምጧል');
+    } catch (e) {
+      console.error(e);
+      setSyncStatus('error');
+      toast('⚠️ ስህተት: ' + e.message);
+    }
   };
 
   function renderMainCatDropdown() {
@@ -978,6 +1023,79 @@
     await deleteDocById(productsCol(), id);
     toast('🗑️ ተሰርዟል');
   };
+
+  // ===== Edit Product Modal =====
+  window.openEditProduct = function(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) { toast('⚠️ ምርት አልተገኘም'); return; }
+    
+    let modal = document.getElementById('editModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'editModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+      modal.onclick = (e) => { if (e.target === modal) closeEditModal(); };
+      document.body.appendChild(modal);
+    }
+    
+    modal.innerHTML = `
+      <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <h3 style="font-size:18px;font-weight:800;color:#1a365d;margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3>
+        
+        <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">የምርት ስም</label>
+        <input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
+        
+        <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ዋጋ (ብር)</label>
+        <input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
+        
+        <div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">
+          📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}
+        </div>
+        
+        <div style="display:flex;gap:8px;margin-top:16px;">
+          <button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:#fff;color:#2c5282;cursor:pointer;">Cancel</button>
+          <button onclick="saveEditProduct('${p.id}')" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:none;border-radius:10px;background:#2c5282;color:#fff;cursor:pointer;">💾 አስቀምጥ</button>
+        </div>
+      </div>
+    `;
+    modal.style.display = 'flex';
+  };
+
+  window.closeEditModal = function() {
+    const modal = document.getElementById('editModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.saveEditProduct = async function(id) {
+    const newName = document.getElementById('editProdName').value.trim();
+    const newPrice = parseFloat(document.getElementById('editProdPrice').value);
+    
+    if (!newName) { toast('⚠️ ስም ያስፈልጋል'); return; }
+    if (isNaN(newPrice) || newPrice < 0) { toast('⚠️ ትክክለኛ ዋጋ ያስገቡ'); return; }
+    
+    const p = products.find(x => x.id === id);
+    if (!p) { toast('⚠️ ምርት አልተገኘም'); return; }
+    
+    setSyncStatus('syncing');
+    try {
+      await setDoc(doc(productsCol(), id), {
+        name: newName,
+        price: newPrice,
+        main: p.main,
+        sub: p.sub,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      
+      closeEditModal();
+      setSyncStatus('online');
+      toast('✅ ምርት ተሻሽሏል');
+    } catch (e) {
+      console.error(e);
+      setSyncStatus('error');
+      toast('⚠️ ስህተት: ' + e.message);
+    }
+  };
+
   window.setQty = async function(id, qty) {
     qty = parseInt(qty, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
@@ -1039,9 +1157,12 @@
         grouped[main][sub].forEach(p => {
           const s = sales[p.id];
           const q = s ? s.qty : '';
-          html += '<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
+          html += '<div class="list-item" style="margin-left:14px;">' +
+            '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
             '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" onchange="setQty(\'' + p.id + '\', this.value)" oninput="setQty(\'' + p.id + '\', this.value)" onclick="event.stopPropagation()">' +
-            '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button></div>';
+            '<button class="btn btn-primary btn-sm" style="margin-left:4px;padding:8px 10px;background:#3182ce;margin-top:0;" onclick="event.stopPropagation();openEditProduct(\'' + p.id + '\')">✏️</button>' +
+            '<button class="btn btn-danger btn-sm" style="margin-left:4px;padding:8px 10px;margin-top:0;" onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button>' +
+          '</div>';
         });
         html += '</div>';
       });
@@ -1320,7 +1441,6 @@
     renderMonthly();
   }
 
-  // ===== PWA Service Worker =====
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
