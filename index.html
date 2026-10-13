@@ -523,7 +523,8 @@
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, deleteDoc,
-           collection, getDocs, onSnapshot, writeBatch, serverTimestamp }
+           collection, getDocs, onSnapshot, writeBatch, serverTimestamp,
+           enableIndexedDbPersistence }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -538,6 +539,20 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // ===== Firestore Offline Persistence =====
+  // Offline ውሂብ ማስገባት + Auto Sync
+  enableIndexedDbPersistence(db)
+    .then(() => console.log('✅ Offline persistence enabled'))
+    .catch(err => {
+      if (err.code === 'failed-precondition') {
+        console.warn('⚠️ Offline persistence: ብዙ Tabs ክፍት ናቸው');
+      } else if (err.code === 'unimplemented') {
+        console.warn('⚠️ Offline persistence: Browser አይደግፍም');
+      } else {
+        console.warn('⚠️ Offline persistence error:', err);
+      }
+    });
 
   const HOTEL_ID = 'hotel-main';
 
