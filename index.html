@@ -46,13 +46,16 @@
   .role-badge.accountant { background: #c6f6d5; color: #22543d; }
   .btn-logout-hdr { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
   .btn-logout-hdr:active { background: rgba(255,255,255,0.25); }
+  .sync-status { font-size: 9.5px; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
+  .sync-status.syncing { background: #fefcbf; color: #744210; }
+  .sync-status.online { background: #c6f6d5; color: #22543d; }
+  .sync-status.error { background: #fed7d7; color: #742a2a; }
   .tabs { display: flex; background: #fff; position: sticky; top: 60px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
   .tabs input[type="radio"] { display: none; }
   .tabs label { flex: 1; text-align: center; padding: 14px 4px; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; user-select: none; }
   #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"] { color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff; }
   .panel { display: none; padding: 14px; }
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
-  .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
   input[type="text"], input[type="number"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
@@ -208,6 +211,7 @@
       </div>
     </div>
     <div class="h-right">
+      <span class="sync-status syncing" id="syncStatus">☁️</span>
       <span class="role-badge" id="hdrRoleBadge">—</span>
       <button class="btn-logout-hdr" onclick="doLogout()">🚪</button>
     </div>
@@ -518,6 +522,9 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
+           collection, getDocs, onSnapshot, query, orderBy, writeBatch, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
@@ -530,6 +537,9 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const HOTEL_ID = 'hotel-main';
 
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
@@ -541,6 +551,7 @@
   const loginBtnText = document.getElementById('loginBtnText');
   const hdrUserEmail = document.getElementById('hdrUserEmail');
   const hdrRoleBadge = document.getElementById('hdrRoleBadge');
+  const syncStatus = document.getElementById('syncStatus');
 
   let currentUser = null;
   let currentRole = 'unknown';
@@ -601,6 +612,10 @@
     errorBox.classList.add('show');
     setTimeout(() => errorBox.classList.remove('show'), 6000);
   }
+  function setSyncStatus(status) {
+    syncStatus.className = 'sync-status ' + status;
+    syncStatus.textContent = status === 'syncing' ? '☁️' : (status === 'error' ? '⚠️' : '✅');
+  }
   function getUserRole(email) {
     if (!email) return 'unknown';
     if (email.startsWith('owner@')) return 'owner';
@@ -608,6 +623,43 @@
     return 'unknown';
   }
 
+  // ===== Firestore Helpers =====
+  function hotelRef() { return doc(db, 'hotels', HOTEL_ID); }
+  function productsCol() { return collection(db, 'hotels', HOTEL_ID, 'products'); }
+  function salesCol() { return collection(db, 'hotels', HOTEL_ID, 'sales'); }
+  function expensesCol() { return collection(db, 'hotels', HOTEL_ID, 'expenses'); }
+  function fixedCol() { return collection(db, 'hotels', HOTEL_ID, 'fixedExpenses'); }
+  function categoriesCol() { return collection(db, 'hotels', HOTEL_ID, 'categories'); }
+  function expCatsCol() { return collection(db, 'hotels', HOTEL_ID, 'expenseCategories'); }
+  function fixCatsCol() { return collection(db, 'hotels', HOTEL_ID, 'fixedCategories'); }
+  function historyCol() { return collection(db, 'hotels', HOTEL_ID, 'history'); }
+
+  async function ensureHotelDoc() {
+    try {
+      const ref = hotelRef();
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
+      }
+    } catch (e) { console.warn('ensureHotelDoc:', e); }
+  }
+
+  async function saveDoc(colRef, id, data) {
+    setSyncStatus('syncing');
+    try {
+      await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      setSyncStatus('online');
+    } catch (e) { console.error(e); setSyncStatus('error'); }
+  }
+  async function deleteDocById(colRef, id) {
+    setSyncStatus('syncing');
+    try {
+      await deleteDoc(doc(colRef, id));
+      setSyncStatus('online');
+    } catch (e) { console.error(e); setSyncStatus('error'); }
+  }
+
+  // ===== Login =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -642,7 +694,7 @@
     mainApp.classList.remove('show');
     passwordInput.value = '';
   }
-  function showMainApp(user) {
+  async function showMainApp(user) {
     currentUser = user;
     currentRole = getUserRole(user.email);
     loginScreen.classList.add('hidden');
@@ -651,7 +703,10 @@
     const roleLabels = { owner: '👑 ባለቤት', accountant: '💼 አካውንታንት', unknown: '❓' };
     hdrRoleBadge.textContent = roleLabels[currentRole] || '❓';
     hdrRoleBadge.className = 'role-badge ' + currentRole;
-    initApp();
+    await ensureHotelDoc();
+    applyRolePermissions();
+    setupRealtimeListeners();
+    renderAll();
   }
 
   onAuthStateChanged(auth, (user) => {
@@ -669,6 +724,76 @@
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin();
   });
 
+  // ===== Realtime Listeners =====
+  let listenersSet = false;
+  function setupRealtimeListeners() {
+    if (listenersSet) return;
+    listenersSet = true;
+
+    onSnapshot(productsCol(), snap => {
+      products = [];
+      snap.forEach(d => products.push({ id: d.id, ...d.data() }));
+      renderProducts();
+      renderDaily();
+      renderMonthly();
+      setSyncStatus('online');
+    }, e => { console.error('products:', e); setSyncStatus('error'); });
+
+    onSnapshot(salesCol(), snap => {
+      sales = {};
+      snap.forEach(d => { sales[d.id] = d.data(); });
+      renderProducts();
+      renderDaily();
+      renderMonthly();
+    }, e => console.error('sales:', e));
+
+    onSnapshot(expensesCol(), snap => {
+      expenses = [];
+      snap.forEach(d => expenses.push({ id: d.id, ...d.data() }));
+      renderDaily();
+      renderMonthly();
+    }, e => console.error('expenses:', e));
+
+    onSnapshot(fixedCol(), snap => {
+      fixed = [];
+      snap.forEach(d => fixed.push({ id: d.id, ...d.data() }));
+      renderMonthly();
+    }, e => console.error('fixed:', e));
+
+    onSnapshot(historyCol(), snap => {
+      history = [];
+      snap.forEach(d => history.push({ id: d.id, ...d.data() }));
+      renderHistory();
+      renderMonthly();
+    }, e => console.error('history:', e));
+
+    onSnapshot(categoriesCol(), snap => {
+      if (snap.empty) return; // ነባሪ ምድቦች ይቆዩ
+      const newCats = {};
+      snap.forEach(d => { newCats[d.id] = d.data().subs || []; });
+      categories = newCats;
+      renderMainCatDropdown();
+      renderMainCatTags();
+      renderSubCatTags();
+      renderProducts();
+    }, e => console.error('categories:', e));
+
+    onSnapshot(expCatsCol(), snap => {
+      if (snap.empty) return;
+      const arr = [];
+      snap.forEach(d => arr.push(d.data().name));
+      if (arr.length) { expCats = arr; renderExpCatDropdown(); renderExpCatTags(); }
+    }, e => console.error('expCats:', e));
+
+    onSnapshot(fixCatsCol(), snap => {
+      if (snap.empty) return;
+      const arr = [];
+      snap.forEach(d => arr.push(d.data().name));
+      if (arr.length) { fixCats = arr; renderFixCatDropdown(); renderFixCatTags(); }
+    }, e => console.error('fixCats:', e));
+  }
+
+  // ===== Collapsible =====
   window.toggleSection = function(headerId, bodyId) {
     const hdr = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
@@ -678,6 +803,7 @@
     openSections[bodyId] = isOpen;
   };
 
+  // ===== Category =====
   function renderMainCatDropdown() {
     const sel = document.getElementById('prodMainCat');
     const cur = sel.value;
@@ -711,29 +837,31 @@
     if (sub) document.getElementById('prodName').value = sub;
   };
 
-  window.addMainCat = function() {
+  window.addMainCat = async function() {
     const inp = document.getElementById('newMainCat');
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (categories[name]) { toast('⚠️ ይህ ምድብ አስቀድሞ አለ'); return; }
     categories[name] = [];
     inp.value = '';
+    await saveDoc(categoriesCol(), name, { name, subs: [] });
     renderMainCatDropdown();
     renderMainCatTags();
     renderSubCatTags();
     toast('✅ ዋና ምድብ ተጨምሯል');
   };
 
-  window.deleteMainCat = function(name) {
+  window.deleteMainCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     delete categories[name];
+    await deleteDocById(categoriesCol(), name);
     renderMainCatDropdown();
     renderMainCatTags();
     renderSubCatTags();
     toast('🗑️ ተሰርዟል');
   };
 
-  window.addSubCat = function() {
+  window.addSubCat = async function() {
     const parent = document.getElementById('subCatParent').value;
     const inp = document.getElementById('newSubCat');
     const name = inp.value.trim();
@@ -743,14 +871,16 @@
     if (categories[parent].includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
     categories[parent].push(name);
     inp.value = '';
+    await saveDoc(categoriesCol(), parent, { name: parent, subs: categories[parent] });
     renderSubCatTags();
     if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
     toast('✅ ተጨምሯል');
   };
 
-  window.deleteSubCat = function(parent, name) {
+  window.deleteSubCat = async function(parent, name) {
     if (!categories[parent]) return;
     categories[parent] = categories[parent].filter(s => s !== name);
+    await saveDoc(categoriesCol(), parent, { name: parent, subs: categories[parent] });
     renderSubCatTags();
     if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
     toast('🗑️ ተሰርዟል');
@@ -784,20 +914,22 @@
     const wrap = document.getElementById('expCatTags');
     wrap.innerHTML = expCats.map(c => '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteExpCat(\'' + escJs(c) + '\')">×</span></span>').join('');
   }
-  window.addExpCat = function() {
+  window.addExpCat = async function() {
     const inp = document.getElementById('newExpCat');
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (expCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
     expCats.push(name);
     inp.value = '';
+    await saveDoc(expCatsCol(), name, { name });
     renderExpCatDropdown();
     renderExpCatTags();
     toast('✅ ተጨምሯል');
   };
-  window.deleteExpCat = function(name) {
+  window.deleteExpCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     expCats = expCats.filter(c => c !== name);
+    await deleteDocById(expCatsCol(), name);
     renderExpCatDropdown();
     renderExpCatTags();
     toast('🗑️ ተሰርዟል');
@@ -815,26 +947,29 @@
     const wrap = document.getElementById('fixCatTags');
     wrap.innerHTML = fixCats.map(c => '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteFixCat(\'' + escJs(c) + '\')">×</span></span>').join('');
   }
-  window.addFixCat = function() {
+  window.addFixCat = async function() {
     const inp = document.getElementById('newFixCat');
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (fixCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
     fixCats.push(name);
     inp.value = '';
+    await saveDoc(fixCatsCol(), name, { name });
     renderFixCatDropdown();
     renderFixCatTags();
     toast('✅ ተጨምሯል');
   };
-  window.deleteFixCat = function(name) {
+  window.deleteFixCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     fixCats = fixCats.filter(c => c !== name);
+    await deleteDocById(fixCatsCol(), name);
     renderFixCatDropdown();
     renderFixCatTags();
     toast('🗑️ ተሰርዟል');
   };
 
-  window.addProduct = function() {
+  // ===== Products =====
+  window.addProduct = async function() {
     const name = document.getElementById('prodName').value.trim();
     const price = parseFloat(document.getElementById('prodPrice').value);
     const main = document.getElementById('prodMainCat').value;
@@ -844,31 +979,32 @@
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (isNaN(price) || price < 0) { toast('⚠️ ትክክለኛ ዋጋ ያስገቡ'); return; }
     if (products.some(p => p.name === name && p.main === main && p.sub === sub)) { toast('⚠️ አስቀድሞ አለ'); return; }
-    products.push({ id: uid(), name, price, main, sub });
+    const id = uid();
+    await saveDoc(productsCol(), id, { name, price, main, sub });
     document.getElementById('prodName').value = '';
     document.getElementById('prodPrice').value = '';
-    renderProducts();
     toast('✅ ምርት ተጨምሯል');
   };
-  window.deleteProduct = function(id) {
+  window.deleteProduct = async function(id) {
     if (!confirm('ይህን ምርት ማጥፋት ይፈልጋሉ?')) return;
-    products = products.filter(p => p.id !== id);
-    delete sales[id];
-    renderProducts();
-    renderDaily();
+    await deleteDocById(productsCol(), id);
     toast('🗑️ ተሰርዟል');
   };
-  window.setQty = function(id, qty) {
+  window.setQty = async function(id, qty) {
     qty = parseInt(qty, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
-    if (qty === 0) delete sales[id];
-    else sales[id] = qty;
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    if (qty === 0) {
+      delete sales[id];
+      await deleteDocById(salesCol(), id);
+    } else {
+      sales[id] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub };
+      await saveDoc(salesCol(), id, sales[id]);
+    }
     updateSalesTotals();
   };
-  window.toggleCategory = function(main) {
-    openCats[main] = !openCats[main];
-    renderProducts();
-  };
+  window.toggleCategory = function(main) { openCats[main] = !openCats[main]; renderProducts(); };
   window.toggleSubCategory = function(main, sub) {
     const key = main + '||' + sub;
     openSubCats[key] = !openSubCats[key];
@@ -877,22 +1013,14 @@
   window.toggleAllCategories = function(open) {
     Object.keys(categories).forEach(c => { openCats[c] = open; });
     openSubCats = {};
-    if (open) {
-      Object.keys(categories).forEach(c => {
-        categories[c].forEach(s => { openSubCats[c + '||' + s] = true; });
-      });
-    }
+    if (open) Object.keys(categories).forEach(c => categories[c].forEach(s => { openSubCats[c + '||' + s] = true; }));
     renderProducts();
     toast(open ? '📂 ሁሉም ተከፈቷል' : '📁 ሁሉም ተዘግቷል');
   };
 
   function renderProducts() {
     const wrap = document.getElementById('productList');
-    if (products.length === 0) {
-      wrap.innerHTML = '<div class="empty-msg">ምንም ምርት አልተጨመረም።</div>';
-      updateSalesTotals();
-      return;
-    }
+    if (products.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም ምርት አልተጨመረም።</div>'; updateSalesTotals(); return; }
     const grouped = {};
     products.forEach(p => {
       if (!grouped[p.main]) grouped[p.main] = {};
@@ -904,13 +1032,16 @@
       const mainOpen = !!openCats[main];
       let mainTotal = 0, mainCount = 0;
       Object.keys(grouped[main]).forEach(sub => {
-        grouped[main][sub].forEach(p => { mainTotal += (sales[p.id] || 0) * p.price; mainCount++; });
+        grouped[main][sub].forEach(p => {
+          const s = sales[p.id];
+          mainTotal += (s ? s.qty : 0) * p.price;
+          mainCount++;
+        });
       });
-      html += '<div class="cat-section">';
-      html += '<div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
+      html += '<div class="cat-section"><div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
       html += '<div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">' + esc(main) + '</span></div>';
-      html += '<div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">' + mainCount + '</span><span class="cat-total">' + money(mainTotal) + ' ብር</span></div>';
-      html += '</div><div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
+      html += '<div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">' + mainCount + '</span><span class="cat-total">' + money(mainTotal) + ' ብር</span></div></div>';
+      html += '<div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
       Object.keys(grouped[main]).forEach(sub => {
         const subKey = main + '||' + sub;
         const subOpen = !!openSubCats[subKey];
@@ -918,9 +1049,9 @@
         html += '<div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ' + esc(sub) + '</span></div><span class="sub-count">' + grouped[main][sub].length + '</span></div>';
         html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
         grouped[main][sub].forEach(p => {
-          const q = sales[p.id] || '';
-          html += '<div class="list-item" style="margin-left:14px;">' +
-            '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
+          const s = sales[p.id];
+          const q = s ? s.qty : '';
+          html += '<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
             '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" onchange="setQty(\'' + p.id + '\', this.value)" oninput="setQty(\'' + p.id + '\', this.value)" onclick="event.stopPropagation()">' +
             '<button class="btn btn-danger btn-sm" style="margin-left:6px;padding:8px 10px;" onclick="event.stopPropagation();deleteProduct(\'' + p.id + '\')">✕</button></div>';
         });
@@ -934,40 +1065,40 @@
 
   function updateSalesTotals() {
     let total = 0;
-    products.forEach(p => { total += (sales[p.id] || 0) * p.price; });
+    products.forEach(p => { const s = sales[p.id]; if (s) total += s.qty * p.price; });
     document.getElementById('todaySalesTotal').textContent = money(total) + ' ብር';
     document.getElementById('hdrSaleTotal').textContent = money(total) + ' ብር';
     renderDaily();
   }
 
-  window.addExpense = function() {
+  // ===== Expenses =====
+  window.addExpense = async function() {
     const cat = document.getElementById('expCat').value;
     const note = document.getElementById('expName').value.trim();
     const amt = parseFloat(document.getElementById('expAmount').value);
-    if (!cat) { toast('⚠️ የወጪ ምድብ ይምረጡ'); return; }
+    if (!cat) { toast('⚠️ ምድብ ይምረጡ'); return; }
     if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-    expenses.push({ id: uid(), cat, note, amount: amt });
+    const id = uid();
+    await saveDoc(expensesCol(), id, { cat, note, amount: amt, date: todayStr() });
     document.getElementById('expName').value = '';
     document.getElementById('expAmount').value = '';
-    renderDaily();
     toast('✅ ወጪ ተጨምሯል');
   };
-  window.deleteExpense = function(id) {
-    expenses = expenses.filter(e => e.id !== id);
-    renderDaily();
+  window.deleteExpense = async function(id) {
+    await deleteDocById(expensesCol(), id);
     toast('🗑️ ተሰርዟል');
   };
   function getTodaySaleItems() {
     const items = [];
     products.forEach(p => {
-      const qty = sales[p.id] || 0;
-      if (qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty, total: qty * p.price });
+      const s = sales[p.id];
+      if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price });
     });
     return items;
   }
   function renderDaily() {
     let income = 0;
-    products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
+    products.forEach(p => { const s = sales[p.id]; if (s) income += s.qty * p.price; });
     document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
     document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
     const wrap = document.getElementById('expenseList');
@@ -995,8 +1126,6 @@
     document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length;
     renderTodayTopSellers();
     renderTodayUnsold();
-    renderHistory();
-    renderMonthly();
   }
   function renderTodayTopSellers() {
     const wrap = document.getElementById('todayTopSellers');
@@ -1016,7 +1145,7 @@
   }
   function renderTodayUnsold() {
     const wrap = document.getElementById('todayUnsold');
-    const unsold = products.filter(p => (sales[p.id] || 0) === 0);
+    const unsold = products.filter(p => !sales[p.id] || sales[p.id].qty === 0);
     document.getElementById('hdrTodayUnsoldBadge').textContent = unsold.length;
     if (unsold.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; }
     wrap.innerHTML = unsold.map(p =>
@@ -1025,40 +1154,29 @@
       '<div class="u-badge">0</div></div>'
     ).join('');
   }
-  window.saveTodayToHistory = function() {
+  window.saveTodayToHistory = async function() {
     const dateStr = todayStr();
     let income = 0;
-    products.forEach(p => { income += (sales[p.id] || 0) * p.price; });
+    products.forEach(p => { const s = sales[p.id]; if (s) income += s.qty * p.price; });
     let expTotal = 0;
     expenses.forEach(e => { expTotal += e.amount; });
     const net = income - expTotal;
     if (income === 0 && expTotal === 0) { toast('⚠️ ምንም ውሂብ የለም'); return; }
     const items = getTodaySaleItems();
-    const existing = history.findIndex(h => h.date === dateStr);
-    const record = { id: uid(), date: dateStr, income, expense: expTotal, net, items };
-    if (existing >= 0) {
-      if (!confirm('የዛሬ ሂሳብ ተቀምጧል። በአዲሱ ይተካ?')) return;
-      history[existing] = record;
-      toast('✅ ተሻሽሏል');
-    } else {
-      history.push(record);
-      toast('✅ ተቀምጧል');
-    }
-    renderHistory();
-    renderMonthly();
+    const record = { date: dateStr, income, expense: expTotal, net, items };
+    await saveDoc(historyCol(), dateStr, record);
+    toast('✅ ተቀምጧል');
   };
-  window.deleteHistory = function(id) {
+  window.deleteHistory = async function(id) {
     if (!confirm('ይህን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
-    history = history.filter(h => h.id !== id);
-    renderHistory();
-    renderMonthly();
+    await deleteDocById(historyCol(), id);
     toast('🗑️ ተሰርዟል');
   };
   function renderHistory() {
     const wrap = document.getElementById('historyList');
     document.getElementById('hdrHistoryBadge').textContent = history.length;
     if (history.length === 0) { wrap.innerHTML = '<div class="empty-msg">ታሪክ የለም።</div>'; return; }
-    const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
+    const sorted = [...history].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     wrap.innerHTML = sorted.map(h => {
       const netClass = h.net >= 0 ? 'green' : 'red';
       const itemCount = (h.items && Array.isArray(h.items)) ? h.items.length : 0;
@@ -1069,27 +1187,28 @@
     }).join('');
   }
 
+  // ===== Monthly =====
   window.changeMonth = function(delta) {
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
     renderMonthly();
   };
-  window.addFixedExpense = function() {
+  window.addFixedExpense = async function() {
     const cat = document.getElementById('fixCat').value;
     const note = document.getElementById('fixName').value.trim();
     const amt = parseFloat(document.getElementById('fixAmount').value);
     if (!cat) { toast('⚠️ ምድብ ይምረጡ'); return; }
     if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
-    fixed.push({ id: uid(), cat, note, amount: amt });
+    const id = uid();
+    const month = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+    await saveDoc(fixedCol(), id, { cat, note, amount: amt, month });
     document.getElementById('fixName').value = '';
     document.getElementById('fixAmount').value = '';
-    renderMonthly();
     toast('✅ ተጨምሯል');
   };
-  window.deleteFixedExpense = function(id) {
-    fixed = fixed.filter(e => e.id !== id);
-    renderMonthly();
+  window.deleteFixedExpense = async function(id) {
+    await deleteDocById(fixedCol(), id);
     toast('🗑️ ተሰርዟል');
   };
   function renderMonthly() {
@@ -1097,12 +1216,12 @@
     document.getElementById('monthLabel').textContent = monthLabel;
     document.getElementById('hdrMonthLabel').textContent = monthLabel;
     const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
-    const monthRecords = history.filter(h => h.date.startsWith(monthPrefix));
+    const monthRecords = history.filter(h => (h.date || '').startsWith(monthPrefix));
     let monthlyIncome = 0, monthlyDailyExp = 0;
     const productSales = {};
     monthRecords.forEach(h => {
-      monthlyIncome += h.income;
-      monthlyDailyExp += h.expense;
+      monthlyIncome += h.income || 0;
+      monthlyDailyExp += h.expense || 0;
       if (h.items && Array.isArray(h.items)) {
         h.items.forEach(item => {
           if (!productSales[item.productId]) productSales[item.productId] = { productId: item.productId, name: item.name, main: item.main, sub: item.sub, qty: 0, total: 0 };
@@ -1112,7 +1231,7 @@
       }
     });
     let fixedTotal = 0;
-    fixed.forEach(f => { fixedTotal += f.amount; });
+    fixed.filter(f => !f.month || f.month === monthPrefix).forEach(f => { fixedTotal += f.amount; });
     const totalExp = monthlyDailyExp + fixedTotal;
     const net = monthlyIncome - totalExp;
     document.getElementById('monthlyIncome').innerHTML = money(monthlyIncome) + ' <small>ብር</small>';
@@ -1129,10 +1248,11 @@
     renderMonthlyTopSellers(productSales);
     renderMonthlyUnsold(productSales);
     const wrap = document.getElementById('fixedExpenseList');
+    const monthFixed = fixed.filter(f => !f.month || f.month === monthPrefix);
     document.getElementById('hdrFixExpBadge').textContent = money(fixedTotal) + ' ብር';
-    if (fixed.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም የለም።</div>'; }
+    if (monthFixed.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም የለም።</div>'; }
     else {
-      wrap.innerHTML = fixed.map(e =>
+      wrap.innerHTML = monthFixed.map(e =>
         '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
         '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
         '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button></div>'
@@ -1168,46 +1288,41 @@
     ).join('');
   }
 
-  window.resetDailySales = function() {
+  window.resetDailySales = async function() {
     if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?')) return;
-    sales = {};
-    expenses = [];
-    renderProducts();
-    renderDaily();
-    toast('🔄 አዲስ ቀን ተጀምሯል');
+    setSyncStatus('syncing');
+    try {
+      const batch = writeBatch(db);
+      const salesSnap = await getDocs(salesCol());
+      salesSnap.forEach(d => batch.delete(d.ref));
+      const expSnap = await getDocs(expensesCol());
+      expSnap.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      sales = {}; expenses = [];
+      setSyncStatus('online');
+      toast('🔄 አዲስ ቀን ተጀምሯል');
+    } catch (e) { console.error(e); setSyncStatus('error'); }
   };
 
   // ===== Role-based UI =====
   function applyRolePermissions() {
-    const isAccountant = currentRole === 'accountant';
-    
-    if (isAccountant) {
-      // 1. Tab 3 (የወር ሂሳብ) መደበቅ
-      const tab3Input = document.getElementById('tab3');
-      const tab3Label = document.querySelector('label[for="tab3"]');
-      const panel3 = document.getElementById('panel3');
-      if (tab3Input) { tab3Input.disabled = true; tab3Input.checked = false; }
-      if (tab3Label) tab3Label.style.display = 'none';
-      if (panel3) panel3.style.display = 'none';
-      
-      // Tab 1 ን አስገድድ
-      const tab1 = document.getElementById('tab1');
-      if (tab1) tab1.checked = true;
-      
-      // 2. Tab 2 — ቶፕ ሴለር, ያልተሸጡ, ታሪክ መደበቅ (ሪፖርቶች)
-      const secTodayTop = document.getElementById('secTodayTop');
-      const secTodayUnsold = document.getElementById('secTodayUnsold');
-      const secHistory = document.getElementById('secHistory');
-      if (secTodayTop) secTodayTop.style.display = 'none';
-      if (secTodayUnsold) secTodayUnsold.style.display = 'none';
-      if (secHistory) secHistory.style.display = 'none';
-      
-      // ✅ አካውንታንትም ምርት ይጨምራል + ምድቦች ያስተዳድራል + የወጪ ምድቦች ያስተዳድራል
-    }
+    if (currentRole !== 'accountant') return;
+    const tab3Input = document.getElementById('tab3');
+    const tab3Label = document.querySelector('label[for="tab3"]');
+    const panel3 = document.getElementById('panel3');
+    if (tab3Input) { tab3Input.disabled = true; tab3Input.checked = false; }
+    if (tab3Label) tab3Label.style.display = 'none';
+    if (panel3) panel3.style.display = 'none';
+    const tab1 = document.getElementById('tab1');
+    if (tab1) tab1.checked = true;
+    ['secTodayTop', 'secTodayUnsold', 'secHistory'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
   }
 
-  function initApp() {
-    applyRolePermissions();
+  // ===== Render All =====
+  function renderAll() {
     renderMainCatDropdown();
     renderMainCatTags();
     renderSubCatTags();
