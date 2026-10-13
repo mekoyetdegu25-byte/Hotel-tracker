@@ -9,27 +9,62 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hotel Tracker">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #f2f4f8; color: #1a202c; font-size: 15px; padding-bottom: 80px; }
+  body { background: #f2f4f8; color: #1a202c; font-size: 15px; padding-bottom: 80px; transition: background 0.3s, color 0.3s; }
+  
+  /* ===== DARK MODE ===== */
+  body.dark { background: #1a202c; color: #e2e8f0; }
+  body.dark .card, body.dark .section-collapsible, body.dark .login-box { background: #2d3748; color: #e2e8f0; }
+  body.dark label { color: #a0aec0; }
+  body.dark input, body.dark select { background: #4a5568; border-color: #4a5568; color: #e2e8f0; }
+  body.dark input:focus, body.dark select:focus { background: #4a5568; border-color: #3182ce; }
+  body.dark .tabs { background: #2d3748; }
+  body.dark .tabs label { color: #a0aec0; }
+  body.dark #tab1:checked ~ .tabs label[for="tab1"], body.dark #tab2:checked ~ .tabs label[for="tab2"], body.dark #tab3:checked ~ .tabs label[for="tab3"] { color: #63b3ed; border-bottom-color: #63b3ed; background: #4a5568; }
+  body.dark .section-header .sec-title { color: #63b3ed; }
+  body.dark .section-header .sec-arrow { color: #a0aec0; }
+  body.dark .cat-header { background: linear-gradient(135deg, #2c5282, #2a4365); border-color: #2c5282; }
+  body.dark .cat-header .cat-name { color: #63b3ed; }
+  body.dark .cat-body { background: #2d3748; border-color: #2c5282; }
+  body.dark .sub-header { background: #4a5568; }
+  body.dark .sub-header .sub-left { color: #a0aec0; }
+  body.dark .list-item { background: #4a5568; border-color: #4a5568; }
+  body.dark .list-item .name { color: #e2e8f0; }
+  body.dark .list-item .meta { color: #a0aec0; }
+  body.dark .list-item .qty-input { background: #2d3748; color: #63b3ed; border-color: #718096; }
+  body.dark .history-item { background: #4a5568; border-color: #4a5568; }
+  body.dark .history-item .h-date { color: #63b3ed; }
+  body.dark .seller-item { background: #4a5568; border-color: #4a5568; }
+  body.dark .seller-item .seller-name { color: #e2e8f0; }
+  body.dark .unsold-item { background: #742a2a; border-color: #9b2c2c; }
+  body.dark .unsold-item .u-name { color: #fed7d7; }
+  body.dark .info-banner { background: #2c5282; border-color: #3182ce; color: #bee3f8; }
+  body.dark .info-banner.orange { background: #7b341e; border-color: #9c4221; color: #feebc8; }
+  body.dark .empty-msg { color: #718096; }
+  body.dark .stat-row .stat-label { color: #a0aec0; }
+  body.dark .stat-row .stat-value { color: #e2e8f0; }
+  body.dark .cat-tag { background: #2d3748; border-color: #2c5282; color: #63b3ed; }
+  body.dark .expand-controls button { background: #4a5568; color: #63b3ed; border-color: #3182ce; }
+  
   #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
   #loginScreen.hidden { display: none; }
-  .login-box { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px 24px; width: 100%; max-width: 400px; animation: slideUp 0.5s ease; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .login-box { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px 24px; width: 100%; max-width: 400px; }
   .logo { text-align: center; margin-bottom: 24px; }
   .logo-icon { font-size: 56px; line-height: 1; margin-bottom: 10px; }
   .logo h1 { font-size: 19px; font-weight: 800; color: #1a365d; }
+  body.dark .logo h1 { color: #63b3ed; }
   .logo p { font-size: 12px; color: #718096; margin-top: 4px; }
   .form-group { margin-bottom: 16px; }
   label { display: block; font-size: 12.5px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
-  input[type="email"], input[type="password"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
+  input[type="email"], input[type="password"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f7fafc; outline: none; transition: all 0.2s; }
   input:focus { border-color: #3182ce; background: #fff; box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1); }
-  .btn-login { width: 100%; padding: 15px; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 14px rgba(26, 54, 93, 0.3); transition: all 0.2s; }
+  .btn-login { width: 100%; padding: 15px; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 14px rgba(26, 54, 93, 0.3); }
   .btn-login:active { transform: scale(0.98); }
-  .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
-  .error-box { background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: none; animation: shake 0.3s ease; }
+  .btn-login:disabled { opacity: 0.6; }
+  .error-box { background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: none; }
   .error-box.show { display: block; }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
   .info-box { background: #ebf8ff; border: 1px solid #90cdf4; color: #2c5282; padding: 12px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6; margin-top: 20px; }
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -45,7 +80,6 @@
   .role-badge.owner { background: #fefcbf; color: #744210; }
   .role-badge.accountant { background: #c6f6d5; color: #22543d; }
   .btn-logout-hdr { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-  .btn-logout-hdr:active { background: rgba(255,255,255,0.25); }
   .sync-status { font-size: 9.5px; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
   .sync-status.syncing { background: #fefcbf; color: #744210; }
   .sync-status.online { background: #c6f6d5; color: #22543d; }
@@ -58,8 +92,8 @@
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
-  select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
+  input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; }
+  select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; appearance: none; -webkit-appearance: none; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; }
@@ -68,6 +102,7 @@
   .btn-success { background: #276749; color: #fff; }
   .btn-danger { background: #c53030; color: #fff; }
   .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
+  body.dark .btn-outline { background: transparent; color: #63b3ed; border-color: #63b3ed; }
   .btn-warning { background: #c05621; color: #fff; }
   .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
   .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; }
@@ -91,6 +126,7 @@
   .row-flex > div { flex: 1; }
   .row-flex .btn { margin-top: 0; width: auto; padding: 13px 18px; }
   .divider { height: 1px; background: #edf2f7; margin: 12px 0; }
+  body.dark .divider { background: #4a5568; }
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3748; color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: all 0.35s; z-index: 999; pointer-events: none; max-width: 90%; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
@@ -102,6 +138,7 @@
   .month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
   .month-nav .month-label { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: #2c5282; }
+  body.dark .month-nav .month-label { color: #63b3ed; }
   .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; font-size: 14px; }
   .stat-row .stat-label { color: #4a5568; font-weight: 600; }
   .stat-row .stat-value { font-weight: 800; color: #2d3748; }
@@ -168,11 +205,30 @@
   .search-box { position: relative; }
   .search-box input { padding-left: 40px; }
   .search-box .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #a0aec0; pointer-events: none; }
-  .date-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; background: #feebc8; color: #7b341e; margin-left: 8px; }
   .loading-screen { position: fixed; inset: 0; background: #f2f4f8; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; z-index: 999; }
+  body.dark .loading-screen { background: #1a202c; }
   .loading-screen.hidden { display: none; }
   .loading-spinner { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: #2c5282; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .loading-text { font-size: 14px; color: #4a5568; font-weight: 600; }
+  body.dark .loading-text { color: #a0aec0; }
+  
+  /* Chart container */
+  .chart-container { position: relative; height: 240px; margin-bottom: 16px; }
+  
+  /* Settings buttons */
+  .settings-btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .settings-btn-row .btn { flex: 1; min-width: 120px; margin-top: 0; }
+  
+  /* Toggle switch */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; }
+  .toggle-row label { margin: 0; font-size: 14px; color: #2d3748; font-weight: 600; }
+  body.dark .toggle-row label { color: #e2e8f0; }
+  .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 28px; }
+  .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: #fff; transition: .3s; border-radius: 50%; }
+  input:checked + .slider { background-color: #2c5282; }
+  input:checked + .slider:before { transform: translateX(24px); }
 </style>
 </head>
 <body>
@@ -238,16 +294,13 @@
 
     <div class="panels">
       <div class="panel" id="panel1">
-        <!-- ===== Date Picker (NEW) ===== -->
         <div class="section-collapsible" id="secDatePicker">
           <div class="section-header" id="hdrDatePicker" onclick="toggleSection('hdrDatePicker','bodyDatePicker')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📅</span><span class="sec-title">የሽያጭ ቀን ምረጥ</span></div>
             <span class="sec-badge orange" id="hdrDateBadge">ዛሬ</span>
           </div>
           <div class="section-body" id="bodyDatePicker">
-            <div class="info-banner orange">
-              💡 <b>ያለፈ ቀን ሽያጭ</b> ማስገባት ከፈለግክ ቀን ምረጥ። ዛሬ ከሆነ ወደ ዛሬ ይመለሳል።
-            </div>
+            <div class="info-banner orange">💡 <b>ያለፈ ቀን ሽያጭ</b> ማስገባት ከፈለግክ ቀን ምረጥ።</div>
             <label class="field-label">ቀን ምረጥ</label>
             <input type="date" id="saleDateInput" onchange="onSaleDateChange()">
             <div style="display:flex;gap:8px;margin-top:10px;">
@@ -303,12 +356,11 @@
             <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
           </div>
           <div class="section-body" id="bodySaleEntry">
-            <!-- ===== Search (NEW) ===== -->
             <div class="search-box" style="margin-bottom:12px;">
               <span class="search-icon">🔍</span>
               <input type="text" id="searchProductInput" placeholder="ምርት ፈልግ..." oninput="onSearchProduct()" autocomplete="off">
             </div>
-            <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ። ✏️ ተጭነው ስም/ዋጋ ማሻሻል ይችላሉ።</p>
+            <p style="font-size:12px;color:#718096;margin-bottom:10px;">የተሸጠ ብዛት ብቻ ያስገቡ። ✏️ ተጭነው ስም/ዋጋ ማሻሻል ይችላሉ።</p>
             <div class="expand-controls">
               <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
               <button onclick="toggleAllCategories(false)">📁 ሁሉንም ዝጋ</button>
@@ -427,6 +479,26 @@
       </div>
 
       <div class="panel" id="panel3">
+        <!-- ===== DASHBOARD (NEW) ===== -->
+        <div class="section-collapsible">
+          <div class="section-header open" id="hdrChart1" onclick="toggleSection('hdrChart1','bodyChart1')">
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📊</span><span class="sec-title">የ30 ቀን ሽያጭ ግራፍ</span></div>
+          </div>
+          <div class="section-body open" id="bodyChart1">
+            <div class="chart-container"><canvas id="dailyChart"></canvas></div>
+            <p style="font-size:11.5px;color:#718096;text-align:center;">የመጨረሻ 30 ቀናት ጠቅላላ ሽያጭ (ብር)</p>
+          </div>
+        </div>
+
+        <div class="section-collapsible">
+          <div class="section-header open" id="hdrChart2" onclick="toggleSection('hdrChart2','bodyChart2')">
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🥧</span><span class="sec-title">ቶፕ 5 ምርቶች (የወሩ)</span></div>
+          </div>
+          <div class="section-body open" id="bodyChart2">
+            <div class="chart-container" style="height:280px;"><canvas id="pieChart"></canvas></div>
+          </div>
+        </div>
+
         <div class="section-collapsible">
           <div class="section-header open" id="hdrMonthPick" onclick="toggleSection('hdrMonthPick','bodyMonthPick')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📅</span><span class="sec-title">ወር ምረጥ</span></div>
@@ -536,13 +608,37 @@
 
         <div class="section-collapsible" id="secHotelSettings">
           <div class="section-header" id="hdrHotelSettings" onclick="toggleSection('hdrHotelSettings','bodyHotelSettings')">
-            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🏨</span><span class="sec-title">የሆቴል ስም (Settings)</span></div>
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">⚙️</span><span class="sec-title">Settings</span></div>
           </div>
           <div class="section-body" id="bodyHotelSettings">
-            <label class="field-label">የሆቴል ስም</label>
+            <label class="field-label">🏨 የሆቴል ስም</label>
             <input type="text" id="hotelNameInput" placeholder="ለምሳሌ፦ ሆቴል አበበ" autocomplete="off">
             <button class="btn btn-primary" onclick="saveHotelName()">💾 አስቀምጥ</button>
             <div id="hotelNameStatus" style="margin-top:10px;font-size:12.5px;color:#718096;"></div>
+
+            <div class="divider"></div>
+            <div class="toggle-row">
+              <label>🌙 Dark Mode</label>
+              <label class="switch">
+                <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="divider"></div>
+            <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">🔔 <b>Notification</b> — በምሽት 8:00 ሽያጭ ማስገባት ማስታወሻ።</p>
+            <div class="settings-btn-row">
+              <button class="btn btn-outline btn-sm" onclick="enableNotifications()">🔔 Notification አስነሳ</button>
+              <button class="btn btn-outline btn-sm" onclick="testNotification()">🧪 ሞክር</button>
+            </div>
+            <div id="notifStatus" style="margin-top:10px;font-size:12.5px;color:#718096;"></div>
+
+            <div class="divider"></div>
+            <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">🖨️ <b>Print / Excel</b> — የሪፖርት ማውጫ።</p>
+            <div class="settings-btn-row">
+              <button class="btn btn-primary btn-sm" onclick="printReport()">🖨️ Print ሪፖርት</button>
+              <button class="btn btn-success btn-sm" onclick="exportExcel()">📊 Excel (CSV)</button>
+            </div>
           </div>
         </div>
 
@@ -585,9 +681,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  enableIndexedDbPersistence(db)
-    .then(() => console.log('✅ Offline persistence enabled'))
-    .catch(err => console.warn('⚠️ Persistence:', err.code));
+  enableIndexedDbPersistence(db).then(() => console.log('✅ Offline persistence')).catch(e => console.warn(e.code));
 
   const HOTEL_ID = 'hotel-main';
 
@@ -607,8 +701,8 @@
   let currentUser = null;
   let currentRole = 'unknown';
   let products = [];
-  let sales = {};      // { productId: { qty, price, name, main, sub, date } }
-  let expenses = [];   // { id, cat, note, amount, date }
+  let sales = {};
+  let expenses = [];
   let fixed = [];
   let history = [];
   let categories = {
@@ -622,14 +716,14 @@
   let openSubCats = {};
   let currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
-  let currentSaleDate = ''; // YYYY-MM-DD
+  let currentSaleDate = '';
   let searchQuery = '';
+  let dailyChartInstance = null;
+  let pieChartInstance = null;
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
   function money(n) {
-    return (Math.round(n * 100) / 100).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
+    return (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   let toastTimer;
@@ -640,20 +734,11 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
   }
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function escJs(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
   function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-  function todayStr() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function yesterdayStr() {
-    const d = new Date();
-    d.setDate(d.getDate() - 1);
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
+  function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function yesterdayStr() { const d = new Date(); d.setDate(d.getDate() - 1); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function formatDate(dateStr) {
     const parts = dateStr.split('-');
     if (parts.length !== 3) return dateStr;
@@ -662,11 +747,7 @@
     return names[m-1] + ' ' + d + ', ' + y;
   }
   function hideLoading() { loadingScreen.classList.add('hidden'); }
-  function showError(msg) {
-    errorBox.textContent = '⚠️ ' + msg;
-    errorBox.classList.add('show');
-    setTimeout(() => errorBox.classList.remove('show'), 6000);
-  }
+  function showError(msg) { errorBox.textContent = '⚠️ ' + msg; errorBox.classList.add('show'); setTimeout(() => errorBox.classList.remove('show'), 6000); }
   function setSyncStatus(status) {
     syncStatus.className = 'sync-status ' + status;
     syncStatus.textContent = status === 'syncing' ? '☁️' : (status === 'error' ? '⚠️' : '✅');
@@ -692,41 +773,202 @@
     try {
       const ref = hotelRef();
       const snap = await getDoc(ref);
-      if (!snap.exists()) {
-        await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
-      }
-    } catch (e) { console.warn('ensureHotelDoc:', e); }
+      if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
+    } catch (e) { console.warn(e); }
   }
-
   async function loadHotelName() {
     try {
       const snap = await getDoc(hotelRef());
       if (snap.exists()) {
         const data = snap.data();
-        if (data.name) {
-          hdrHotelName.textContent = data.name;
-          const inp = document.getElementById('hotelNameInput');
-          if (inp) inp.value = data.name;
-        }
+        if (data.name) { hdrHotelName.textContent = data.name; const inp = document.getElementById('hotelNameInput'); if (inp) inp.value = data.name; }
       }
-    } catch (e) { console.warn('loadHotelName:', e); }
+    } catch (e) { console.warn(e); }
   }
-
   async function saveDoc(colRef, id, data) {
     setSyncStatus('syncing');
-    try {
-      await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
-      setSyncStatus('online');
-    } catch (e) { console.error(e); setSyncStatus('error'); }
+    try { await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true }); setSyncStatus('online'); }
+    catch (e) { console.error(e); setSyncStatus('error'); }
   }
   async function deleteDocById(colRef, id) {
     setSyncStatus('syncing');
-    try {
-      await deleteDoc(doc(colRef, id));
-      setSyncStatus('online');
-    } catch (e) { console.error(e); setSyncStatus('error'); }
+    try { await deleteDoc(doc(colRef, id)); setSyncStatus('online'); }
+    catch (e) { console.error(e); setSyncStatus('error'); }
   }
 
+  // ===== DARK MODE (NEW) =====
+  function applyDarkMode(isDark) {
+    if (isDark) {
+      document.body.classList.add('dark');
+      const t = document.getElementById('darkModeToggle');
+      if (t) t.checked = true;
+    } else {
+      document.body.classList.remove('dark');
+      const t = document.getElementById('darkModeToggle');
+      if (t) t.checked = false;
+    }
+  }
+  window.toggleDarkMode = function() {
+    const t = document.getElementById('darkModeToggle');
+    const isDark = t.checked;
+    applyDarkMode(isDark);
+    localStorage.setItem('hotel_dark', isDark ? '1' : '0');
+    toast(isDark ? '🌙 Dark Mode በርቷል' : '☀️ Light Mode በርቷል');
+    // Refresh charts colors
+    if (dailyChartInstance) renderDailyChart();
+    if (pieChartInstance) renderMonthlyPieChart();
+  };
+  function loadDarkMode() {
+    const saved = localStorage.getItem('hotel_dark');
+    if (saved === '1') applyDarkMode(true);
+  }
+
+  // ===== NOTIFICATION (NEW) =====
+  window.enableNotifications = async function() {
+    const status = document.getElementById('notifStatus');
+    if (!('Notification' in window)) {
+      status.textContent = '❌ Browser Notification አይደግፍም';
+      status.style.color = '#c53030';
+      return;
+    }
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        status.textContent = '✅ Notification ተነስቷል';
+        status.style.color = '#276749';
+        toast('✅ Notification ተነስቷል');
+        scheduleDailyReminder();
+      } else {
+        status.textContent = '❌ Notification አልተፈቀደም';
+        status.style.color = '#c53030';
+      }
+    } catch (e) {
+      status.textContent = '❌ ' + e.message;
+      status.style.color = '#c53030';
+    }
+  };
+  window.testNotification = function() {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+      toast('⚠️ መጀመሪያ Notification አስነሳ');
+      return;
+    }
+    new Notification('🏨 የሆቴል ሽያጭ መከታተያ', {
+      body: 'የዛሬ ሽያጭ አስገባ! 📊',
+      icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM4IiBmaWxsPSIjMmM1MjgyIi8+PHRleHQgeD0iOTYiIHk9IjExMCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+8J+UqjwvdGV4dD48L3N2Zz4='
+    });
+  };
+  function scheduleDailyReminder() {
+    const now = new Date();
+    const target = new Date();
+    target.setHours(20, 0, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    const delay = target.getTime() - now.getTime();
+    setTimeout(() => {
+      if (Notification.permission === 'granted') {
+        new Notification('🏨 የሆቴል ሽያጭ መከታተያ', { body: 'የዛሬ ሽያጭ አስገባ! 📊' });
+      }
+      scheduleDailyReminder();
+    }, delay);
+  }
+  function loadNotificationStatus() {
+    const status = document.getElementById('notifStatus');
+    if (!status) return;
+    if (!('Notification' in window)) {
+      status.textContent = '❌ አይደግፍም';
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      status.textContent = '✅ Notification ተነስቷል';
+      status.style.color = '#276749';
+      scheduleDailyReminder();
+    } else if (Notification.permission === 'denied') {
+      status.textContent = '❌ አልተፈቀደም';
+      status.style.color = '#c53030';
+    }
+  }
+
+  // ===== PRINT / EXPORT (NEW) =====
+  window.printReport = function() {
+    const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
+    const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+    const monthRecords = history.filter(h => (h.date || '').startsWith(monthPrefix));
+    let monthlyIncome = 0, monthlyExp = 0;
+    monthRecords.forEach(h => { monthlyIncome += h.income || 0; monthlyExp += h.expense || 0; });
+    let fixedTotal = 0;
+    fixed.filter(f => !f.month || f.month === monthPrefix).forEach(f => { fixedTotal += f.amount; });
+    const net = monthlyIncome - monthlyExp - fixedTotal;
+
+    const printWin = window.open('', '_blank');
+    printWin.document.write(`
+      <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${monthLabel} ሪፖርት</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; color: #1a202c; }
+        h1 { color: #2c5282; font-size: 22px; margin-bottom: 4px; }
+        h2 { color: #4a5568; font-size: 14px; font-weight: normal; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #cbd5e0; padding: 10px; text-align: left; }
+        th { background: #ebf4ff; color: #2c5282; }
+        .total { font-weight: bold; background: #f7fafc; }
+        .green { color: #276749; }
+        .red { color: #c53030; }
+        .header-info { margin-bottom: 10px; }
+        @media print { body { padding: 0; } }
+      </style></head><body>
+      <h1>🏨 ${hdrHotelName.textContent}</h1>
+      <h2>📅 ${monthLabel} — የወር ሪፖርት</h2>
+      <div class="header-info">የተዘጋጀው: ${new Date().toLocaleString('am-ET')}</div>
+      <table>
+        <tr><th>መግለጫ</th><th style="text-align:right;">ብር</th></tr>
+        <tr><td>💰 የወሩ ጠቅላላ ገቢ</td><td style="text-align:right;" class="green">${money(monthlyIncome)}</td></tr>
+        <tr><td>💸 የቀን ወጪዎች ድምር</td><td style="text-align:right;" class="red">${money(monthlyExp)}</td></tr>
+        <tr><td>🏢 ቋሚ ወጪዎች</td><td style="text-align:right;" class="red">${money(fixedTotal)}</td></tr>
+        <tr class="total"><td>💰 ጠቅላላ ወጪ</td><td style="text-align:right;" class="red">${money(monthlyExp + fixedTotal)}</td></tr>
+        <tr class="total"><td>📊 የተጣራ ትርፍ</td><td style="text-align:right;${net >= 0 ? 'color:#276749;' : 'color:#c53030;'}">${money(net)}</td></tr>
+      </table>
+      <h2 style="margin-top:30px;">📋 የቀን ዝርዝር</h2>
+      <table>
+        <tr><th>ቀን</th><th style="text-align:right;">ገቢ</th><th style="text-align:right;">ወጪ</th><th style="text-align:right;">ትርፍ</th></tr>
+        ${monthRecords.sort((a,b)=>b.date.localeCompare(a.date)).map(h => `
+          <tr><td>${formatDate(h.date)}</td>
+          <td style="text-align:right;" class="green">${money(h.income || 0)}</td>
+          <td style="text-align:right;" class="red">${money(h.expense || 0)}</td>
+          <td style="text-align:right;">${money(h.net || 0)}</td></tr>
+        `).join('')}
+      </table>
+      <p style="margin-top:20px;text-align:center;color:#718096;font-size:12px;">🏨 የሆቴል ሽያጭ እና ወጪ መከታተያ</p>
+      <script>window.onload = () => { setTimeout(() => window.print(), 500); };<\/script>
+      </body></html>
+    `);
+    printWin.document.close();
+  };
+
+  window.exportExcel = function() {
+    const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+    const monthRecords = history.filter(h => (h.date || '').startsWith(monthPrefix));
+    if (monthRecords.length === 0) { toast('⚠️ ውሂብ የለም'); return; }
+    let csv = '\uFEFF'; // BOM for Excel
+    csv += 'ቀን,ገቢ,ወጪ,ትርፍ,ምርቶች\n';
+    monthRecords.sort((a,b)=>a.date.localeCompare(b.date)).forEach(h => {
+      const itemCount = (h.items && h.items.length) || 0;
+      csv += `"${h.date}",${h.income || 0},${h.expense || 0},${h.net || 0},${itemCount}\n`;
+    });
+    // Add summary
+    let totalInc = 0, totalExp = 0;
+    monthRecords.forEach(h => { totalInc += h.income || 0; totalExp += h.expense || 0; });
+    csv += `\n"ጠቅላላ",${totalInc},${totalExp},${totalInc - totalExp},\n`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hotel-report-${currentYear}-${String(currentMonth+1).padStart(2,'0')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('📊 Excel ተወርሷል');
+  };
+
+  // ===== LOGIN =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -750,12 +992,10 @@
       loginBtnText.textContent = '🔓 ግባ';
     }
   };
-
   window.doLogout = async function() {
     if (!confirm('እርግጠኛ ነህ መውጣት ትፈልጋለህ?')) return;
     try { await signOut(auth); } catch (err) { showError(err.message); }
   };
-
   function showLogin() {
     loginScreen.classList.remove('hidden');
     mainApp.classList.remove('show');
@@ -771,13 +1011,14 @@
     hdrRoleBadge.textContent = roleLabels[currentRole] || '❓';
     hdrRoleBadge.className = 'role-badge ' + currentRole;
 
-    // Initialize sale date
     currentSaleDate = todayStr();
     document.getElementById('saleDateInput').value = currentSaleDate;
     updateDateBadge();
 
+    loadDarkMode();
     await ensureHotelDoc();
     await loadHotelName();
+    loadNotificationStatus();
     applyRolePermissions();
     setupRealtimeListeners();
     renderAll();
@@ -785,13 +1026,8 @@
 
   onAuthStateChanged(auth, (user) => {
     hideLoading();
-    if (user) {
-      showMainApp(user);
-    } else {
-      showLogin();
-      loginBtn.disabled = false;
-      loginBtnText.textContent = '🔓 ግባ';
-    }
+    if (user) showMainApp(user);
+    else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; }
   });
 
   document.addEventListener('keydown', (e) => {
@@ -804,56 +1040,48 @@
     listenersSet = true;
 
     onSnapshot(productsCol(), snap => {
-      products = [];
-      snap.forEach(d => products.push({ id: d.id, ...d.data() }));
+      products = []; snap.forEach(d => products.push({ id: d.id, ...d.data() }));
       renderProducts(); renderDaily(); renderMonthly(); setSyncStatus('online');
-    }, e => { console.error('products:', e); setSyncStatus('error'); });
+    }, e => { setSyncStatus('error'); });
 
     onSnapshot(salesCol(), snap => {
-      sales = {};
-      snap.forEach(d => { sales[d.id] = d.data(); });
+      sales = {}; snap.forEach(d => { sales[d.id] = d.data(); });
       renderProducts(); renderDaily(); renderMonthly();
-    }, e => console.error('sales:', e));
+    }, e => console.error(e));
 
     onSnapshot(expensesCol(), snap => {
-      expenses = [];
-      snap.forEach(d => expenses.push({ id: d.id, ...d.data() }));
+      expenses = []; snap.forEach(d => expenses.push({ id: d.id, ...d.data() }));
       renderDaily(); renderMonthly();
-    }, e => console.error('expenses:', e));
+    }, e => console.error(e));
 
     onSnapshot(fixedCol(), snap => {
-      fixed = [];
-      snap.forEach(d => fixed.push({ id: d.id, ...d.data() }));
+      fixed = []; snap.forEach(d => fixed.push({ id: d.id, ...d.data() }));
       renderMonthly();
-    }, e => console.error('fixed:', e));
+    }, e => console.error(e));
 
     onSnapshot(historyCol(), snap => {
-      history = [];
-      snap.forEach(d => history.push({ id: d.id, ...d.data() }));
+      history = []; snap.forEach(d => history.push({ id: d.id, ...d.data() }));
       renderHistory(); renderMonthly();
-    }, e => console.error('history:', e));
+    }, e => console.error(e));
 
     onSnapshot(categoriesCol(), snap => {
       if (snap.empty) return;
-      const newCats = {};
-      snap.forEach(d => { newCats[d.id] = d.data().subs || []; });
+      const newCats = {}; snap.forEach(d => { newCats[d.id] = d.data().subs || []; });
       categories = newCats;
       renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); renderProducts();
-    }, e => console.error('categories:', e));
+    }, e => console.error(e));
 
     onSnapshot(expCatsCol(), snap => {
       if (snap.empty) return;
-      const arr = [];
-      snap.forEach(d => arr.push(d.data().name));
+      const arr = []; snap.forEach(d => arr.push(d.data().name));
       if (arr.length) { expCats = arr; renderExpCatDropdown(); renderExpCatTags(); }
-    }, e => console.error('expCats:', e));
+    }, e => console.error(e));
 
     onSnapshot(fixCatsCol(), snap => {
       if (snap.empty) return;
-      const arr = [];
-      snap.forEach(d => arr.push(d.data().name));
+      const arr = []; snap.forEach(d => arr.push(d.data().name));
       if (arr.length) { fixCats = arr; renderFixCatDropdown(); renderFixCatTags(); }
-    }, e => console.error('fixCats:', e));
+    }, e => console.error(e));
   }
 
   window.toggleSection = function(headerId, bodyId) {
@@ -864,78 +1092,49 @@
     hdr.classList.toggle('open', isOpen);
   };
 
-  // ===== Date Picker (NEW) =====
   window.onSaleDateChange = function() {
     const inp = document.getElementById('saleDateInput');
     if (!inp.value) { inp.value = todayStr(); return; }
     currentSaleDate = inp.value;
-    updateDateBadge();
-    renderProducts();
-    renderDaily();
-    renderMonthly();
+    updateDateBadge(); renderProducts(); renderDaily(); renderMonthly();
     toast('📅 ' + formatDate(currentSaleDate));
   };
-
-  window.setTodaySaleDate = function() {
-    currentSaleDate = todayStr();
-    document.getElementById('saleDateInput').value = currentSaleDate;
-    updateDateBadge();
-    renderProducts(); renderDaily(); renderMonthly();
-    toast('📅 ዛሬ');
-  };
-
-  window.setYesterdaySaleDate = function() {
-    currentSaleDate = yesterdayStr();
-    document.getElementById('saleDateInput').value = currentSaleDate;
-    updateDateBadge();
-    renderProducts(); renderDaily(); renderMonthly();
-    toast('📅 ትናንት');
-  };
+  window.setTodaySaleDate = function() { currentSaleDate = todayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); toast('📅 ዛሬ'); };
+  window.setYesterdaySaleDate = function() { currentSaleDate = yesterdayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); toast('📅 ትናንት'); };
 
   function updateDateBadge() {
     const badge = document.getElementById('hdrDateBadge');
     const status = document.getElementById('selectedDateStatus');
     if (!badge || !status) return;
     if (currentSaleDate === todayStr()) {
-      badge.textContent = 'ዛሬ';
-      badge.style.background = '#c6f6d5';
-      badge.style.color = '#22543d';
-      status.textContent = '✅ ዛሬ ላይ ነህ';
-      status.style.color = '#276749';
+      badge.textContent = 'ዛሬ'; badge.style.background = '#c6f6d5'; badge.style.color = '#22543d';
+      status.textContent = '✅ ዛሬ ላይ ነህ'; status.style.color = '#276749';
     } else if (currentSaleDate === yesterdayStr()) {
-      badge.textContent = 'ትናንት';
-      status.textContent = '⚠️ ትናንት ላይ ነህ — ያለፈ ቀን';
-      status.style.color = '#c05621';
+      badge.textContent = 'ትናንት'; badge.style.background = '#feebc8'; badge.style.color = '#7b341e';
+      status.textContent = '⚠️ ትናንት ላይ ነህ — ያለፈ ቀን'; status.style.color = '#c05621';
     } else {
-      badge.textContent = 'ያለፈ ቀን';
-      status.textContent = '⚠️ ያለፈ ቀን — ' + formatDate(currentSaleDate);
-      status.style.color = '#c05621';
+      badge.textContent = 'ያለፈ ቀን'; badge.style.background = '#feebc8'; badge.style.color = '#7b341e';
+      status.textContent = '⚠️ ያለፈ ቀን — ' + formatDate(currentSaleDate); status.style.color = '#c05621';
     }
   }
 
-  // ===== Search (NEW) =====
   window.onSearchProduct = function() {
     searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase();
     renderProducts();
   };
 
-  // ===== Hotel Name =====
   window.saveHotelName = async function() {
     const name = document.getElementById('hotelNameInput').value.trim();
     if (!name) { toast('⚠️ የሆቴል ስም ያስፈልጋል'); return; }
     setSyncStatus('syncing');
     try {
-      await setDoc(hotelRef(), { name: name, updatedAt: serverTimestamp() }, { merge: true });
+      await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true });
       hdrHotelName.textContent = name;
       document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል';
       setTimeout(() => { document.getElementById('hotelNameStatus').textContent = ''; }, 3000);
       setSyncStatus('online');
       toast('✅ የሆቴል ስም ተቀምጧል');
-    } catch (e) {
-      console.error(e);
-      setSyncStatus('error');
-      toast('⚠️ ስህተት: ' + e.message);
-    }
+    } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); }
   };
 
   function renderMainCatDropdown() {
@@ -952,37 +1151,26 @@
     parentSel.innerHTML = html2;
     if (categories[cur2]) parentSel.value = cur2;
   }
-
   window.onMainCatChange = function() {
     const main = document.getElementById('prodMainCat').value;
     const subSel = document.getElementById('prodSubCat');
     document.getElementById('prodName').value = '';
-    if (!main || !categories[main]) {
-      subSel.innerHTML = '<option value="">— መጀመሪያ ዋና ምድብ ይምረጡ —</option>';
-      return;
-    }
+    if (!main || !categories[main]) { subSel.innerHTML = '<option value="">— መጀመሪያ ዋና ምድብ ይምረጡ —</option>'; return; }
     let html = '<option value="">— ንዑስ ምድብ ይምረጡ —</option>';
     categories[main].forEach(s => { html += '<option value="' + esc(s) + '">' + esc(s) + '</option>'; });
     subSel.innerHTML = html;
   };
-
-  window.onSubCatChange = function() {
-    const sub = document.getElementById('prodSubCat').value;
-    if (sub) document.getElementById('prodName').value = sub;
-  };
-
+  window.onSubCatChange = function() { const sub = document.getElementById('prodSubCat').value; if (sub) document.getElementById('prodName').value = sub; };
   window.addMainCat = async function() {
     const inp = document.getElementById('newMainCat');
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
-    if (categories[name]) { toast('⚠️ ይህ ምድብ አስቀድሞ አለ'); return; }
-    categories[name] = [];
-    inp.value = '';
+    if (categories[name]) { toast('⚠️ አስቀድሞ አለ'); return; }
+    categories[name] = []; inp.value = '';
     await saveDoc(categoriesCol(), name, { name, subs: [] });
     renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags();
     toast('✅ ዋና ምድብ ተጨምሯል');
   };
-
   window.deleteMainCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     delete categories[name];
@@ -990,7 +1178,6 @@
     renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags();
     toast('🗑️ ተሰርዟል');
   };
-
   window.addSubCat = async function() {
     const parent = document.getElementById('subCatParent').value;
     const inp = document.getElementById('newSubCat');
@@ -999,14 +1186,12 @@
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (!categories[parent]) categories[parent] = [];
     if (categories[parent].includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
-    categories[parent].push(name);
-    inp.value = '';
+    categories[parent].push(name); inp.value = '';
     await saveDoc(categoriesCol(), parent, { name: parent, subs: categories[parent] });
     renderSubCatTags();
     if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
     toast('✅ ተጨምሯል');
   };
-
   window.deleteSubCat = async function(parent, name) {
     if (!categories[parent]) return;
     categories[parent] = categories[parent].filter(s => s !== name);
@@ -1015,14 +1200,12 @@
     if (document.getElementById('prodMainCat').value === parent) onMainCatChange();
     toast('🗑️ ተሰርዟል');
   };
-
   function renderMainCatTags() {
     const wrap = document.getElementById('mainCatTags');
     const cats = Object.keys(categories);
     if (cats.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ምድብ የለም።</div>'; return; }
     wrap.innerHTML = cats.map(c => '<span class="cat-tag">' + esc(c) + ' <span class="del" onclick="deleteMainCat(\'' + escJs(c) + '\')">×</span></span>').join('');
   }
-
   function renderSubCatTags() {
     const parent = document.getElementById('subCatParent').value;
     const wrap = document.getElementById('subCatTags');
@@ -1031,7 +1214,6 @@
     if (subs.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም ንዑስ ምድብ የለም።</div>'; return; }
     wrap.innerHTML = subs.map(s => '<span class="cat-tag">' + esc(s) + ' <span class="del" onclick="deleteSubCat(\'' + escJs(parent) + '\',\'' + escJs(s) + '\')">×</span></span>').join('');
   }
-
   function renderExpCatDropdown() {
     const sel = document.getElementById('expCat');
     const cur = sel.value;
@@ -1049,8 +1231,7 @@
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (expCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
-    expCats.push(name);
-    inp.value = '';
+    expCats.push(name); inp.value = '';
     await saveDoc(expCatsCol(), name, { name });
     renderExpCatDropdown(); renderExpCatTags();
     toast('✅ ተጨምሯል');
@@ -1062,7 +1243,6 @@
     renderExpCatDropdown(); renderExpCatTags();
     toast('🗑️ ተሰርዟል');
   };
-
   function renderFixCatDropdown() {
     const sel = document.getElementById('fixCat');
     const cur = sel.value;
@@ -1080,8 +1260,7 @@
     const name = inp.value.trim();
     if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (fixCats.includes(name)) { toast('⚠️ አስቀድሞ አለ'); return; }
-    fixCats.push(name);
-    inp.value = '';
+    fixCats.push(name); inp.value = '';
     await saveDoc(fixCatsCol(), name, { name });
     renderFixCatDropdown(); renderFixCatTags();
     toast('✅ ተጨምሯል');
@@ -1093,7 +1272,6 @@
     renderFixCatDropdown(); renderFixCatTags();
     toast('🗑️ ተሰርዟል');
   };
-
   window.addProduct = async function() {
     const name = document.getElementById('prodName').value.trim();
     const price = parseFloat(document.getElementById('prodPrice').value);
@@ -1115,7 +1293,6 @@
     await deleteDocById(productsCol(), id);
     toast('🗑️ ተሰርዟል');
   };
-
   window.openEditProduct = function(id) {
     const p = products.find(x => x.id === id);
     if (!p) { toast('⚠️ ምርት አልተገኘም'); return; }
@@ -1128,25 +1305,22 @@
       document.body.appendChild(modal);
     }
     modal.innerHTML = `
-      <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-        <h3 style="font-size:18px;font-weight:800;color:#1a365d;margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3>
+      <div style="background:${document.body.classList.contains('dark') ? '#2d3748' : '#fff'};border-radius:20px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <h3 style="font-size:18px;font-weight:800;color:${document.body.classList.contains('dark') ? '#63b3ed' : '#1a365d'};margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3>
         <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">የምርት ስም</label>
-        <input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
+        <input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${document.body.classList.contains('dark') ? '#4a5568' : '#f7fafc'};color:${document.body.classList.contains('dark') ? '#e2e8f0' : '#1a202c'};outline:none;margin-bottom:12px;">
         <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ዋጋ (ብር)</label>
-        <input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
+        <input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${document.body.classList.contains('dark') ? '#4a5568' : '#f7fafc'};color:${document.body.classList.contains('dark') ? '#e2e8f0' : '#1a202c'};outline:none;margin-bottom:12px;">
         <div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}</div>
         <div style="display:flex;gap:8px;margin-top:16px;">
-          <button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:#fff;color:#2c5282;cursor:pointer;">Cancel</button>
+          <button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:transparent;color:#2c5282;cursor:pointer;">Cancel</button>
           <button onclick="saveEditProduct('${p.id}')" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:none;border-radius:10px;background:#2c5282;color:#fff;cursor:pointer;">💾 አስቀምጥ</button>
         </div>
       </div>
     `;
     modal.style.display = 'flex';
   };
-  window.closeEditModal = function() {
-    const modal = document.getElementById('editModal');
-    if (modal) modal.style.display = 'none';
-  };
+  window.closeEditModal = function() { const m = document.getElementById('editModal'); if (m) m.style.display = 'none'; };
   window.saveEditProduct = async function(id) {
     const newName = document.getElementById('editProdName').value.trim();
     const newPrice = parseFloat(document.getElementById('editProdPrice').value);
@@ -1160,27 +1334,18 @@
       closeEditModal();
       setSyncStatus('online');
       toast('✅ ምርት ተሻሽሏል');
-    } catch (e) {
-      console.error(e); setSyncStatus('error');
-      toast('⚠️ ስህተት: ' + e.message);
-    }
+    } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); }
   };
 
-  // ===== Sales with Date (CHANGED) =====
   window.setQty = async function(id, qty) {
     qty = parseInt(qty, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
     const p = products.find(x => x.id === id);
     if (!p) return;
-    // Key: productId_date → unique per product per date
     const saleKey = id + '_' + currentSaleDate;
     if (qty === 0) {
-      // Delete from sales
       const existing = Object.keys(sales).find(k => k === saleKey || (sales[k].productId === id && sales[k].date === currentSaleDate));
-      if (existing) {
-        delete sales[existing];
-        await deleteDocById(salesCol(), existing);
-      }
+      if (existing) { delete sales[existing]; await deleteDocById(salesCol(), existing); }
     } else {
       sales[saleKey] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub, date: currentSaleDate };
       await saveDoc(salesCol(), saleKey, sales[saleKey]);
@@ -1192,19 +1357,13 @@
     const result = {};
     Object.keys(sales).forEach(k => {
       const s = sales[k];
-      if (s && s.date === dateStr) {
-        result[s.productId] = s;
-      }
+      if (s && s.date === dateStr) result[s.productId] = s;
     });
     return result;
   }
 
   window.toggleCategory = function(main) { openCats[main] = !openCats[main]; renderProducts(); };
-  window.toggleSubCategory = function(main, sub) {
-    const key = main + '||' + sub;
-    openSubCats[key] = !openSubCats[key];
-    renderProducts();
-  };
+  window.toggleSubCategory = function(main, sub) { const key = main + '||' + sub; openSubCats[key] = !openSubCats[key]; renderProducts(); };
   window.toggleAllCategories = function(open) {
     Object.keys(categories).forEach(c => { openCats[c] = open; });
     openSubCats = {};
@@ -1216,41 +1375,19 @@
   function renderProducts() {
     const wrap = document.getElementById('productList');
     if (products.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም ምርት አልተጨመረም።</div>'; updateSalesTotals(); return; }
-
-    // Filter by search
     let filtered = products;
     if (searchQuery) {
-      filtered = products.filter(p =>
-        p.name.toLowerCase().includes(searchQuery) ||
-        p.main.toLowerCase().includes(searchQuery) ||
-        p.sub.toLowerCase().includes(searchQuery)
-      );
-      if (filtered.length === 0) {
-        wrap.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" ምንም አልተገኘም።</div>';
-        updateSalesTotals();
-        return;
-      }
+      filtered = products.filter(p => p.name.toLowerCase().includes(searchQuery) || p.main.toLowerCase().includes(searchQuery) || p.sub.toLowerCase().includes(searchQuery));
+      if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" ምንም አልተገኘም።</div>'; updateSalesTotals(); return; }
     }
-
     const dateSales = getSalesForDate(currentSaleDate);
     const grouped = {};
-    filtered.forEach(p => {
-      if (!grouped[p.main]) grouped[p.main] = {};
-      if (!grouped[p.main][p.sub]) grouped[p.main][p.sub] = [];
-      grouped[p.main][p.sub].push(p);
-    });
-
+    filtered.forEach(p => { if (!grouped[p.main]) grouped[p.main] = {}; if (!grouped[p.main][p.sub]) grouped[p.main][p.sub] = []; grouped[p.main][p.sub].push(p); });
     let html = '';
     Object.keys(grouped).forEach(main => {
       const mainOpen = !!openCats[main] || !!searchQuery;
       let mainTotal = 0, mainCount = 0;
-      Object.keys(grouped[main]).forEach(sub => {
-        grouped[main][sub].forEach(p => {
-          const s = dateSales[p.id];
-          mainTotal += (s ? s.qty : 0) * p.price;
-          mainCount++;
-        });
-      });
+      Object.keys(grouped[main]).forEach(sub => { grouped[main][sub].forEach(p => { const s = dateSales[p.id]; mainTotal += (s ? s.qty : 0) * p.price; mainCount++; }); });
       html += '<div class="cat-section"><div class="cat-header ' + (mainOpen ? 'open' : '') + '" onclick="toggleCategory(\'' + escJs(main) + '\')">';
       html += '<div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">' + esc(main) + '</span></div>';
       html += '<div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">' + mainCount + '</span><span class="cat-total">' + money(mainTotal) + ' ብር</span></div></div>';
@@ -1262,8 +1399,7 @@
         html += '<div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ' + esc(sub) + '</span></div><span class="sub-count">' + grouped[main][sub].length + '</span></div>';
         html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
         grouped[main][sub].forEach(p => {
-          const s = dateSales[p.id];
-          const q = s ? s.qty : '';
+          const s = dateSales[p.id]; const q = s ? s.qty : '';
           html += '<div class="list-item" style="margin-left:14px;">' +
             '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
             '<input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="' + q + '" onchange="setQty(\'' + p.id + '\', this.value)" oninput="setQty(\'' + p.id + '\', this.value)" onclick="event.stopPropagation()">' +
@@ -1288,7 +1424,6 @@
     renderDaily();
   }
 
-  // ===== Expenses with Date =====
   window.addExpense = async function() {
     const cat = document.getElementById('expCat').value;
     const note = document.getElementById('expName').value.trim();
@@ -1301,18 +1436,12 @@
     document.getElementById('expAmount').value = '';
     toast('✅ ወጪ ተጨምሯል');
   };
-  window.deleteExpense = async function(id) {
-    await deleteDocById(expensesCol(), id);
-    toast('🗑️ ተሰርዟል');
-  };
+  window.deleteExpense = async function(id) { await deleteDocById(expensesCol(), id); toast('🗑️ ተሰርዟል'); };
 
   function getTodaySaleItems() {
     const items = [];
     const dateSales = getSalesForDate(currentSaleDate);
-    products.forEach(p => {
-      const s = dateSales[p.id];
-      if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price });
-    });
+    products.forEach(p => { const s = dateSales[p.id]; if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price }); });
     return items;
   }
 
@@ -1322,36 +1451,27 @@
     products.forEach(p => { const s = dateSales[p.id]; if (s) income += s.qty * p.price; });
     document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
     document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
-
     const dateExpenses = expenses.filter(e => e.date === currentSaleDate);
     const wrap = document.getElementById('expenseList');
     let expTotal = 0;
     if (dateExpenses.length === 0) { wrap.innerHTML = '<div class="empty-msg">ይህ ቀን ምንም ወጪ አልተመዘገበም።</div>'; }
     else {
-      wrap.innerHTML = dateExpenses.map(e =>
-        '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
-        '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense(\'' + e.id + '\')">✕</button></div>'
-      ).join('');
+      wrap.innerHTML = dateExpenses.map(e => '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div><span class="amount red">' + money(e.amount) + ' ብር</span><button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense(\'' + e.id + '\')">✕</button></div>').join('');
       dateExpenses.forEach(e => { expTotal += e.amount; });
     }
     document.getElementById('dailyExpTotal').textContent = money(expTotal) + ' ብር';
     document.getElementById('hdrDailyExpBadge').textContent = money(expTotal) + ' ብር';
-
     const net = income - expTotal;
     document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>';
     document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር';
     const box = document.getElementById('netProfitBox');
-    box.classList.remove('green', 'red');
-    box.classList.add(net >= 0 ? 'green' : 'red');
+    box.classList.remove('green', 'red'); box.classList.add(net >= 0 ? 'green' : 'red');
     document.getElementById('savePreviewIncome').textContent = money(income) + ' ብር';
     document.getElementById('savePreviewExp').textContent = money(expTotal) + ' ብር';
     document.getElementById('savePreviewNet').textContent = money(net) + ' ብር';
     document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length;
-    renderTodayTopSellers();
-    renderTodayUnsold();
+    renderTodayTopSellers(); renderTodayUnsold();
   }
-
   function renderTodayTopSellers() {
     const wrap = document.getElementById('todayTopSellers');
     const items = getTodaySaleItems();
@@ -1361,12 +1481,7 @@
     const top = items.slice(0, 5);
     const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
     const classes = ['gold', 'silver', 'bronze', '', ''];
-    wrap.innerHTML = top.map((item, i) =>
-      '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
-      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' × ' + money(item.price) + ' ብር</div></div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>'
-    ).join('');
+    wrap.innerHTML = top.map((item, i) => '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div><div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div><div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + ' × ' + money(item.price) + ' ብር</div></div><div class="seller-amount">' + money(item.total) + ' ብር</div></div>').join('');
   }
   function renderTodayUnsold() {
     const wrap = document.getElementById('todayUnsold');
@@ -1374,11 +1489,7 @@
     const unsold = products.filter(p => !dateSales[p.id] || dateSales[p.id].qty === 0);
     document.getElementById('hdrTodayUnsoldBadge').textContent = unsold.length;
     if (unsold.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; }
-    wrap.innerHTML = unsold.map(p =>
-      '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
-      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
-      '<div class="u-badge">0</div></div>'
-    ).join('');
+    wrap.innerHTML = unsold.map(p => '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div><div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div><div class="u-badge">0</div></div>').join('');
   }
 
   window.saveTodayToHistory = async function() {
@@ -1387,8 +1498,7 @@
     let income = 0;
     products.forEach(p => { const s = dateSales[p.id]; if (s) income += s.qty * p.price; });
     const dateExpenses = expenses.filter(e => e.date === dateStr);
-    let expTotal = 0;
-    dateExpenses.forEach(e => { expTotal += e.amount; });
+    let expTotal = 0; dateExpenses.forEach(e => { expTotal += e.amount; });
     const net = income - expTotal;
     if (income === 0 && expTotal === 0) { toast('⚠️ ምንም ውሂብ የለም'); return; }
     const items = getTodaySaleItems();
@@ -1396,13 +1506,11 @@
     await saveDoc(historyCol(), dateStr, record);
     toast('✅ ' + formatDate(dateStr) + ' ተቀምጧል');
   };
-
   window.deleteHistory = async function(id) {
     if (!confirm('ይህን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
     await deleteDocById(historyCol(), id);
     toast('🗑️ ተሰርዟል');
   };
-
   function renderHistory() {
     const wrap = document.getElementById('historyList');
     document.getElementById('hdrHistoryBadge').textContent = history.length;
@@ -1412,10 +1520,7 @@
       const netClass = h.net >= 0 ? 'green' : 'red';
       const itemCount = (h.items && Array.isArray(h.items)) ? h.items.length : 0;
       const isSelected = h.date === currentSaleDate;
-      return '<div class="history-item" style="' + (isSelected ? 'border:2px solid #2c5282;' : '') + '"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + (isSelected ? ' ✓' : '') + '</span>' +
-        '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span></div>' +
-        '<div class="h-details"><span>💰 ' + money(h.income) + '</span><span>💸 ' + money(h.expense) + '</span><span>📦 ' + itemCount + '</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory(\'' + h.id + '\')">✕</button></div></div>';
+      return '<div class="history-item" style="' + (isSelected ? 'border:2px solid #2c5282;' : '') + '"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + (isSelected ? ' ✓' : '') + '</span><span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span></div><div class="h-details"><span>💰 ' + money(h.income) + '</span><span>💸 ' + money(h.expense) + '</span><span>📦 ' + itemCount + '</span><button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory(\'' + h.id + '\')">✕</button></div></div>';
     }).join('');
   }
 
@@ -1438,10 +1543,8 @@
     document.getElementById('fixAmount').value = '';
     toast('✅ ተጨምሯል');
   };
-  window.deleteFixedExpense = async function(id) {
-    await deleteDocById(fixedCol(), id);
-    toast('🗑️ ተሰርዟል');
-  };
+  window.deleteFixedExpense = async function(id) { await deleteDocById(fixedCol(), id); toast('🗑️ ተሰርዟል'); };
+
   function renderMonthly() {
     const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
     document.getElementById('monthLabel').textContent = monthLabel;
@@ -1474,22 +1577,20 @@
     document.getElementById('monthlyNet').innerHTML = money(net) + ' <small>ብር</small>';
     document.getElementById('hdrMonNetBadge').textContent = money(net) + ' ብር';
     const box = document.getElementById('monthlyNetBox');
-    box.classList.remove('green', 'red');
-    box.classList.add(net >= 0 ? 'green' : 'red');
-    renderMonthlyTopSellers(productSales);
-    renderMonthlyUnsold(productSales);
+    box.classList.remove('green', 'red'); box.classList.add(net >= 0 ? 'green' : 'red');
+    renderMonthlyTopSellers(productSales); renderMonthlyUnsold(productSales);
     const wrap = document.getElementById('fixedExpenseList');
     const monthFixed = fixed.filter(f => !f.month || f.month === monthPrefix);
     document.getElementById('hdrFixExpBadge').textContent = money(fixedTotal) + ' ብር';
     if (monthFixed.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም የለም።</div>'; }
     else {
-      wrap.innerHTML = monthFixed.map(e =>
-        '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
-        '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
-        '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button></div>'
-      ).join('');
+      wrap.innerHTML = monthFixed.map(e => '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div><span class="amount red">' + money(e.amount) + ' ብር</span><button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteFixedExpense(\'' + e.id + '\')">✕</button></div>').join('');
     }
     document.getElementById('fixedExpTotal').textContent = money(fixedTotal) + ' ብር';
+
+    // Render charts
+    renderDailyChart();
+    renderMonthlyPieChart(productSales);
   }
   function renderMonthlyTopSellers(productSales) {
     const wrap = document.getElementById('monthlyTopSellers');
@@ -1500,23 +1601,102 @@
     const top = items.slice(0, 5);
     const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
     const classes = ['gold', 'silver', 'bronze', '', ''];
-    wrap.innerHTML = top.map((item, i) =>
-      '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div>' +
-      '<div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div>' +
-      '<div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + '</div></div>' +
-      '<div class="seller-amount">' + money(item.total) + ' ብር</div></div>'
-    ).join('');
+    wrap.innerHTML = top.map((item, i) => '<div class="seller-item ' + classes[i] + '"><div class="rank">' + medals[i] + '</div><div class="seller-info"><div class="seller-name">' + esc(item.name) + '</div><div class="seller-meta">' + esc(item.main) + ' • ' + item.qty + '</div></div><div class="seller-amount">' + money(item.total) + ' ብር</div></div>').join('');
   }
   function renderMonthlyUnsold(productSales) {
     const wrap = document.getElementById('monthlyUnsold');
     const unsold = products.filter(p => !productSales[p.id] || productSales[p.id].qty === 0);
     document.getElementById('hdrMonUnsoldBadge').textContent = unsold.length;
     if (unsold.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; }
-    wrap.innerHTML = unsold.map(p =>
-      '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div>' +
-      '<div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div>' +
-      '<div class="u-badge">0</div></div>'
-    ).join('');
+    wrap.innerHTML = unsold.map(p => '<div class="unsold-item"><div><div class="u-name">' + esc(p.name) + '</div><div class="u-cat">' + esc(p.main) + ' → ' + esc(p.sub) + '</div></div><div class="u-badge">0</div></div>').join('');
+  }
+
+  // ===== CHARTS (NEW) =====
+  function renderDailyChart() {
+    const canvas = document.getElementById('dailyChart');
+    if (!canvas) return;
+    const isDark = document.body.classList.contains('dark');
+    const labels = [];
+    const data = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      labels.push(d.getDate() + '/' + (d.getMonth()+1));
+      const h = history.find(x => x.date === ds);
+      data.push(h ? (h.income || 0) : 0);
+    }
+    if (dailyChartInstance) dailyChartInstance.destroy();
+    dailyChartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'ሽያጭ (ብር)',
+          data,
+          backgroundColor: isDark ? '#63b3ed' : '#2c5282',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx) => 'ሽያጭ: ' + money(ctx.parsed.y) + ' ብር' } }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } },
+          x: { ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } }
+        }
+      }
+    });
+  }
+
+  function renderMonthlyPieChart(productSales) {
+    const canvas = document.getElementById('pieChart');
+    if (!canvas) return;
+    const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+    const monthRecords = history.filter(h => (h.date || '').startsWith(monthPrefix));
+    const salesMap = {};
+    monthRecords.forEach(h => {
+      if (h.items && Array.isArray(h.items)) {
+        h.items.forEach(item => {
+          if (!salesMap[item.productId]) salesMap[item.productId] = { name: item.name, qty: 0 };
+          salesMap[item.productId].qty += item.qty;
+        });
+      }
+    });
+    const sorted = Object.values(salesMap).sort((a, b) => b.qty - a.qty).slice(0, 5);
+    if (sorted.length === 0) {
+      if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; }
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#a0aec0';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('ውሂብ የለም', canvas.width/2, canvas.height/2);
+      return;
+    }
+    const labels = sorted.map(s => s.name);
+    const data = sorted.map(s => s.qty);
+    const colors = ['#2c5282', '#3182ce', '#63b3ed', '#90cdf4', '#bee3f8'];
+    if (pieChartInstance) pieChartInstance.destroy();
+    pieChartInstance = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: document.body.classList.contains('dark') ? '#2d3748' : '#fff' }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: document.body.classList.contains('dark') ? '#e2e8f0' : '#2d3748', font: { size: 11 }, padding: 8 } },
+          tooltip: { callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' ብዛት' } }
+        }
+      }
+    });
   }
 
   window.resetSelectedDateSales = async function() {
@@ -1525,22 +1705,14 @@
     setSyncStatus('syncing');
     try {
       const batch = writeBatch(db);
-      // Delete sales for this date
       const salesSnap = await getDocs(salesCol());
-      salesSnap.forEach(d => {
-        const s = d.data();
-        if (s && s.date === dateStr) batch.delete(d.ref);
-      });
-      // Delete expenses for this date
+      salesSnap.forEach(d => { const s = d.data(); if (s && s.date === dateStr) batch.delete(d.ref); });
       const expSnap = await getDocs(expensesCol());
-      expSnap.forEach(d => {
-        const e = d.data();
-        if (e && e.date === dateStr) batch.delete(d.ref);
-      });
+      expSnap.forEach(d => { const e = d.data(); if (e && e.date === dateStr) batch.delete(d.ref); });
       await batch.commit();
       setSyncStatus('online');
       toast('🔄 ' + formatDate(dateStr) + ' ተጠፍቷል');
-    } catch (e) { console.error(e); setSyncStatus('error'); }
+    } catch (e) { setSyncStatus('error'); console.error(e); }
   };
 
   function applyRolePermissions() {
@@ -1553,32 +1725,18 @@
     if (panel3) panel3.style.display = 'none';
     const tab1 = document.getElementById('tab1');
     if (tab1) tab1.checked = true;
-    ['secTodayTop', 'secTodayUnsold', 'secHistory'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = 'none';
-    });
+    ['secTodayTop', 'secTodayUnsold', 'secHistory'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
   }
 
   function renderAll() {
-    renderMainCatDropdown();
-    renderMainCatTags();
-    renderSubCatTags();
-    onMainCatChange();
-    renderExpCatDropdown();
-    renderExpCatTags();
-    renderFixCatDropdown();
-    renderFixCatTags();
-    renderProducts();
-    renderDaily();
-    renderMonthly();
-    updateDateBadge();
+    renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange();
+    renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags();
+    renderProducts(); renderDaily(); renderMonthly(); updateDateBadge();
   }
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('✅ SW registered'))
-        .catch(err => console.log('SW error:', err));
+      navigator.serviceWorker.register('sw.js').then(() => console.log('✅ SW')).catch(e => console.log(e));
     });
   }
 </script>
