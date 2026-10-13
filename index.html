@@ -522,8 +522,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
-           collection, getDocs, onSnapshot, query, orderBy, writeBatch, serverTimestamp }
+  import { getFirestore, doc, setDoc, getDoc, deleteDoc,
+           collection, getDocs, onSnapshot, writeBatch, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -569,7 +569,6 @@
   let fixCats = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
   let openCats = {};
   let openSubCats = {};
-  let openSections = {};
   let currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
@@ -605,7 +604,6 @@
     const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ'];
     return names[m-1] + ' ' + d + ', ' + y;
   }
-  function showLoading() { loadingScreen.classList.remove('hidden'); }
   function hideLoading() { loadingScreen.classList.add('hidden'); }
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
@@ -623,7 +621,6 @@
     return 'unknown';
   }
 
-  // ===== Firestore Helpers =====
   function hotelRef() { return doc(db, 'hotels', HOTEL_ID); }
   function productsCol() { return collection(db, 'hotels', HOTEL_ID, 'products'); }
   function salesCol() { return collection(db, 'hotels', HOTEL_ID, 'sales'); }
@@ -659,7 +656,6 @@
     } catch (e) { console.error(e); setSyncStatus('error'); }
   }
 
-  // ===== Login =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -724,7 +720,6 @@
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin();
   });
 
-  // ===== Realtime Listeners =====
   let listenersSet = false;
   function setupRealtimeListeners() {
     if (listenersSet) return;
@@ -733,25 +728,19 @@
     onSnapshot(productsCol(), snap => {
       products = [];
       snap.forEach(d => products.push({ id: d.id, ...d.data() }));
-      renderProducts();
-      renderDaily();
-      renderMonthly();
-      setSyncStatus('online');
+      renderProducts(); renderDaily(); renderMonthly(); setSyncStatus('online');
     }, e => { console.error('products:', e); setSyncStatus('error'); });
 
     onSnapshot(salesCol(), snap => {
       sales = {};
       snap.forEach(d => { sales[d.id] = d.data(); });
-      renderProducts();
-      renderDaily();
-      renderMonthly();
+      renderProducts(); renderDaily(); renderMonthly();
     }, e => console.error('sales:', e));
 
     onSnapshot(expensesCol(), snap => {
       expenses = [];
       snap.forEach(d => expenses.push({ id: d.id, ...d.data() }));
-      renderDaily();
-      renderMonthly();
+      renderDaily(); renderMonthly();
     }, e => console.error('expenses:', e));
 
     onSnapshot(fixedCol(), snap => {
@@ -763,19 +752,15 @@
     onSnapshot(historyCol(), snap => {
       history = [];
       snap.forEach(d => history.push({ id: d.id, ...d.data() }));
-      renderHistory();
-      renderMonthly();
+      renderHistory(); renderMonthly();
     }, e => console.error('history:', e));
 
     onSnapshot(categoriesCol(), snap => {
-      if (snap.empty) return; // ነባሪ ምድቦች ይቆዩ
+      if (snap.empty) return;
       const newCats = {};
       snap.forEach(d => { newCats[d.id] = d.data().subs || []; });
       categories = newCats;
-      renderMainCatDropdown();
-      renderMainCatTags();
-      renderSubCatTags();
-      renderProducts();
+      renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); renderProducts();
     }, e => console.error('categories:', e));
 
     onSnapshot(expCatsCol(), snap => {
@@ -793,17 +778,14 @@
     }, e => console.error('fixCats:', e));
   }
 
-  // ===== Collapsible =====
   window.toggleSection = function(headerId, bodyId) {
     const hdr = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
     if (!hdr || !body) return;
     const isOpen = body.classList.toggle('open');
     hdr.classList.toggle('open', isOpen);
-    openSections[bodyId] = isOpen;
   };
 
-  // ===== Category =====
   function renderMainCatDropdown() {
     const sel = document.getElementById('prodMainCat');
     const cur = sel.value;
@@ -845,9 +827,7 @@
     categories[name] = [];
     inp.value = '';
     await saveDoc(categoriesCol(), name, { name, subs: [] });
-    renderMainCatDropdown();
-    renderMainCatTags();
-    renderSubCatTags();
+    renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags();
     toast('✅ ዋና ምድብ ተጨምሯል');
   };
 
@@ -855,9 +835,7 @@
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     delete categories[name];
     await deleteDocById(categoriesCol(), name);
-    renderMainCatDropdown();
-    renderMainCatTags();
-    renderSubCatTags();
+    renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags();
     toast('🗑️ ተሰርዟል');
   };
 
@@ -922,16 +900,14 @@
     expCats.push(name);
     inp.value = '';
     await saveDoc(expCatsCol(), name, { name });
-    renderExpCatDropdown();
-    renderExpCatTags();
+    renderExpCatDropdown(); renderExpCatTags();
     toast('✅ ተጨምሯል');
   };
   window.deleteExpCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     expCats = expCats.filter(c => c !== name);
     await deleteDocById(expCatsCol(), name);
-    renderExpCatDropdown();
-    renderExpCatTags();
+    renderExpCatDropdown(); renderExpCatTags();
     toast('🗑️ ተሰርዟል');
   };
 
@@ -955,20 +931,17 @@
     fixCats.push(name);
     inp.value = '';
     await saveDoc(fixCatsCol(), name, { name });
-    renderFixCatDropdown();
-    renderFixCatTags();
+    renderFixCatDropdown(); renderFixCatTags();
     toast('✅ ተጨምሯል');
   };
   window.deleteFixCat = async function(name) {
     if (!confirm('"' + name + '" ማጥፋት ይፈልጋሉ?')) return;
     fixCats = fixCats.filter(c => c !== name);
     await deleteDocById(fixCatsCol(), name);
-    renderFixCatDropdown();
-    renderFixCatTags();
+    renderFixCatDropdown(); renderFixCatTags();
     toast('🗑️ ተሰርዟል');
   };
 
-  // ===== Products =====
   window.addProduct = async function() {
     const name = document.getElementById('prodName').value.trim();
     const price = parseFloat(document.getElementById('prodPrice').value);
@@ -1071,7 +1044,6 @@
     renderDaily();
   }
 
-  // ===== Expenses =====
   window.addExpense = async function() {
     const cat = document.getElementById('expCat').value;
     const note = document.getElementById('expName').value.trim();
@@ -1187,7 +1159,6 @@
     }).join('');
   }
 
-  // ===== Monthly =====
   window.changeMonth = function(delta) {
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -1304,7 +1275,6 @@
     } catch (e) { console.error(e); setSyncStatus('error'); }
   };
 
-  // ===== Role-based UI =====
   function applyRolePermissions() {
     if (currentRole !== 'accountant') return;
     const tab3Input = document.getElementById('tab3');
@@ -1321,7 +1291,6 @@
     });
   }
 
-  // ===== Render All =====
   function renderAll() {
     renderMainCatDropdown();
     renderMainCatTags();
@@ -1334,6 +1303,15 @@
     renderProducts();
     renderDaily();
     renderMonthly();
+  }
+
+  // ===== PWA Service Worker =====
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('✅ Service Worker registered'))
+        .catch(err => console.log('SW error:', err));
+    });
   }
 </script>
 
