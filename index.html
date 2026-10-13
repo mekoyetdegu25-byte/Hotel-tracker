@@ -58,7 +58,7 @@
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3 { display: block; }
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
-  input[type="text"], input[type="number"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
+  input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: all 0.2s; appearance: none; -webkit-appearance: none; }
   select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -68,10 +68,12 @@
   .btn-success { background: #276749; color: #fff; }
   .btn-danger { background: #c53030; color: #fff; }
   .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
+  .btn-warning { background: #c05621; color: #fff; }
   .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
   .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; }
   .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); }
   .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); }
+  .summary-box.orange { background: linear-gradient(135deg, #c05621, #9c4221); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .summary-box .value { font-size: 26px; font-weight: 800; }
   .summary-box .value small { font-size: 14px; font-weight: 600; opacity: 0.9; }
@@ -151,6 +153,7 @@
   .section-header .sec-badge.red { background: #fed7d7; color: #742a2a; }
   .section-header .sec-badge.green { background: #c6f6d5; color: #22543d; }
   .section-header .sec-badge.blue { background: #bee3f8; color: #2a4365; }
+  .section-header .sec-badge.orange { background: #feebc8; color: #7b341e; }
   .section-body { display: none; padding: 0 16px 16px 16px; }
   .section-body.open { display: block; }
   .history-item { background: #f7fafc; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid #edf2f7; }
@@ -161,6 +164,11 @@
   .history-item .h-net.red { color: #c53030; }
   .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; align-items: center; }
   .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
+  .info-banner.orange { background: #fffaf0; border-color: #fbd38d; color: #7b341e; }
+  .search-box { position: relative; }
+  .search-box input { padding-left: 40px; }
+  .search-box .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #a0aec0; pointer-events: none; }
+  .date-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; background: #feebc8; color: #7b341e; margin-left: 8px; }
   .loading-screen { position: fixed; inset: 0; background: #f2f4f8; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; z-index: 999; }
   .loading-screen.hidden { display: none; }
   .loading-spinner { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: #2c5282; border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -230,6 +238,26 @@
 
     <div class="panels">
       <div class="panel" id="panel1">
+        <!-- ===== Date Picker (NEW) ===== -->
+        <div class="section-collapsible" id="secDatePicker">
+          <div class="section-header" id="hdrDatePicker" onclick="toggleSection('hdrDatePicker','bodyDatePicker')">
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📅</span><span class="sec-title">የሽያጭ ቀን ምረጥ</span></div>
+            <span class="sec-badge orange" id="hdrDateBadge">ዛሬ</span>
+          </div>
+          <div class="section-body" id="bodyDatePicker">
+            <div class="info-banner orange">
+              💡 <b>ያለፈ ቀን ሽያጭ</b> ማስገባት ከፈለግክ ቀን ምረጥ። ዛሬ ከሆነ ወደ ዛሬ ይመለሳል።
+            </div>
+            <label class="field-label">ቀን ምረጥ</label>
+            <input type="date" id="saleDateInput" onchange="onSaleDateChange()">
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button class="btn btn-outline btn-sm" style="flex:1;margin-top:0;" onclick="setTodaySaleDate()">📅 ዛሬ</button>
+              <button class="btn btn-outline btn-sm" style="flex:1;margin-top:0;" onclick="setYesterdaySaleDate()">📅 ትናንት</button>
+            </div>
+            <div id="selectedDateStatus" style="margin-top:10px;font-size:12.5px;color:#718096;"></div>
+          </div>
+        </div>
+
         <div class="section-collapsible" id="secAddProduct">
           <div class="section-header" id="hdrAddProduct" onclick="toggleSection('hdrAddProduct','bodyAddProduct')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">➕</span><span class="sec-title">አዲስ ምርት ጨምር</span></div>
@@ -271,10 +299,15 @@
 
         <div class="section-collapsible">
           <div class="section-header" id="hdrSaleEntry" onclick="toggleSection('hdrSaleEntry','bodySaleEntry')">
-            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📦</span><span class="sec-title">የዛሬ ሽያጭ አስገባ</span></div>
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📦</span><span class="sec-title">የሽያጭ መግቢያ</span></div>
             <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
           </div>
           <div class="section-body" id="bodySaleEntry">
+            <!-- ===== Search (NEW) ===== -->
+            <div class="search-box" style="margin-bottom:12px;">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="searchProductInput" placeholder="ምርት ፈልግ..." oninput="onSearchProduct()" autocomplete="off">
+            </div>
             <p style="font-size:12px;color:#718096;margin-bottom:10px;">የእያንዳንዱን ምርት የተሸጠ ብዛት ብቻ ያስገቡ። ✏️ ተጭነው ስም/ዋጋ ማሻሻል ይችላሉ።</p>
             <div class="expand-controls">
               <button onclick="toggleAllCategories(true)">📂 ሁሉንም ክፈት</button>
@@ -283,7 +316,7 @@
             <div id="productList"></div>
             <div class="divider"></div>
             <div class="row-between">
-              <span style="font-size:13px;font-weight:700;color:#2d3748;">የዛሬ ጠቅላላ ሽያጭ፦</span>
+              <span style="font-size:13px;font-weight:700;color:#2d3748;">የተመረጠው ቀን ሽያጭ፦</span>
               <span id="todaySalesTotal" style="font-size:16px;font-weight:800;color:#276749;">0.00 ብር</span>
             </div>
           </div>
@@ -372,15 +405,15 @@
 
         <div class="section-collapsible" style="border:2px solid #276749;">
           <div class="section-header" id="hdrSaveToday" onclick="toggleSection('hdrSaveToday','bodySaveToday')">
-            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">💾</span><span class="sec-title">የዛሬን ሂሳብ አስቀምጥ</span></div>
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">💾</span><span class="sec-title">የተመረጠውን ቀን አስቀምጥ</span></div>
           </div>
           <div class="section-body" id="bodySaveToday">
-            <div class="info-banner">የዛሬን ገቢ፣ ወጪ፣ ትርፍ እና ምን እንደተሸጠ በታሪክ ያስቀምጣል።</div>
+            <div class="info-banner">የተመረጠውን ቀን ገቢ፣ ወጪ፣ ትርፍ እና ምን እንደተሸጠ በታሪክ ያስቀምጣል።</div>
             <div class="row-between" style="margin-bottom:10px;"><span style="font-size:13px;color:#4a5568;">ገቢ፦</span><span id="savePreviewIncome" style="font-weight:700;color:#276749;">0.00 ብር</span></div>
             <div class="row-between" style="margin-bottom:10px;"><span style="font-size:13px;color:#4a5568;">ወጪ፦</span><span id="savePreviewExp" style="font-weight:700;color:#c53030;">0.00 ብር</span></div>
             <div class="row-between" style="margin-bottom:10px;"><span style="font-size:13px;color:#4a5568;">ትርፍ፦</span><span id="savePreviewNet" style="font-weight:800;color:#2c5282;">0.00 ብር</span></div>
             <div class="row-between" style="margin-bottom:10px;"><span style="font-size:13px;color:#4a5568;">የተሸጡ ምርቶች፦</span><span id="savePreviewItems" style="font-weight:700;color:#2c5282;">0</span></div>
-            <button class="btn btn-success" onclick="saveTodayToHistory()">💾 የዛሬን ሂሳብ አስቀምጥ</button>
+            <button class="btn btn-success" onclick="saveTodayToHistory()">💾 አስቀምጥ</button>
           </div>
         </div>
 
@@ -518,8 +551,8 @@
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🔄</span><span class="sec-title">አዲስ ቀን ጀምር (Reset)</span></div>
           </div>
           <div class="section-body" id="bodyReset">
-            <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">የዛሬን ሽያጭ እና የዕለት ወጪዎችን ብቻ ያጠፋል።</p>
-            <button class="btn btn-outline" onclick="resetDailySales()">🔄 የዛሬን ሽያጭ አጥፋ</button>
+            <p style="font-size:12.5px;color:#718096;margin-bottom:10px;">የተመረጠውን ቀን ሽያጭ እና የዕለት ወጪዎችን ብቻ ያጠፋል።</p>
+            <button class="btn btn-outline" onclick="resetSelectedDateSales()">🔄 የተመረጠውን ቀን አጥፋ</button>
           </div>
         </div>
       </div>
@@ -552,14 +585,9 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ===== Firestore Offline Persistence =====
   enableIndexedDbPersistence(db)
     .then(() => console.log('✅ Offline persistence enabled'))
-    .catch(err => {
-      if (err.code === 'failed-precondition') console.warn('⚠️ Persistence: ብዙ Tabs');
-      else if (err.code === 'unimplemented') console.warn('⚠️ Persistence: Browser አይደግፍም');
-      else console.warn('⚠️ Persistence error:', err);
-    });
+    .catch(err => console.warn('⚠️ Persistence:', err.code));
 
   const HOTEL_ID = 'hotel-main';
 
@@ -579,8 +607,8 @@
   let currentUser = null;
   let currentRole = 'unknown';
   let products = [];
-  let sales = {};
-  let expenses = [];
+  let sales = {};      // { productId: { qty, price, name, main, sub, date } }
+  let expenses = [];   // { id, cat, note, amount, date }
   let fixed = [];
   let history = [];
   let categories = {
@@ -594,6 +622,8 @@
   let openSubCats = {};
   let currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
+  let currentSaleDate = ''; // YYYY-MM-DD
+  let searchQuery = '';
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
   function money(n) {
@@ -613,14 +643,15 @@
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
-  function escJs(s) {
-    return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-  }
-  function escAttr(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
+  function escJs(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function todayStr() {
     const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function yesterdayStr() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
   function formatDate(dateStr) {
@@ -739,6 +770,12 @@
     const roleLabels = { owner: '👑 ባለቤት', accountant: '💼 አካውንታንት', unknown: '❓' };
     hdrRoleBadge.textContent = roleLabels[currentRole] || '❓';
     hdrRoleBadge.className = 'role-badge ' + currentRole;
+
+    // Initialize sale date
+    currentSaleDate = todayStr();
+    document.getElementById('saleDateInput').value = currentSaleDate;
+    updateDateBadge();
+
     await ensureHotelDoc();
     await loadHotelName();
     applyRolePermissions();
@@ -825,6 +862,61 @@
     if (!hdr || !body) return;
     const isOpen = body.classList.toggle('open');
     hdr.classList.toggle('open', isOpen);
+  };
+
+  // ===== Date Picker (NEW) =====
+  window.onSaleDateChange = function() {
+    const inp = document.getElementById('saleDateInput');
+    if (!inp.value) { inp.value = todayStr(); return; }
+    currentSaleDate = inp.value;
+    updateDateBadge();
+    renderProducts();
+    renderDaily();
+    renderMonthly();
+    toast('📅 ' + formatDate(currentSaleDate));
+  };
+
+  window.setTodaySaleDate = function() {
+    currentSaleDate = todayStr();
+    document.getElementById('saleDateInput').value = currentSaleDate;
+    updateDateBadge();
+    renderProducts(); renderDaily(); renderMonthly();
+    toast('📅 ዛሬ');
+  };
+
+  window.setYesterdaySaleDate = function() {
+    currentSaleDate = yesterdayStr();
+    document.getElementById('saleDateInput').value = currentSaleDate;
+    updateDateBadge();
+    renderProducts(); renderDaily(); renderMonthly();
+    toast('📅 ትናንት');
+  };
+
+  function updateDateBadge() {
+    const badge = document.getElementById('hdrDateBadge');
+    const status = document.getElementById('selectedDateStatus');
+    if (!badge || !status) return;
+    if (currentSaleDate === todayStr()) {
+      badge.textContent = 'ዛሬ';
+      badge.style.background = '#c6f6d5';
+      badge.style.color = '#22543d';
+      status.textContent = '✅ ዛሬ ላይ ነህ';
+      status.style.color = '#276749';
+    } else if (currentSaleDate === yesterdayStr()) {
+      badge.textContent = 'ትናንት';
+      status.textContent = '⚠️ ትናንት ላይ ነህ — ያለፈ ቀን';
+      status.style.color = '#c05621';
+    } else {
+      badge.textContent = 'ያለፈ ቀን';
+      status.textContent = '⚠️ ያለፈ ቀን — ' + formatDate(currentSaleDate);
+      status.style.color = '#c05621';
+    }
+  }
+
+  // ===== Search (NEW) =====
+  window.onSearchProduct = function() {
+    searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase();
+    renderProducts();
   };
 
   // ===== Hotel Name =====
@@ -1024,11 +1116,9 @@
     toast('🗑️ ተሰርዟል');
   };
 
-  // ===== Edit Product Modal =====
   window.openEditProduct = function(id) {
     const p = products.find(x => x.id === id);
     if (!p) { toast('⚠️ ምርት አልተገኘም'); return; }
-    
     let modal = document.getElementById('editModal');
     if (!modal) {
       modal = document.createElement('div');
@@ -1037,21 +1127,14 @@
       modal.onclick = (e) => { if (e.target === modal) closeEditModal(); };
       document.body.appendChild(modal);
     }
-    
     modal.innerHTML = `
       <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <h3 style="font-size:18px;font-weight:800;color:#1a365d;margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3>
-        
         <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">የምርት ስም</label>
         <input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
-        
         <label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ዋጋ (ብር)</label>
         <input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:#f7fafc;outline:none;margin-bottom:12px;">
-        
-        <div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">
-          📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}
-        </div>
-        
+        <div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}</div>
         <div style="display:flex;gap:8px;margin-top:16px;">
           <button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:#fff;color:#2c5282;cursor:pointer;">Cancel</button>
           <button onclick="saveEditProduct('${p.id}')" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:none;border-radius:10px;background:#2c5282;color:#fff;cursor:pointer;">💾 አስቀምጥ</button>
@@ -1060,56 +1143,62 @@
     `;
     modal.style.display = 'flex';
   };
-
   window.closeEditModal = function() {
     const modal = document.getElementById('editModal');
     if (modal) modal.style.display = 'none';
   };
-
   window.saveEditProduct = async function(id) {
     const newName = document.getElementById('editProdName').value.trim();
     const newPrice = parseFloat(document.getElementById('editProdPrice').value);
-    
     if (!newName) { toast('⚠️ ስም ያስፈልጋል'); return; }
     if (isNaN(newPrice) || newPrice < 0) { toast('⚠️ ትክክለኛ ዋጋ ያስገቡ'); return; }
-    
     const p = products.find(x => x.id === id);
     if (!p) { toast('⚠️ ምርት አልተገኘም'); return; }
-    
     setSyncStatus('syncing');
     try {
-      await setDoc(doc(productsCol(), id), {
-        name: newName,
-        price: newPrice,
-        main: p.main,
-        sub: p.sub,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
-      
+      await setDoc(doc(productsCol(), id), { name: newName, price: newPrice, main: p.main, sub: p.sub, updatedAt: serverTimestamp() }, { merge: true });
       closeEditModal();
       setSyncStatus('online');
       toast('✅ ምርት ተሻሽሏል');
     } catch (e) {
-      console.error(e);
-      setSyncStatus('error');
+      console.error(e); setSyncStatus('error');
       toast('⚠️ ስህተት: ' + e.message);
     }
   };
 
+  // ===== Sales with Date (CHANGED) =====
   window.setQty = async function(id, qty) {
     qty = parseInt(qty, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
     const p = products.find(x => x.id === id);
     if (!p) return;
+    // Key: productId_date → unique per product per date
+    const saleKey = id + '_' + currentSaleDate;
     if (qty === 0) {
-      delete sales[id];
-      await deleteDocById(salesCol(), id);
+      // Delete from sales
+      const existing = Object.keys(sales).find(k => k === saleKey || (sales[k].productId === id && sales[k].date === currentSaleDate));
+      if (existing) {
+        delete sales[existing];
+        await deleteDocById(salesCol(), existing);
+      }
     } else {
-      sales[id] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub };
-      await saveDoc(salesCol(), id, sales[id]);
+      sales[saleKey] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub, date: currentSaleDate };
+      await saveDoc(salesCol(), saleKey, sales[saleKey]);
     }
     updateSalesTotals();
   };
+
+  function getSalesForDate(dateStr) {
+    const result = {};
+    Object.keys(sales).forEach(k => {
+      const s = sales[k];
+      if (s && s.date === dateStr) {
+        result[s.productId] = s;
+      }
+    });
+    return result;
+  }
+
   window.toggleCategory = function(main) { openCats[main] = !openCats[main]; renderProducts(); };
   window.toggleSubCategory = function(main, sub) {
     const key = main + '||' + sub;
@@ -1121,25 +1210,43 @@
     openSubCats = {};
     if (open) Object.keys(categories).forEach(c => categories[c].forEach(s => { openSubCats[c + '||' + s] = true; }));
     renderProducts();
-    toast(open ? '📂 ሁሉም ተከፈቷል' : '📁 ሁሉም ተዘግቷል');
+    toast(open ? '📂 ሁሉንም ከፍቷል' : '📁 ሁሉንም ዘግቷል');
   };
 
   function renderProducts() {
     const wrap = document.getElementById('productList');
     if (products.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም ምርት አልተጨመረም።</div>'; updateSalesTotals(); return; }
+
+    // Filter by search
+    let filtered = products;
+    if (searchQuery) {
+      filtered = products.filter(p =>
+        p.name.toLowerCase().includes(searchQuery) ||
+        p.main.toLowerCase().includes(searchQuery) ||
+        p.sub.toLowerCase().includes(searchQuery)
+      );
+      if (filtered.length === 0) {
+        wrap.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" ምንም አልተገኘም።</div>';
+        updateSalesTotals();
+        return;
+      }
+    }
+
+    const dateSales = getSalesForDate(currentSaleDate);
     const grouped = {};
-    products.forEach(p => {
+    filtered.forEach(p => {
       if (!grouped[p.main]) grouped[p.main] = {};
       if (!grouped[p.main][p.sub]) grouped[p.main][p.sub] = [];
       grouped[p.main][p.sub].push(p);
     });
+
     let html = '';
     Object.keys(grouped).forEach(main => {
-      const mainOpen = !!openCats[main];
+      const mainOpen = !!openCats[main] || !!searchQuery;
       let mainTotal = 0, mainCount = 0;
       Object.keys(grouped[main]).forEach(sub => {
         grouped[main][sub].forEach(p => {
-          const s = sales[p.id];
+          const s = dateSales[p.id];
           mainTotal += (s ? s.qty : 0) * p.price;
           mainCount++;
         });
@@ -1150,12 +1257,12 @@
       html += '<div class="cat-body ' + (mainOpen ? 'open' : '') + '">';
       Object.keys(grouped[main]).forEach(sub => {
         const subKey = main + '||' + sub;
-        const subOpen = !!openSubCats[subKey];
+        const subOpen = !!openSubCats[subKey] || !!searchQuery;
         html += '<div class="sub-header ' + (subOpen ? 'open' : '') + '" onclick="toggleSubCategory(\'' + escJs(main) + '\',\'' + escJs(sub) + '\')">';
         html += '<div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ' + esc(sub) + '</span></div><span class="sub-count">' + grouped[main][sub].length + '</span></div>';
         html += '<div class="sub-body ' + (subOpen ? 'open' : '') + '">';
         grouped[main][sub].forEach(p => {
-          const s = sales[p.id];
+          const s = dateSales[p.id];
           const q = s ? s.qty : '';
           html += '<div class="list-item" style="margin-left:14px;">' +
             '<div class="info"><div class="name">' + esc(p.name) + '</div><div class="meta">' + money(p.price) + ' ብር</div></div>' +
@@ -1173,13 +1280,15 @@
   }
 
   function updateSalesTotals() {
+    const dateSales = getSalesForDate(currentSaleDate);
     let total = 0;
-    products.forEach(p => { const s = sales[p.id]; if (s) total += s.qty * p.price; });
+    products.forEach(p => { const s = dateSales[p.id]; if (s) total += s.qty * p.price; });
     document.getElementById('todaySalesTotal').textContent = money(total) + ' ብር';
     document.getElementById('hdrSaleTotal').textContent = money(total) + ' ብር';
     renderDaily();
   }
 
+  // ===== Expenses with Date =====
   window.addExpense = async function() {
     const cat = document.getElementById('expCat').value;
     const note = document.getElementById('expName').value.trim();
@@ -1187,7 +1296,7 @@
     if (!cat) { toast('⚠️ ምድብ ይምረጡ'); return; }
     if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ መጠን ያስገቡ'); return; }
     const id = uid();
-    await saveDoc(expensesCol(), id, { cat, note, amount: amt, date: todayStr() });
+    await saveDoc(expensesCol(), id, { cat, note, amount: amt, date: currentSaleDate });
     document.getElementById('expName').value = '';
     document.getElementById('expAmount').value = '';
     toast('✅ ወጪ ተጨምሯል');
@@ -1196,32 +1305,39 @@
     await deleteDocById(expensesCol(), id);
     toast('🗑️ ተሰርዟል');
   };
+
   function getTodaySaleItems() {
     const items = [];
+    const dateSales = getSalesForDate(currentSaleDate);
     products.forEach(p => {
-      const s = sales[p.id];
+      const s = dateSales[p.id];
       if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price });
     });
     return items;
   }
+
   function renderDaily() {
+    const dateSales = getSalesForDate(currentSaleDate);
     let income = 0;
-    products.forEach(p => { const s = sales[p.id]; if (s) income += s.qty * p.price; });
+    products.forEach(p => { const s = dateSales[p.id]; if (s) income += s.qty * p.price; });
     document.getElementById('dailyIncome').innerHTML = money(income) + ' <small>ብር</small>';
     document.getElementById('hdrDailyIncomeBadge').textContent = money(income) + ' ብር';
+
+    const dateExpenses = expenses.filter(e => e.date === currentSaleDate);
     const wrap = document.getElementById('expenseList');
     let expTotal = 0;
-    if (expenses.length === 0) { wrap.innerHTML = '<div class="empty-msg">ምንም ወጪ አልተመዘገበም።</div>'; }
+    if (dateExpenses.length === 0) { wrap.innerHTML = '<div class="empty-msg">ይህ ቀን ምንም ወጪ አልተመዘገበም።</div>'; }
     else {
-      wrap.innerHTML = expenses.map(e =>
+      wrap.innerHTML = dateExpenses.map(e =>
         '<div class="list-item"><div class="info"><div class="name">' + esc(e.cat) + '</div>' + (e.note ? '<div class="meta">' + esc(e.note) + '</div>' : '') + '</div>' +
         '<span class="amount red">' + money(e.amount) + ' ብር</span>' +
         '<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense(\'' + e.id + '\')">✕</button></div>'
       ).join('');
-      expenses.forEach(e => { expTotal += e.amount; });
+      dateExpenses.forEach(e => { expTotal += e.amount; });
     }
     document.getElementById('dailyExpTotal').textContent = money(expTotal) + ' ብር';
     document.getElementById('hdrDailyExpBadge').textContent = money(expTotal) + ' ብር';
+
     const net = income - expTotal;
     document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>';
     document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር';
@@ -1235,11 +1351,12 @@
     renderTodayTopSellers();
     renderTodayUnsold();
   }
+
   function renderTodayTopSellers() {
     const wrap = document.getElementById('todayTopSellers');
     const items = getTodaySaleItems();
     document.getElementById('hdrTodayTopBadge').textContent = items.length;
-    if (items.length === 0) { wrap.innerHTML = '<div class="empty-msg">ዛሬ ምንም አልተሸጠም።</div>'; return; }
+    if (items.length === 0) { wrap.innerHTML = '<div class="empty-msg">ይህ ቀን ምንም አልተሸጠም።</div>'; return; }
     items.sort((a, b) => b.qty - a.qty);
     const top = items.slice(0, 5);
     const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
@@ -1253,7 +1370,8 @@
   }
   function renderTodayUnsold() {
     const wrap = document.getElementById('todayUnsold');
-    const unsold = products.filter(p => !sales[p.id] || sales[p.id].qty === 0);
+    const dateSales = getSalesForDate(currentSaleDate);
+    const unsold = products.filter(p => !dateSales[p.id] || dateSales[p.id].qty === 0);
     document.getElementById('hdrTodayUnsoldBadge').textContent = unsold.length;
     if (unsold.length === 0) { wrap.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; }
     wrap.innerHTML = unsold.map(p =>
@@ -1262,24 +1380,29 @@
       '<div class="u-badge">0</div></div>'
     ).join('');
   }
+
   window.saveTodayToHistory = async function() {
-    const dateStr = todayStr();
+    const dateStr = currentSaleDate;
+    const dateSales = getSalesForDate(dateStr);
     let income = 0;
-    products.forEach(p => { const s = sales[p.id]; if (s) income += s.qty * p.price; });
+    products.forEach(p => { const s = dateSales[p.id]; if (s) income += s.qty * p.price; });
+    const dateExpenses = expenses.filter(e => e.date === dateStr);
     let expTotal = 0;
-    expenses.forEach(e => { expTotal += e.amount; });
+    dateExpenses.forEach(e => { expTotal += e.amount; });
     const net = income - expTotal;
     if (income === 0 && expTotal === 0) { toast('⚠️ ምንም ውሂብ የለም'); return; }
     const items = getTodaySaleItems();
     const record = { date: dateStr, income, expense: expTotal, net, items };
     await saveDoc(historyCol(), dateStr, record);
-    toast('✅ ተቀምጧል');
+    toast('✅ ' + formatDate(dateStr) + ' ተቀምጧል');
   };
+
   window.deleteHistory = async function(id) {
     if (!confirm('ይህን ታሪክ ማጥፋት ይፈልጋሉ?')) return;
     await deleteDocById(historyCol(), id);
     toast('🗑️ ተሰርዟል');
   };
+
   function renderHistory() {
     const wrap = document.getElementById('historyList');
     document.getElementById('hdrHistoryBadge').textContent = history.length;
@@ -1288,7 +1411,8 @@
     wrap.innerHTML = sorted.map(h => {
       const netClass = h.net >= 0 ? 'green' : 'red';
       const itemCount = (h.items && Array.isArray(h.items)) ? h.items.length : 0;
-      return '<div class="history-item"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + '</span>' +
+      const isSelected = h.date === currentSaleDate;
+      return '<div class="history-item" style="' + (isSelected ? 'border:2px solid #2c5282;' : '') + '"><div class="h-top"><span class="h-date">📆 ' + esc(formatDate(h.date)) + (isSelected ? ' ✓' : '') + '</span>' +
         '<span class="h-net ' + netClass + '">' + money(h.net) + ' ብር</span></div>' +
         '<div class="h-details"><span>💰 ' + money(h.income) + '</span><span>💸 ' + money(h.expense) + '</span><span>📦 ' + itemCount + '</span>' +
         '<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory(\'' + h.id + '\')">✕</button></div></div>';
@@ -1395,19 +1519,27 @@
     ).join('');
   }
 
-  window.resetDailySales = async function() {
-    if (!confirm('የዛሬን ሽያጭ እና የዕለት ወጪዎችን ማጥፋት ይፈልጋሉ?')) return;
+  window.resetSelectedDateSales = async function() {
+    const dateStr = currentSaleDate;
+    if (!confirm('📅 ' + formatDate(dateStr) + '\n\nየዚህን ቀን ሽያጭ እና ወጪ ማጥፋት ይፈልጋሉ?')) return;
     setSyncStatus('syncing');
     try {
       const batch = writeBatch(db);
+      // Delete sales for this date
       const salesSnap = await getDocs(salesCol());
-      salesSnap.forEach(d => batch.delete(d.ref));
+      salesSnap.forEach(d => {
+        const s = d.data();
+        if (s && s.date === dateStr) batch.delete(d.ref);
+      });
+      // Delete expenses for this date
       const expSnap = await getDocs(expensesCol());
-      expSnap.forEach(d => batch.delete(d.ref));
+      expSnap.forEach(d => {
+        const e = d.data();
+        if (e && e.date === dateStr) batch.delete(d.ref);
+      });
       await batch.commit();
-      sales = {}; expenses = [];
       setSyncStatus('online');
-      toast('🔄 አዲስ ቀን ተጀምሯል');
+      toast('🔄 ' + formatDate(dateStr) + ' ተጠፍቷል');
     } catch (e) { console.error(e); setSyncStatus('error'); }
   };
 
@@ -1439,12 +1571,13 @@
     renderProducts();
     renderDaily();
     renderMonthly();
+    updateDateBadge();
   }
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('✅ Service Worker registered'))
+        .then(() => console.log('✅ SW registered'))
         .catch(err => console.log('SW error:', err));
     });
   }
