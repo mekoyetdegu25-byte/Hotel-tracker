@@ -33,7 +33,6 @@
   body.dark .list-item .meta { color: #a0aec0; }
   body.dark .list-item .qty-input { background: #2d3748; color: #63b3ed; border-color: #718096; }
   body.dark .history-item { background: #4a5568; border-color: #4a5568; }
-  body.dark .history-item .h-date { color: #63b3ed; }
   body.dark .seller-item { background: #4a5568; border-color: #4a5568; }
   body.dark .seller-item .seller-name { color: #e2e8f0; }
   body.dark .unsold-item { background: #742a2a; border-color: #9b2c2c; }
@@ -44,7 +43,6 @@
   body.dark .stat-row .stat-label { color: #a0aec0; }
   body.dark .stat-row .stat-value { color: #e2e8f0; }
   body.dark .cat-tag { background: #2d3748; border-color: #2c5282; color: #63b3ed; }
-  body.dark .expand-controls button { background: #4a5568; color: #63b3ed; border-color: #3182ce; }
   body.dark .btn-outline { background: transparent; color: #63b3ed; border-color: #63b3ed; }
   body.dark .month-nav .month-label { color: #63b3ed; }
   body.dark .toggle-row label { color: #e2e8f0; }
@@ -61,22 +59,23 @@
   input[type="email"], input[type="password"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f7fafc; outline: none; }
   input:focus { border-color: #3182ce; background: #fff; }
   .btn-login { width: 100%; padding: 15px; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; cursor: pointer; margin-top: 8px; }
-  .btn-login:disabled { opacity: 0.6; }
   .error-box { background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: none; }
   .error-box.show { display: block; }
   .info-box { background: #ebf8ff; border: 1px solid #90cdf4; color: #2c5282; padding: 12px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6; margin-top: 20px; }
+  body.dark .info-box { background: #2c5282; color: #bee3f8; border-color: #3182ce; }
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   #mainApp { display: none; }
   #mainApp.show { display: block; }
   header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   header .h-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  header .h-logo { font-size: 24px; }
+  header .h-logo { font-size: 24px; width: 32px; height: 32px; object-fit: contain; border-radius: 8px; }
   header .h-title { font-size: 14px; font-weight: 700; line-height: 1.2; }
   header .h-user { font-size: 10.5px; opacity: 0.85; margin-top: 2px; }
   header .h-right { display: flex; align-items: center; gap: 8px; }
   .role-badge { padding: 4px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 800; }
   .role-badge.owner { background: #fefcbf; color: #744210; }
+  .role-badge.manager { background: #bee3f8; color: #2a4365; }
   .role-badge.accountant { background: #c6f6d5; color: #22543d; }
   .btn-logout-hdr { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
   .sync-status { font-size: 9.5px; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
@@ -94,7 +93,6 @@
   input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; }
   select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; appearance: none; -webkit-appearance: none; }
   input:focus, select:focus { border-color: #3182ce; background: #fff; }
-  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 14px; }
   .btn-primary { background: #2c5282; color: #fff; }
   .btn-success { background: #276749; color: #fff; }
@@ -106,14 +104,12 @@
   .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .summary-box .value { font-size: 26px; font-weight: 800; }
-  .summary-box .value small { font-size: 14px; font-weight: 600; }
   .list-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .list-item .info { flex: 1; min-width: 0; }
   .list-item .name { font-size: 14px; font-weight: 600; color: #2d3748; }
   .list-item .meta { font-size: 11.5px; color: #718096; margin-top: 2px; }
   .list-item .amount { font-size: 14px; font-weight: 700; color: #2c5282; margin-left: 10px; white-space: nowrap; }
   .list-item .amount.red { color: #c53030; }
-  .list-item .amount.green { color: #276749; }
   .list-item .qty-input { width: 70px; padding: 8px; font-size: 15px; text-align: center; border: 1.5px solid #cbd5e0; border-radius: 8px; margin-left: 8px; font-weight: 700; color: #2c5282; background: #fff; }
   .empty-msg { text-align: center; color: #a0aec0; font-size: 13px; padding: 20px 10px; font-style: italic; }
   .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -207,34 +203,26 @@
   .chart-container { position: relative; height: 240px; margin-bottom: 16px; }
   .settings-btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   .settings-btn-row .btn { flex: 1; min-width: 120px; margin-top: 0; }
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; }
-  .toggle-row label { margin: 0; font-size: 14px; color: #2d3748; font-weight: 600; }
-  .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 4px; }
+  .toggle-row label { margin: 0; font-size: 13.5px; color: #2d3748; font-weight: 600; }
+  .switch { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 28px; }
-  .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: #fff; transition: .3s; border-radius: 50%; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 26px; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: #fff; transition: .3s; border-radius: 50%; }
   input:checked + .slider { background-color: #2c5282; }
-  input:checked + .slider:before { transform: translateX(24px); }
+  input:checked + .slider:before { transform: translateX(22px); }
+  .perm-section { background: #f7fafc; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; border: 1px solid #edf2f7; }
+  body.dark .perm-section { background: #4a5568; border-color: #4a5568; }
+  .perm-section .perm-title { font-size: 13px; font-weight: 800; color: #2c5282; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  body.dark .perm-section .perm-title { color: #63b3ed; }
 </style>
 </head>
 <body>
 
-<!-- ===== SPLASH SCREEN ===== -->
-<div id="splashScreen" style="position:fixed;inset:0;background:linear-gradient(135deg,#1a365d 0%,#2c5282 50%,#3182ce 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:99999;transition:opacity 0.5s;">
-<img src="logo.jpg" style="width:160px;height:160px;object-fit:contain;animation:pop 0.8s ease;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3));">
-  <div style="color:#fff;font-size:22px;font-weight:800;text-align:center;padding:0 20px;animation:fadeIn 1s ease;">የሆቴል ሽያጭ እና ወጪ መከታተያ</div>
-  <div style="color:#bee3f8;font-size:13px;letter-spacing:1px;">Sales &amp; Expense Tracker</div>
-  <div style="margin-top:20px;width:40px;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden;">
-    <div style="width:100%;height:100%;background:#fff;animation:loadbar 1.5s ease-in-out;"></div>
-  </div>
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">በመጫን ላይ...</div>
 </div>
-
-<style>
-  @keyframes pop { 0%{transform:scale(0.3);opacity:0;} 60%{transform:scale(1.1);} 100%{transform:scale(1);opacity:1;} }
-  @keyframes fadeIn { 0%{opacity:0;transform:translateY(10px);} 100%{opacity:1;transform:translateY(0);} }
-  @keyframes loadbar { 0%{width:0;} 100%{width:100%;} }
-  #splashScreen.hide { opacity:0; pointer-events:none; }
-</style>
 
 <div id="loginScreen" class="hidden">
   <div class="login-box">
@@ -258,6 +246,7 @@
     <div class="info-box">
       <strong>ℹ️ የሙከራ መረጃ፦</strong><br>
       👑 ባለቤት: <strong>owner@hotel.com</strong> / <strong>owner123456</strong><br>
+      🎯 ማናጀር: <strong>manager@hotel.com</strong> / <strong>mgr123456</strong><br>
       💼 አካውንታንት: <strong>accountant@hotel.com</strong> / <strong>acc123456</strong>
     </div>
   </div>
@@ -266,7 +255,7 @@
 <div id="mainApp">
   <header>
     <div class="h-left">
-      <img src="logo.jpg" style="width:36px;height:36px;object-fit:contain;border-radius:8px;">
+      <img src="logo.jpg" class="h-logo">
       <div>
         <div class="h-title" id="hdrHotelName">የሆቴል ሽያጭ መከታተያ</div>
         <div class="h-user" id="hdrUserEmail">—</div>
@@ -664,6 +653,51 @@
           </div>
         </div>
 
+        <!-- 🆕 PERMISSIONS (owner only) -->
+        <div class="section-collapsible" id="secPermissions">
+          <div class="section-header open" id="hdrPermissions" onclick="toggleSection('hdrPermissions','bodyPermissions')">
+            <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🎯</span><span class="sec-title">የተጠቃሚዎች ፈቃዶች (Permissions)</span></div>
+            <span class="sec-badge blue">Owner</span>
+          </div>
+          <div class="section-body open" id="bodyPermissions">
+            <div class="info-banner">💡 እያንዳንዱ ተጠቃሚ ምን ማየት እንዳለበት እዚህ ያስተካክሉ። ወዲያውኑ ይተገበራል።</div>
+
+            <!-- Manager -->
+            <div class="perm-section">
+              <div class="perm-title">🎯 ማናጀር (Manager)</div>
+              <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_sales"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_expense"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_mgr_product"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_mgr_cat"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_top"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_unsold"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_history"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_mgr_monthly"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_mgr_dashboard"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_mgr_settings"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_mgr_reset"><span class="slider"></span></label></div>
+            </div>
+
+            <!-- Accountant -->
+            <div class="perm-section">
+              <div class="perm-title">💼 አካውንታንት (Accountant)</div>
+              <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_sales"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_expense"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_acc_product"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_acc_cat"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_top"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_unsold"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_history"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_acc_monthly"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_acc_dashboard"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_acc_settings"><span class="slider"></span></label></div>
+              <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_acc_reset"><span class="slider"></span></label></div>
+            </div>
+
+            <button class="btn btn-success" onclick="savePermissions()">💾 ፈቃዶችን አስቀምጥ</button>
+          </div>
+        </div>
+
         <div class="section-collapsible">
           <div class="section-header" id="hdrReset" onclick="toggleSection('hdrReset','bodyReset')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🔄</span><span class="sec-title">አዲስ ቀን ጀምር (Reset)</span></div>
@@ -705,7 +739,7 @@
 
   const HOTEL_ID = 'hotel-main';
 
-  const loadingScreen = document.getElementById('splashScreen');
+  const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
   const mainApp = document.getElementById('mainApp');
   const errorBox = document.getElementById('errorBox');
@@ -720,6 +754,7 @@
 
   let currentUser = null;
   let currentRole = 'unknown';
+  let permissions = {}; // { manager: {...}, accountant: {...} }
   let products = [], sales = {}, expenses = [], fixed = [], history = [];
   let categories = {
     'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -736,6 +771,20 @@
   let dailyChartInstance = null, pieChartInstance = null, dayLineChartInstance = null;
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
+  // ===== DEFAULT PERMISSIONS =====
+  const DEFAULT_PERMS = {
+    manager: {
+      sales: true, expense: true, product: true, cat: true,
+      top: true, unsold: true, history: true, monthly: true,
+      dashboard: true, settings: false, reset: true
+    },
+    accountant: {
+      sales: true, expense: true, product: true, cat: true,
+      top: false, unsold: false, history: false, monthly: false,
+      dashboard: false, settings: false, reset: true
+    }
+  };
+
   function money(n) { return (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   let toastTimer;
@@ -746,16 +795,23 @@
   function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function yesterdayStr() { const d = new Date(); d.setDate(d.getDate() - 1); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function formatDate(dateStr) { const p = dateStr.split('-'); if (p.length !== 3) return dateStr; const y = p[0], m = parseInt(p[1],10), d = parseInt(p[2],10); const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ']; return names[m-1] + ' ' + d + ', ' + y; }
-  function hideLoading() {
-  const splash = document.getElementById('splashScreen');
-  if (splash) {
-    splash.classList.add('hide');
-    setTimeout(() => splash.style.display = 'none', 600);
-  }
-}
+  function hideLoading() { loadingScreen.classList.add('hidden'); }
   function showError(msg) { errorBox.textContent = '⚠️ ' + msg; errorBox.classList.add('show'); setTimeout(() => errorBox.classList.remove('show'), 6000); }
   function setSyncStatus(status) { syncStatus.className = 'sync-status ' + status; syncStatus.textContent = status === 'syncing' ? '☁️' : (status === 'error' ? '⚠️' : '✅'); }
-  function getUserRole(email) { if (!email) return 'unknown'; if (email.startsWith('owner@')) return 'owner'; if (email.startsWith('accountant@')) return 'accountant'; return 'unknown'; }
+  function getUserRole(email) {
+    if (!email) return 'unknown';
+    if (email.startsWith('owner@')) return 'owner';
+    if (email.startsWith('manager@')) return 'manager';
+    if (email.startsWith('accountant@')) return 'accountant';
+    return 'unknown';
+  }
+
+  // ===== Permission check =====
+  function can(perm) {
+    if (currentRole === 'owner') return true;
+    if (!permissions[currentRole]) return false;
+    return !!permissions[currentRole][perm];
+  }
 
   function hotelRef() { return doc(db, 'hotels', HOTEL_ID); }
   function productsCol() { return collection(db, 'hotels', HOTEL_ID, 'products'); }
@@ -766,16 +822,193 @@
   function expCatsCol() { return collection(db, 'hotels', HOTEL_ID, 'expenseCategories'); }
   function fixCatsCol() { return collection(db, 'hotels', HOTEL_ID, 'fixedCategories'); }
   function historyCol() { return collection(db, 'hotels', HOTEL_ID, 'history'); }
+  function permsRef() { return doc(db, 'hotels', HOTEL_ID, 'settings', 'permissions'); }
 
-  async function ensureHotelDoc() { try { const ref = hotelRef(); const snap = await getDoc(ref); if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() }); } catch (e) { console.warn(e); } }
-  async function loadHotelName() { try { const snap = await getDoc(hotelRef()); if (snap.exists()) { const data = snap.data(); if (data.name) { hdrHotelName.textContent = data.name; const inp = document.getElementById('hotelNameInput'); if (inp) inp.value = data.name; } } } catch (e) { console.warn(e); } }
-  async function saveDoc(colRef, id, data) { setSyncStatus('syncing'); try { await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true }); setSyncStatus('online'); } catch (e) { console.error(e); setSyncStatus('error'); } }
-  async function deleteDocById(colRef, id) { setSyncStatus('syncing'); try { await deleteDoc(doc(colRef, id)); setSyncStatus('online'); } catch (e) { console.error(e); setSyncStatus('error'); } }
+  async function ensureHotelDoc() {
+    try {
+      const ref = hotelRef();
+      const snap = await getDoc(ref);
+      if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
+    } catch (e) { console.warn(e); }
+  }
+  async function loadHotelName() {
+    try {
+      const snap = await getDoc(hotelRef());
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.name) { hdrHotelName.textContent = data.name; const inp = document.getElementById('hotelNameInput'); if (inp) inp.value = data.name; }
+      }
+    } catch (e) { console.warn(e); }
+  }
+  async function saveDoc(colRef, id, data) {
+    setSyncStatus('syncing');
+    try { await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true }); setSyncStatus('online'); }
+    catch (e) { console.error(e); setSyncStatus('error'); }
+  }
+  async function deleteDocById(colRef, id) {
+    setSyncStatus('syncing');
+    try { await deleteDoc(doc(colRef, id)); setSyncStatus('online'); }
+    catch (e) { console.error(e); setSyncStatus('error'); }
+  }
 
+  // ===== PERMISSIONS (NEW) =====
+  async function loadPermissions() {
+    try {
+      const snap = await getDoc(permsRef());
+      if (snap.exists()) {
+        const data = snap.data();
+        permissions = {
+          manager: { ...DEFAULT_PERMS.manager, ...(data.manager || {}) },
+          accountant: { ...DEFAULT_PERMS.accountant, ...(data.accountant || {}) }
+        };
+      } else {
+        permissions = JSON.parse(JSON.stringify(DEFAULT_PERMS));
+        await setDoc(permsRef(), permissions);
+      }
+    } catch (e) {
+      console.warn('loadPermissions:', e);
+      permissions = JSON.parse(JSON.stringify(DEFAULT_PERMS));
+    }
+  }
+
+  window.savePermissions = async function() {
+    if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; }
+    const newPerms = { manager: {}, accountant: {} };
+    const keys = ['sales','expense','product','cat','top','unsold','history','monthly','dashboard','settings','reset'];
+    keys.forEach(k => {
+      newPerms.manager[k] = document.getElementById('perm_mgr_' + k).checked;
+      newPerms.accountant[k] = document.getElementById('perm_acc_' + k).checked;
+    });
+    setSyncStatus('syncing');
+    try {
+      await setDoc(permsRef(), newPerms, { merge: true });
+      permissions = newPerms;
+      setSyncStatus('online');
+      toast('✅ ፈቃዶች ተቀምጠዋል');
+      applyPermissionsToUI();
+    } catch (e) {
+      setSyncStatus('error');
+      toast('⚠️ ' + e.message);
+    }
+  };
+
+  function fillPermissionsUI() {
+    const keys = ['sales','expense','product','cat','top','unsold','history','monthly','dashboard','settings','reset'];
+    keys.forEach(k => {
+      const mgrEl = document.getElementById('perm_mgr_' + k);
+      const accEl = document.getElementById('perm_acc_' + k);
+      if (mgrEl) mgrEl.checked = permissions.manager[k];
+      if (accEl) accEl.checked = permissions.accountant[k];
+    });
+  }
+
+  // ===== APPLY PERMISSIONS (NEW) =====
+  function applyPermissionsToUI() {
+    // Owner: everything visible
+    if (currentRole === 'owner') {
+      showAllTabs();
+      document.getElementById('secPermissions').style.display = '';
+      document.getElementById('secHotelSettings').style.display = '';
+      return;
+    }
+
+    // Manager & Accountant
+    const canTop = can('top');
+    const canUnsold = can('unsold');
+    const canHistory = can('history');
+    const canMonthly = can('monthly');
+    const canDashboard = can('dashboard');
+    const canSettings = can('settings');
+    const canReset = can('reset');
+    const canProduct = can('product');
+    const canCat = can('cat');
+    const canExpense = can('expense');
+    const canSales = can('sales');
+
+    // Tab 1 - product mgmt
+    document.getElementById('secAddProduct').style.display = canProduct ? '' : 'none';
+    document.getElementById('secCatMgr').style.display = canCat ? '' : 'none';
+    document.getElementById('hdrSaleEntry').parentElement.style.display = canSales ? '' : 'none';
+
+    // Tab 2 - reports
+    document.getElementById('secTodayTop').style.display = canTop ? '' : 'none';
+    document.getElementById('secTodayUnsold').style.display = canUnsold ? '' : 'none';
+    document.getElementById('secHistory').style.display = canHistory ? '' : 'none';
+    document.getElementById('secExpCats').style.display = canExpense ? '' : 'none';
+    document.getElementById('hdrDailyExp').parentElement.style.display = canExpense ? '' : 'none';
+
+    // Tab 3 - monthly
+    const tab3 = document.getElementById('tab3');
+    const tab3Label = document.querySelector('label[for="tab3"]');
+    if (canMonthly) {
+      if (tab3) tab3.disabled = false;
+      if (tab3Label) tab3Label.style.display = '';
+    } else {
+      if (tab3) { tab3.disabled = true; tab3.checked = false; }
+      if (tab3Label) tab3Label.style.display = 'none';
+    }
+
+    // Tab 4 - dashboard
+    const tab4 = document.getElementById('tab4');
+    const tab4Label = document.querySelector('label[for="tab4"]');
+    if (canDashboard) {
+      if (tab4) tab4.disabled = false;
+      if (tab4Label) tab4Label.style.display = '';
+    } else {
+      if (tab4) { tab4.disabled = true; tab4.checked = false; }
+      if (tab4Label) tab4Label.style.display = 'none';
+    }
+
+    // Tab 5 - settings
+    const tab5 = document.getElementById('tab5');
+    const tab5Label = document.querySelector('label[for="tab5"]');
+    if (canSettings) {
+      if (tab5) tab5.disabled = false;
+      if (tab5Label) tab5Label.style.display = '';
+      // Settings: no permissions section for non-owner
+      document.getElementById('secPermissions').style.display = 'none';
+    } else {
+      if (tab5) { tab5.disabled = true; tab5.checked = false; }
+      if (tab5Label) tab5Label.style.display = 'none';
+    }
+
+    // Reset button
+    const resetBtn = document.querySelector('#bodyReset .btn-outline');
+    if (resetBtn) resetBtn.style.display = canReset ? '' : 'none';
+
+    // Force tab 1 if tab3/4/5 are hidden
+    const activeTab = document.querySelector('input[name="tabs"]:checked');
+    if (activeTab) {
+      const activeId = activeTab.id;
+      if (activeId === 'tab3' && !canMonthly) document.getElementById('tab1').checked = true;
+      if (activeId === 'tab4' && !canDashboard) document.getElementById('tab1').checked = true;
+      if (activeId === 'tab5' && !canSettings) document.getElementById('tab1').checked = true;
+    }
+  }
+
+  function showAllTabs() {
+    ['tab3','tab4','tab5'].forEach(id => {
+      const t = document.getElementById(id);
+      const l = document.querySelector(`label[for="${id}"]`);
+      if (t) t.disabled = false;
+      if (l) l.style.display = '';
+    });
+    ['secAddProduct','secCatMgr','secTodayTop','secTodayUnsold','secHistory','secExpCats'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+    document.getElementById('hdrSaleEntry').parentElement.style.display = '';
+    document.getElementById('hdrDailyExp').parentElement.style.display = '';
+    const resetBtn = document.querySelector('#bodyReset .btn-outline');
+    if (resetBtn) resetBtn.style.display = '';
+  }
+
+  // ===== DARK MODE =====
   function applyDarkMode(isDark) { if (isDark) { document.body.classList.add('dark'); const t = document.getElementById('darkModeToggle'); if (t) t.checked = true; } else { document.body.classList.remove('dark'); const t = document.getElementById('darkModeToggle'); if (t) t.checked = false; } }
   window.toggleDarkMode = function() { const t = document.getElementById('darkModeToggle'); const isDark = t.checked; applyDarkMode(isDark); localStorage.setItem('hotel_dark', isDark ? '1' : '0'); toast(isDark ? '🌙 Dark' : '☀️ Light'); renderDailyChart(); renderMonthlyPieChart(); renderDailyLineChart(); };
   function loadDarkMode() { const saved = localStorage.getItem('hotel_dark'); if (saved === '1') applyDarkMode(true); }
 
+  // ===== NOTIFICATIONS =====
   window.enableNotifications = async function() {
     const status = document.getElementById('notifStatus');
     if (!('Notification' in window)) { status.textContent = '❌ አይደግፍም'; status.style.color = '#c53030'; return; }
@@ -785,6 +1018,7 @@
   function scheduleDailyReminder() { const now = new Date(); const target = new Date(); target.setHours(20, 0, 0, 0); if (target <= now) target.setDate(target.getDate() + 1); const delay = target.getTime() - now.getTime(); setTimeout(() => { if (Notification.permission === 'granted') new Notification('🏨 የሆቴል ሽያጭ መከታተያ', { body: 'የዛሬ ሽያጭ አስገባ! 📊' }); scheduleDailyReminder(); }, delay); }
   function loadNotificationStatus() { const status = document.getElementById('notifStatus'); if (!status) return; if (!('Notification' in window)) { status.textContent = '❌ አይደግፍም'; return; } if (Notification.permission === 'granted') { status.textContent = '✅ ተነስቷል'; status.style.color = '#276749'; scheduleDailyReminder(); } else if (Notification.permission === 'denied') { status.textContent = '❌ አልተፈቀደም'; status.style.color = '#c53030'; } }
 
+  // ===== PRINT / EXCEL =====
   window.printReport = function() {
     const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
     const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
@@ -813,6 +1047,7 @@
     toast('📊 Excel ተወርሷል');
   };
 
+  // ===== LOGIN =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -833,22 +1068,29 @@
   };
   window.doLogout = async function() { if (!confirm('መውጣት ትፈልጋለህ?')) return; try { await signOut(auth); } catch (err) { showError(err.message); } };
   function showLogin() { loginScreen.classList.remove('hidden'); mainApp.classList.remove('show'); passwordInput.value = ''; }
+
   async function showMainApp(user) {
     currentUser = user; currentRole = getUserRole(user.email);
     loginScreen.classList.add('hidden'); mainApp.classList.add('show');
     hdrUserEmail.textContent = user.email;
-    const roleLabels = { owner: '👑 ባለቤት', accountant: '💼 አካውንታንት', unknown: '❓' };
+    const roleLabels = { owner: '👑 ባለቤት', manager: '🎯 ማናጀር', accountant: '💼 አካውንታንት', unknown: '❓' };
     hdrRoleBadge.textContent = roleLabels[currentRole] || '❓'; hdrRoleBadge.className = 'role-badge ' + currentRole;
     currentSaleDate = todayStr();
     document.getElementById('saleDateInput').value = currentSaleDate;
     const cdi = document.getElementById('chartDayInput'); if (cdi) cdi.value = currentSaleDate;
     updateDateBadge();
-    loadDarkMode(); await ensureHotelDoc(); await loadHotelName(); loadNotificationStatus();
-    applyRolePermissions(); setupRealtimeListeners(); renderAll();
+    loadDarkMode();
+    await ensureHotelDoc();
+    await loadHotelName();
+    await loadPermissions();
+    loadNotificationStatus();
+    fillPermissionsUI();
+    applyPermissionsToUI();
+    setupRealtimeListeners();
+    renderAll();
   }
 
-  onAuthStateChanged(auth, (user) => {
-    setTimeout(() => hideLoading(), 2000); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
+  onAuthStateChanged(auth, (user) => { hideLoading(); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
   let listenersSet = false;
@@ -870,46 +1112,46 @@
   window.setYesterdaySaleDate = function() { currentSaleDate = yesterdayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ትናንት'); };
   function updateDateBadge() { const b = document.getElementById('hdrDateBadge'); const s = document.getElementById('selectedDateStatus'); if (!b || !s) return; if (currentSaleDate === todayStr()) { b.textContent = 'ዛሬ'; b.style.background = '#c6f6d5'; b.style.color = '#22543d'; s.textContent = '✅ ዛሬ'; s.style.color = '#276749'; } else if (currentSaleDate === yesterdayStr()) { b.textContent = 'ትናንት'; b.style.background = '#feebc8'; b.style.color = '#7b341e'; s.textContent = '⚠️ ትናንት'; s.style.color = '#c05621'; } else { b.textContent = 'ያለፈ ቀን'; b.style.background = '#feebc8'; b.style.color = '#7b341e'; s.textContent = '⚠️ ያለፈ — ' + formatDate(currentSaleDate); s.style.color = '#c05621'; } }
   window.onSearchProduct = function() { searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase(); renderProducts(); };
-  window.saveHotelName = async function() { const name = document.getElementById('hotelNameInput').value.trim(); if (!name) { toast('⚠️ ስም ያስፈልጋል'); return; } setSyncStatus('syncing'); try { await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true }); hdrHotelName.textContent = name; document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል'; setTimeout(() => document.getElementById('hotelNameStatus').textContent = '', 3000); setSyncStatus('online'); toast('✅ ተቀምጧል'); } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); } };
+  window.saveHotelName = async function() { if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; } const name = document.getElementById('hotelNameInput').value.trim(); if (!name) { toast('⚠️ ስም'); return; } setSyncStatus('syncing'); try { await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true }); hdrHotelName.textContent = name; document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል'; setTimeout(() => document.getElementById('hotelNameStatus').textContent = '', 3000); setSyncStatus('online'); toast('✅'); } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); } };
 
   function renderMainCatDropdown() { const sel = document.getElementById('prodMainCat'); const cur = sel.value; let h = '<option value="">— ይምረጡ —</option>'; Object.keys(categories).forEach(c => h += `<option value="${esc(c)}">${esc(c)}</option>`); sel.innerHTML = h; if (categories[cur]) sel.value = cur; const ps = document.getElementById('subCatParent'); const c2 = ps.value; let h2 = '<option value="">— ዋና ምድብ ይምረጡ —</option>'; Object.keys(categories).forEach(c => h2 += `<option value="${esc(c)}">${esc(c)}</option>`); ps.innerHTML = h2; if (categories[c2]) ps.value = c2; }
   window.onMainCatChange = function() { const m = document.getElementById('prodMainCat').value; const ss = document.getElementById('prodSubCat'); document.getElementById('prodName').value = ''; if (!m || !categories[m]) { ss.innerHTML = '<option value="">— መጀመሪያ ዋና ምድብ ይምረጡ —</option>'; return; } let h = '<option value="">— ንዑስ ምድብ ይምረጡ —</option>'; categories[m].forEach(s => h += `<option value="${esc(s)}">${esc(s)}</option>`); ss.innerHTML = h; };
   window.onSubCatChange = function() { const s = document.getElementById('prodSubCat').value; if (s) document.getElementById('prodName').value = s; };
-  window.addMainCat = async function() { const inp = document.getElementById('newMainCat'); const n = inp.value.trim(); if (!n) { toast('⚠️ ስም'); return; } if (categories[n]) { toast('⚠️ አለ'); return; } categories[n] = []; inp.value = ''; await saveDoc(categoriesCol(), n, { name: n, subs: [] }); renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); toast('✅'); };
-  window.deleteMainCat = async function(n) { if (!confirm('"' + n + '" ማጥፋት?')) return; delete categories[n]; await deleteDocById(categoriesCol(), n); renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); toast('🗑️'); };
-  window.addSubCat = async function() { const p = document.getElementById('subCatParent').value; const inp = document.getElementById('newSubCat'); const n = inp.value.trim(); if (!p) { toast('⚠️ ዋና'); return; } if (!n) { toast('⚠️ ስም'); return; } if (!categories[p]) categories[p] = []; if (categories[p].includes(n)) { toast('⚠️ አለ'); return; } categories[p].push(n); inp.value = ''; await saveDoc(categoriesCol(), p, { name: p, subs: categories[p] }); renderSubCatTags(); if (document.getElementById('prodMainCat').value === p) onMainCatChange(); toast('✅'); };
-  window.deleteSubCat = async function(p, n) { if (!categories[p]) return; categories[p] = categories[p].filter(s => s !== n); await saveDoc(categoriesCol(), p, { name: p, subs: categories[p] }); renderSubCatTags(); if (document.getElementById('prodMainCat').value === p) onMainCatChange(); toast('🗑️'); };
+  window.addMainCat = async function() { if (!can('cat')) { toast('⚠️ ፈቃድ የለህም'); return; } const inp = document.getElementById('newMainCat'); const n = inp.value.trim(); if (!n) { toast('⚠️ ስም'); return; } if (categories[n]) { toast('⚠️ አለ'); return; } categories[n] = []; inp.value = ''; await saveDoc(categoriesCol(), n, { name: n, subs: [] }); renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); toast('✅'); };
+  window.deleteMainCat = async function(n) { if (!can('cat')) return; if (!confirm('"' + n + '" ማጥፋት?')) return; delete categories[n]; await deleteDocById(categoriesCol(), n); renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); toast('🗑️'); };
+  window.addSubCat = async function() { if (!can('cat')) { toast('⚠️'); return; } const p = document.getElementById('subCatParent').value; const inp = document.getElementById('newSubCat'); const n = inp.value.trim(); if (!p) { toast('⚠️ ዋና'); return; } if (!n) { toast('⚠️ ስም'); return; } if (!categories[p]) categories[p] = []; if (categories[p].includes(n)) { toast('⚠️ አለ'); return; } categories[p].push(n); inp.value = ''; await saveDoc(categoriesCol(), p, { name: p, subs: categories[p] }); renderSubCatTags(); if (document.getElementById('prodMainCat').value === p) onMainCatChange(); toast('✅'); };
+  window.deleteSubCat = async function(p, n) { if (!can('cat')) return; if (!categories[p]) return; categories[p] = categories[p].filter(s => s !== n); await saveDoc(categoriesCol(), p, { name: p, subs: categories[p] }); renderSubCatTags(); if (document.getElementById('prodMainCat').value === p) onMainCatChange(); toast('🗑️'); };
   function renderMainCatTags() { const w = document.getElementById('mainCatTags'); const c = Object.keys(categories); if (c.length === 0) { w.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም የለም።</div>'; return; } w.innerHTML = c.map(x => `<span class="cat-tag">${esc(x)} <span class="del" onclick="deleteMainCat('${escJs(x)}')">×</span></span>`).join(''); }
   function renderSubCatTags() { const p = document.getElementById('subCatParent').value; const w = document.getElementById('subCatTags'); if (!p || !categories[p]) { w.innerHTML = '<div class="empty-msg" style="padding:8px;">ዋና ምድብ ይምረጡ።</div>'; return; } const s = categories[p]; if (s.length === 0) { w.innerHTML = '<div class="empty-msg" style="padding:8px;">ምንም የለም።</div>'; return; } w.innerHTML = s.map(x => `<span class="cat-tag">${esc(x)} <span class="del" onclick="deleteSubCat('${escJs(p)}','${escJs(x)}')">×</span></span>`).join(''); }
   function renderExpCatDropdown() { const s = document.getElementById('expCat'); const c = s.value; let h = ''; expCats.forEach(x => h += `<option value="${esc(x)}">${esc(x)}</option>`); s.innerHTML = h; if (expCats.includes(c)) s.value = c; }
   function renderExpCatTags() { const w = document.getElementById('expCatTags'); w.innerHTML = expCats.map(c => `<span class="cat-tag">${esc(c)} <span class="del" onclick="deleteExpCat('${escJs(c)}')">×</span></span>`).join(''); }
-  window.addExpCat = async function() { const inp = document.getElementById('newExpCat'); const n = inp.value.trim(); if (!n) { toast('⚠️ ስም'); return; } if (expCats.includes(n)) { toast('⚠️ አለ'); return; } expCats.push(n); inp.value = ''; await saveDoc(expCatsCol(), n, { name: n }); renderExpCatDropdown(); renderExpCatTags(); toast('✅'); };
-  window.deleteExpCat = async function(n) { if (!confirm('ማጥፋት?')) return; expCats = expCats.filter(c => c !== n); await deleteDocById(expCatsCol(), n); renderExpCatDropdown(); renderExpCatTags(); toast('🗑️'); };
+  window.addExpCat = async function() { if (!can('expense')) return; const inp = document.getElementById('newExpCat'); const n = inp.value.trim(); if (!n) { toast('⚠️ ስም'); return; } if (expCats.includes(n)) { toast('⚠️ አለ'); return; } expCats.push(n); inp.value = ''; await saveDoc(expCatsCol(), n, { name: n }); renderExpCatDropdown(); renderExpCatTags(); toast('✅'); };
+  window.deleteExpCat = async function(n) { if (!can('expense')) return; if (!confirm('ማጥፋት?')) return; expCats = expCats.filter(c => c !== n); await deleteDocById(expCatsCol(), n); renderExpCatDropdown(); renderExpCatTags(); toast('🗑️'); };
   function renderFixCatDropdown() { const s = document.getElementById('fixCat'); const c = s.value; let h = ''; fixCats.forEach(x => h += `<option value="${esc(x)}">${esc(x)}</option>`); s.innerHTML = h; if (fixCats.includes(c)) s.value = c; }
   function renderFixCatTags() { const w = document.getElementById('fixCatTags'); w.innerHTML = fixCats.map(c => `<span class="cat-tag">${esc(c)} <span class="del" onclick="deleteFixCat('${escJs(c)}')">×</span></span>`).join(''); }
   window.addFixCat = async function() { const inp = document.getElementById('newFixCat'); const n = inp.value.trim(); if (!n) { toast('⚠️ ስም'); return; } if (fixCats.includes(n)) { toast('⚠️ አለ'); return; } fixCats.push(n); inp.value = ''; await saveDoc(fixCatsCol(), n, { name: n }); renderFixCatDropdown(); renderFixCatTags(); toast('✅'); };
   window.deleteFixCat = async function(n) { if (!confirm('ማጥፋት?')) return; fixCats = fixCats.filter(c => c !== n); await deleteDocById(fixCatsCol(), n); renderFixCatDropdown(); renderFixCatTags(); toast('🗑️'); };
-  window.addProduct = async function() { const n = document.getElementById('prodName').value.trim(); const p = parseFloat(document.getElementById('prodPrice').value); const m = document.getElementById('prodMainCat').value; const s = document.getElementById('prodSubCat').value; if (!m) { toast('⚠️ ዋና'); return; } if (!s) { toast('⚠️ ንዑስ'); return; } if (!n) { toast('⚠️ ስም'); return; } if (isNaN(p) || p < 0) { toast('⚠️ ዋጋ'); return; } if (products.some(x => x.name === n && x.main === m && x.sub === s)) { toast('⚠️ አለ'); return; } const id = uid(); await saveDoc(productsCol(), id, { name: n, price: p, main: m, sub: s }); document.getElementById('prodName').value = ''; document.getElementById('prodPrice').value = ''; toast('✅'); };
-  window.deleteProduct = async function(id) { if (!confirm('ማጥፋት?')) return; await deleteDocById(productsCol(), id); toast('🗑️'); };
-  window.openEditProduct = function(id) { const p = products.find(x => x.id === id); if (!p) return; let m = document.getElementById('editModal'); if (!m) { m = document.createElement('div'); m.id = 'editModal'; m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;'; m.onclick = (e) => { if (e.target === m) closeEditModal(); }; document.body.appendChild(m); } const isDark = document.body.classList.contains('dark'); m.innerHTML = `<div style="background:${isDark?'#2d3748':'#fff'};border-radius:20px;padding:24px;width:100%;max-width:400px;"><h3 style="font-size:18px;font-weight:800;color:${isDark?'#63b3ed':'#1a365d'};margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3><label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ስም</label><input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${isDark?'#4a5568':'#f7fafc'};color:${isDark?'#e2e8f0':'#1a202c'};outline:none;margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ዋጋ (ብር)</label><input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${isDark?'#4a5568':'#f7fafc'};color:${isDark?'#e2e8f0':'#1a202c'};outline:none;margin-bottom:12px;"><div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}</div><div style="display:flex;gap:8px;margin-top:16px;"><button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:transparent;color:#2c5282;cursor:pointer;">Cancel</button><button onclick="saveEditProduct('${p.id}')" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:none;border-radius:10px;background:#2c5282;color:#fff;cursor:pointer;">💾 አስቀምጥ</button></div></div>`; m.style.display = 'flex'; };
+  window.addProduct = async function() { if (!can('product')) { toast('⚠️ ፈቃድ የለህም'); return; } const n = document.getElementById('prodName').value.trim(); const p = parseFloat(document.getElementById('prodPrice').value); const m = document.getElementById('prodMainCat').value; const s = document.getElementById('prodSubCat').value; if (!m) { toast('⚠️ ዋና'); return; } if (!s) { toast('⚠️ ንዑስ'); return; } if (!n) { toast('⚠️ ስም'); return; } if (isNaN(p) || p < 0) { toast('⚠️ ዋጋ'); return; } if (products.some(x => x.name === n && x.main === m && x.sub === s)) { toast('⚠️ አለ'); return; } const id = uid(); await saveDoc(productsCol(), id, { name: n, price: p, main: m, sub: s }); document.getElementById('prodName').value = ''; document.getElementById('prodPrice').value = ''; toast('✅'); };
+  window.deleteProduct = async function(id) { if (!can('product')) return; if (!confirm('ማጥፋት?')) return; await deleteDocById(productsCol(), id); toast('🗑️'); };
+  window.openEditProduct = function(id) { if (!can('product')) { toast('⚠️'); return; } const p = products.find(x => x.id === id); if (!p) return; let m = document.getElementById('editModal'); if (!m) { m = document.createElement('div'); m.id = 'editModal'; m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;'; m.onclick = (e) => { if (e.target === m) closeEditModal(); }; document.body.appendChild(m); } const isDark = document.body.classList.contains('dark'); m.innerHTML = `<div style="background:${isDark?'#2d3748':'#fff'};border-radius:20px;padding:24px;width:100%;max-width:400px;"><h3 style="font-size:18px;font-weight:800;color:${isDark?'#63b3ed':'#1a365d'};margin-bottom:16px;text-align:center;">✏️ ምርት አሻሽል</h3><label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ስም</label><input type="text" id="editProdName" value="${escAttr(p.name)}" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${isDark?'#4a5568':'#f7fafc'};color:${isDark?'#e2e8f0':'#1a202c'};outline:none;margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:700;color:#4a5568;margin-bottom:5px;">ዋጋ (ብር)</label><input type="number" id="editProdPrice" value="${p.price}" inputmode="decimal" step="any" min="0" style="width:100%;padding:12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:10px;background:${isDark?'#4a5568':'#f7fafc'};color:${isDark?'#e2e8f0':'#1a202c'};outline:none;margin-bottom:12px;"><div style="background:#f7fafc;border-radius:8px;padding:8px 10px;font-size:12px;color:#718096;margin-bottom:8px;">📁 ${escAttr(p.main)} → ↳ ${escAttr(p.sub)}</div><div style="display:flex;gap:8px;margin-top:16px;"><button onclick="closeEditModal()" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:1.5px solid #2c5282;border-radius:10px;background:transparent;color:#2c5282;cursor:pointer;">Cancel</button><button onclick="saveEditProduct('${p.id}')" style="flex:1;padding:13px;font-size:15px;font-weight:700;border:none;border-radius:10px;background:#2c5282;color:#fff;cursor:pointer;">💾 አስቀምጥ</button></div></div>`; m.style.display = 'flex'; };
   window.closeEditModal = function() { const m = document.getElementById('editModal'); if (m) m.style.display = 'none'; };
   window.saveEditProduct = async function(id) { const n = document.getElementById('editProdName').value.trim(); const p = parseFloat(document.getElementById('editProdPrice').value); if (!n) { toast('⚠️ ስም'); return; } if (isNaN(p) || p < 0) { toast('⚠️ ዋጋ'); return; } const prod = products.find(x => x.id === id); if (!prod) return; setSyncStatus('syncing'); try { await setDoc(doc(productsCol(), id), { name: n, price: p, main: prod.main, sub: prod.sub, updatedAt: serverTimestamp() }, { merge: true }); closeEditModal(); setSyncStatus('online'); toast('✅ ተሻሽሏል'); } catch (e) { setSyncStatus('error'); toast('⚠️'); } };
-  window.setQty = async function(id, qty) { qty = parseInt(qty, 10); if (isNaN(qty) || qty < 0) qty = 0; const p = products.find(x => x.id === id); if (!p) return; const k = id + '_' + currentSaleDate; if (qty === 0) { const ex = Object.keys(sales).find(x => x === k || (sales[x].productId === id && sales[x].date === currentSaleDate)); if (ex) { delete sales[ex]; await deleteDocById(salesCol(), ex); } } else { sales[k] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub, date: currentSaleDate }; await saveDoc(salesCol(), k, sales[k]); } updateSalesTotals(); };
+  window.setQty = async function(id, qty) { if (!can('sales')) { toast('⚠️'); return; } qty = parseInt(qty, 10); if (isNaN(qty) || qty < 0) qty = 0; const p = products.find(x => x.id === id); if (!p) return; const k = id + '_' + currentSaleDate; if (qty === 0) { const ex = Object.keys(sales).find(x => x === k || (sales[x].productId === id && sales[x].date === currentSaleDate)); if (ex) { delete sales[ex]; await deleteDocById(salesCol(), ex); } } else { sales[k] = { productId: id, qty, price: p.price, name: p.name, main: p.main, sub: p.sub, date: currentSaleDate }; await saveDoc(salesCol(), k, sales[k]); } updateSalesTotals(); };
   function getSalesForDate(d) { const r = {}; Object.keys(sales).forEach(k => { const s = sales[k]; if (s && s.date === d) r[s.productId] = s; }); return r; }
   window.toggleCategory = function(m) { openCats[m] = !openCats[m]; renderProducts(); };
   window.toggleSubCategory = function(m, s) { const k = m + '||' + s; openSubCats[k] = !openSubCats[k]; renderProducts(); };
   window.toggleAllCategories = function(o) { Object.keys(categories).forEach(c => openCats[c] = o); openSubCats = {}; if (o) Object.keys(categories).forEach(c => categories[c].forEach(s => openSubCats[c + '||' + s] = true)); renderProducts(); toast(o ? '📂' : '📁'); };
-  function renderProducts() { const w = document.getElementById('productList'); if (products.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ምርት የለም።</div>'; updateSalesTotals(); return; } let f = products; if (searchQuery) { f = products.filter(p => p.name.toLowerCase().includes(searchQuery) || p.main.toLowerCase().includes(searchQuery) || p.sub.toLowerCase().includes(searchQuery)); if (f.length === 0) { w.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" አልተገኘም።</div>'; updateSalesTotals(); return; } } const ds = getSalesForDate(currentSaleDate); const g = {}; f.forEach(p => { if (!g[p.main]) g[p.main] = {}; if (!g[p.main][p.sub]) g[p.main][p.sub] = []; g[p.main][p.sub].push(p); }); let h = ''; Object.keys(g).forEach(main => { const mo = !!openCats[main] || !!searchQuery; let mt = 0, mc = 0; Object.keys(g[main]).forEach(sub => g[main][sub].forEach(p => { const s = ds[p.id]; mt += (s ? s.qty : 0) * p.price; mc++; })); h += `<div class="cat-section"><div class="cat-header ${mo?'open':''}" onclick="toggleCategory('${escJs(main)}')"><div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">${esc(main)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">${mc}</span><span class="cat-total">${money(mt)} ብር</span></div></div><div class="cat-body ${mo?'open':''}">`; Object.keys(g[main]).forEach(sub => { const sk = main + '||' + sub; const so = !!openSubCats[sk] || !!searchQuery; h += `<div class="sub-header ${so?'open':''}" onclick="toggleSubCategory('${escJs(main)}','${escJs(sub)}')"><div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ${esc(sub)}</span></div><span class="sub-count">${g[main][sub].length}</span></div><div class="sub-body ${so?'open':''}">`; g[main][sub].forEach(p => { const s = ds[p.id]; const q = s ? s.qty : ''; h += `<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">${esc(p.name)}</div><div class="meta">${money(p.price)} ብር</div></div><input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="${q}" onchange="setQty('${p.id}', this.value)" oninput="setQty('${p.id}', this.value)" onclick="event.stopPropagation()"><button class="btn btn-primary btn-sm" style="margin-left:4px;padding:8px 10px;background:#3182ce;margin-top:0;" onclick="event.stopPropagation();openEditProduct('${p.id}')">✏️</button><button class="btn btn-danger btn-sm" style="margin-left:4px;padding:8px 10px;margin-top:0;" onclick="event.stopPropagation();deleteProduct('${p.id}')">✕</button></div>`; }); h += '</div>'; }); h += '</div></div>'; }); w.innerHTML = h; updateSalesTotals(); }
+  function renderProducts() { const w = document.getElementById('productList'); if (products.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ምርት የለም።</div>'; updateSalesTotals(); return; } let f = products; if (searchQuery) { f = products.filter(p => p.name.toLowerCase().includes(searchQuery) || p.main.toLowerCase().includes(searchQuery) || p.sub.toLowerCase().includes(searchQuery)); if (f.length === 0) { w.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" አልተገኘም።</div>'; updateSalesTotals(); return; } } const ds = getSalesForDate(currentSaleDate); const g = {}; f.forEach(p => { if (!g[p.main]) g[p.main] = {}; if (!g[p.main][p.sub]) g[p.main][p.sub] = []; g[p.main][p.sub].push(p); }); let h = ''; Object.keys(g).forEach(main => { const mo = !!openCats[main] || !!searchQuery; let mt = 0, mc = 0; Object.keys(g[main]).forEach(sub => g[main][sub].forEach(p => { const s = ds[p.id]; mt += (s ? s.qty : 0) * p.price; mc++; })); h += `<div class="cat-section"><div class="cat-header ${mo?'open':''}" onclick="toggleCategory('${escJs(main)}')"><div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">${esc(main)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">${mc}</span><span class="cat-total">${money(mt)} ብር</span></div></div><div class="cat-body ${mo?'open':''}">`; Object.keys(g[main]).forEach(sub => { const sk = main + '||' + sub; const so = !!openSubCats[sk] || !!searchQuery; h += `<div class="sub-header ${so?'open':''}" onclick="toggleSubCategory('${escJs(main)}','${escJs(sub)}')"><div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ${esc(sub)}</span></div><span class="sub-count">${g[main][sub].length}</span></div><div class="sub-body ${so?'open':''}">`; g[main][sub].forEach(p => { const s = ds[p.id]; const q = s ? s.qty : ''; h += `<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">${esc(p.name)}</div><div class="meta">${money(p.price)} ብር</div></div><input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="${q}" onchange="setQty('${p.id}', this.value)" oninput="setQty('${p.id}', this.value)" onclick="event.stopPropagation()">${can('product') ? `<button class="btn btn-primary btn-sm" style="margin-left:4px;padding:8px 10px;background:#3182ce;margin-top:0;" onclick="event.stopPropagation();openEditProduct('${p.id}')">✏️</button><button class="btn btn-danger btn-sm" style="margin-left:4px;padding:8px 10px;margin-top:0;" onclick="event.stopPropagation();deleteProduct('${p.id}')">✕</button>` : ''}</div>`; }); h += '</div>'; }); h += '</div></div>'; }); w.innerHTML = h; updateSalesTotals(); }
   function updateSalesTotals() { const ds = getSalesForDate(currentSaleDate); let t = 0; products.forEach(p => { const s = ds[p.id]; if (s) t += s.qty * p.price; }); document.getElementById('todaySalesTotal').textContent = money(t) + ' ብር'; document.getElementById('hdrSaleTotal').textContent = money(t) + ' ብር'; renderDaily(); }
-  window.addExpense = async function() { const c = document.getElementById('expCat').value; const n = document.getElementById('expName').value.trim(); const a = parseFloat(document.getElementById('expAmount').value); if (!c) { toast('⚠️ ምድብ'); return; } if (isNaN(a) || a <= 0) { toast('⚠️ መጠን'); return; } const id = uid(); await saveDoc(expensesCol(), id, { cat: c, note: n, amount: a, date: currentSaleDate }); document.getElementById('expName').value = ''; document.getElementById('expAmount').value = ''; toast('✅'); };
-  window.deleteExpense = async function(id) { await deleteDocById(expensesCol(), id); toast('🗑️'); };
+  window.addExpense = async function() { if (!can('expense')) { toast('⚠️'); return; } const c = document.getElementById('expCat').value; const n = document.getElementById('expName').value.trim(); const a = parseFloat(document.getElementById('expAmount').value); if (!c) { toast('⚠️ ምድብ'); return; } if (isNaN(a) || a <= 0) { toast('⚠️ መጠን'); return; } const id = uid(); await saveDoc(expensesCol(), id, { cat: c, note: n, amount: a, date: currentSaleDate }); document.getElementById('expName').value = ''; document.getElementById('expAmount').value = ''; toast('✅'); };
+  window.deleteExpense = async function(id) { if (!can('expense')) return; await deleteDocById(expensesCol(), id); toast('🗑️'); };
   function getTodaySaleItems() { const items = []; const ds = getSalesForDate(currentSaleDate); products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price }); }); return items; }
-  function renderDaily() { const ds = getSalesForDate(currentSaleDate); let inc = 0; products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); document.getElementById('dailyIncome').innerHTML = money(inc) + ' <small>ብር</small>'; document.getElementById('hdrDailyIncomeBadge').textContent = money(inc) + ' ብር'; const de = expenses.filter(e => e.date === currentSaleDate); const w = document.getElementById('expenseList'); let et = 0; if (de.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ወጪ የለም።</div>'; } else { w.innerHTML = de.map(e => `<div class="list-item"><div class="info"><div class="name">${esc(e.cat)}</div>${e.note?'<div class="meta">'+esc(e.note)+'</div>':''}</div><span class="amount red">${money(e.amount)} ብር</span><button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense('${e.id}')">✕</button></div>`).join(''); de.forEach(e => et += e.amount); } document.getElementById('dailyExpTotal').textContent = money(et) + ' ብር'; document.getElementById('hdrDailyExpBadge').textContent = money(et) + ' ብር'; const net = inc - et; document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>'; document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር'; const b = document.getElementById('netProfitBox'); b.classList.remove('green','red'); b.classList.add(net >= 0 ? 'green' : 'red'); document.getElementById('savePreviewIncome').textContent = money(inc) + ' ብር'; document.getElementById('savePreviewExp').textContent = money(et) + ' ብር'; document.getElementById('savePreviewNet').textContent = money(net) + ' ብር'; document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length; renderTodayTopSellers(); renderTodayUnsold(); }
+  function renderDaily() { const ds = getSalesForDate(currentSaleDate); let inc = 0; products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); document.getElementById('dailyIncome').innerHTML = money(inc) + ' <small>ብር</small>'; document.getElementById('hdrDailyIncomeBadge').textContent = money(inc) + ' ብር'; const de = expenses.filter(e => e.date === currentSaleDate); const w = document.getElementById('expenseList'); let et = 0; if (de.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ወጪ የለም።</div>'; } else { w.innerHTML = de.map(e => `<div class="list-item"><div class="info"><div class="name">${esc(e.cat)}</div>${e.note?'<div class="meta">'+esc(e.note)+'</div>':''}</div><span class="amount red">${money(e.amount)} ብር</span>${can('expense') ? `<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense('${e.id}')">✕</button>` : ''}</div>`).join(''); de.forEach(e => et += e.amount); } document.getElementById('dailyExpTotal').textContent = money(et) + ' ብር'; document.getElementById('hdrDailyExpBadge').textContent = money(et) + ' ብር'; const net = inc - et; document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>'; document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር'; const b = document.getElementById('netProfitBox'); b.classList.remove('green','red'); b.classList.add(net >= 0 ? 'green' : 'red'); document.getElementById('savePreviewIncome').textContent = money(inc) + ' ብር'; document.getElementById('savePreviewExp').textContent = money(et) + ' ብር'; document.getElementById('savePreviewNet').textContent = money(net) + ' ብር'; document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length; renderTodayTopSellers(); renderTodayUnsold(); }
   function renderTodayTopSellers() { const w = document.getElementById('todayTopSellers'); const it = getTodaySaleItems(); document.getElementById('hdrTodayTopBadge').textContent = it.length; if (it.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም አልተሸጠም።</div>'; return; } it.sort((a,b) => b.qty - a.qty); const t = it.slice(0,5); const m = ['🥇','🥈','🥉','4️⃣','5️⃣']; const c = ['gold','silver','bronze','','']; w.innerHTML = t.map((x,i) => `<div class="seller-item ${c[i]}"><div class="rank">${m[i]}</div><div class="seller-info"><div class="seller-name">${esc(x.name)}</div><div class="seller-meta">${esc(x.main)} • ${x.qty} × ${money(x.price)} ብር</div></div><div class="seller-amount">${money(x.total)} ብር</div></div>`).join(''); }
   function renderTodayUnsold() { const w = document.getElementById('todayUnsold'); const ds = getSalesForDate(currentSaleDate); const u = products.filter(p => !ds[p.id] || ds[p.id].qty === 0); document.getElementById('hdrTodayUnsoldBadge').textContent = u.length; if (u.length === 0) { w.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; } w.innerHTML = u.map(p => `<div class="unsold-item"><div><div class="u-name">${esc(p.name)}</div><div class="u-cat">${esc(p.main)} → ${esc(p.sub)}</div></div><div class="u-badge">0</div></div>`).join(''); }
   window.saveTodayToHistory = async function() { const d = currentSaleDate; const ds = getSalesForDate(d); let inc = 0; products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); const de = expenses.filter(e => e.date === d); let et = 0; de.forEach(e => et += e.amount); const net = inc - et; if (inc === 0 && et === 0) { toast('⚠️ ውሂብ የለም'); return; } const items = getTodaySaleItems(); await saveDoc(historyCol(), d, { date: d, income: inc, expense: et, net, items }); toast('✅ ተቀምጧል'); };
-  window.deleteHistory = async function(id) { if (!confirm('ማጥፋት?')) return; await deleteDocById(historyCol(), id); toast('🗑️'); };
-  function renderHistory() { const w = document.getElementById('historyList'); document.getElementById('hdrHistoryBadge').textContent = history.length; if (history.length === 0) { w.innerHTML = '<div class="empty-msg">ታሪክ የለም።</div>'; return; } const s = [...history].sort((a,b) => (b.date||'').localeCompare(a.date||'')); w.innerHTML = s.map(h => { const nc = h.net >= 0 ? 'green' : 'red'; const ic = (h.items && h.items.length) || 0; const sel = h.date === currentSaleDate; return `<div class="history-item" style="${sel?'border:2px solid #2c5282;':''}"><div class="h-top"><span class="h-date">📆 ${esc(formatDate(h.date))}${sel?' ✓':''}</span><span class="h-net ${nc}">${money(h.net)} ብር</span></div><div class="h-details"><span>💰 ${money(h.income)}</span><span>💸 ${money(h.expense)}</span><span>📦 ${ic}</span><button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory('${h.id}')">✕</button></div></div>`; }).join(''); }
+  window.deleteHistory = async function(id) { if (!can('history')) return; if (!confirm('ማጥፋት?')) return; await deleteDocById(historyCol(), id); toast('🗑️'); };
+  function renderHistory() { const w = document.getElementById('historyList'); document.getElementById('hdrHistoryBadge').textContent = history.length; if (history.length === 0) { w.innerHTML = '<div class="empty-msg">ታሪክ የለም።</div>'; return; } const s = [...history].sort((a,b) => (b.date||'').localeCompare(a.date||'')); w.innerHTML = s.map(h => { const nc = h.net >= 0 ? 'green' : 'red'; const ic = (h.items && h.items.length) || 0; const sel = h.date === currentSaleDate; return `<div class="history-item" style="${sel?'border:2px solid #2c5282;':''}"><div class="h-top"><span class="h-date">📆 ${esc(formatDate(h.date))}${sel?' ✓':''}</span><span class="h-net ${nc}">${money(h.net)} ብር</span></div><div class="h-details"><span>💰 ${money(h.income)}</span><span>💸 ${money(h.expense)}</span><span>📦 ${ic}</span>${can('history') ? `<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory('${h.id}')">✕</button>` : ''}</div></div>`; }).join(''); }
   window.changeMonth = function(d) { currentMonth += d; if (currentMonth < 0) { currentMonth = 11; currentYear--; } if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderMonthly(); };
   window.addFixedExpense = async function() { const c = document.getElementById('fixCat').value; const n = document.getElementById('fixName').value.trim(); const a = parseFloat(document.getElementById('fixAmount').value); if (!c) { toast('⚠️ ምድብ'); return; } if (isNaN(a) || a <= 0) { toast('⚠️ መጠን'); return; } const id = uid(); const m = currentYear + '-' + String(currentMonth + 1).padStart(2,'0'); await saveDoc(fixedCol(), id, { cat: c, note: n, amount: a, month: m }); document.getElementById('fixName').value = ''; document.getElementById('fixAmount').value = ''; toast('✅'); };
   window.deleteFixedExpense = async function(id) { await deleteDocById(fixedCol(), id); toast('🗑️'); };
@@ -920,7 +1162,6 @@
   function renderMonthlyPieChart() { const c = document.getElementById('pieChart'); if (!c) return; const mp = currentYear + '-' + String(currentMonth + 1).padStart(2,'0'); const mr = history.filter(h => (h.date||'').startsWith(mp)); const sm = {}; mr.forEach(h => { if (h.items && Array.isArray(h.items)) { h.items.forEach(it => { if (!sm[it.productId]) sm[it.productId] = { name: it.name, qty: 0 }; sm[it.productId].qty += it.qty; }); } }); const s = Object.values(sm).sort((a,b) => b.qty - a.qty).slice(0,5); if (s.length === 0) { if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; } const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = document.body.classList.contains('dark') ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } const l = s.map(x => x.name); const d = s.map(x => x.qty); const colors = ['#2c5282','#3182ce','#63b3ed','#90cdf4','#bee3f8']; if (pieChartInstance) pieChartInstance.destroy(); pieChartInstance = new Chart(c, { type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: colors, borderWidth: 2, borderColor: document.body.classList.contains('dark') ? '#2d3748' : '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: document.body.classList.contains('dark') ? '#e2e8f0' : '#2d3748', font: { size: 11 }, padding: 8 } }, tooltip: { callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' ብዛት' } } } } }); }
   window.renderDailyLineChart = function() { const c = document.getElementById('dayLineChart'); if (!c) return; const inp = document.getElementById('chartDayInput'); if (!inp) return; if (!inp.value) inp.value = todayStr(); const d = inp.value; const isDark = document.body.classList.contains('dark'); const ds = getSalesForDate(d); const ct = {}; products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) { if (!ct[p.main]) ct[p.main] = 0; ct[p.main] += s.qty * p.price; } }); const l = Object.keys(ct); const da = Object.values(ct); if (dayLineChartInstance) dayLineChartInstance.destroy(); if (l.length === 0) { const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = isDark ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } dayLineChartInstance = new Chart(c, { type: 'line', data: { labels: l, datasets: [{ label: 'ሽያጭ', data: da, borderColor: isDark ? '#63b3ed' : '#2c5282', backgroundColor: isDark ? 'rgba(99,179,237,0.2)' : 'rgba(44,82,130,0.2)', fill: true, tension: 0.3, pointBackgroundColor: isDark ? '#63b3ed' : '#2c5282', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => money(ctx.parsed.y) + ' ብር' } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } }, x: { ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } } } } }); };
   window.resetSelectedDateSales = async function() { const d = currentSaleDate; if (!confirm('📅 ' + formatDate(d) + '\n\nየዚህን ቀን ማጥፋት?')) return; setSyncStatus('syncing'); try { const b = writeBatch(db); const ss = await getDocs(salesCol()); ss.forEach(x => { const s = x.data(); if (s && s.date === d) b.delete(x.ref); }); const es = await getDocs(expensesCol()); es.forEach(x => { const e = x.data(); if (e && e.date === d) b.delete(x.ref); }); await b.commit(); setSyncStatus('online'); toast('🔄 ተጠፍቷል'); } catch (e) { setSyncStatus('error'); console.error(e); } };
-  function applyRolePermissions() { if (currentRole !== 'accountant') return; const t3 = document.getElementById('tab3'); const t3l = document.querySelector('label[for="tab3"]'); const p3 = document.getElementById('panel3'); if (t3) { t3.disabled = true; t3.checked = false; } if (t3l) t3l.style.display = 'none'; if (p3) p3.style.display = 'none'; const t1 = document.getElementById('tab1'); if (t1) t1.checked = true; ['secTodayTop','secTodayUnsold','secHistory'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
   function renderAll() { renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange(); renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags(); renderProducts(); renderDaily(); renderMonthly(); updateDateBadge(); }
   if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(() => console.log('✅ SW')).catch(e => console.log(e)); }); }
 </script>
