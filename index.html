@@ -219,10 +219,22 @@
 </head>
 <body>
 
-<div class="loading-screen" id="loadingScreen">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">በመጫን ላይ...</div>
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splashScreen" style="position:fixed;inset:0;background:linear-gradient(135deg,#1a365d 0%,#2c5282 50%,#3182ce 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:99999;transition:opacity 0.5s;">
+  <div style="font-size:100px;line-height:1;animation:pop 0.8s ease;">🏨</div>
+  <div style="color:#fff;font-size:22px;font-weight:800;text-align:center;padding:0 20px;animation:fadeIn 1s ease;">የሆቴል ሽያጭ እና ወጪ መከታተያ</div>
+  <div style="color:#bee3f8;font-size:13px;letter-spacing:1px;">Sales &amp; Expense Tracker</div>
+  <div style="margin-top:20px;width:40px;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden;">
+    <div style="width:100%;height:100%;background:#fff;animation:loadbar 1.5s ease-in-out;"></div>
+  </div>
 </div>
+
+<style>
+  @keyframes pop { 0%{transform:scale(0.3);opacity:0;} 60%{transform:scale(1.1);} 100%{transform:scale(1);opacity:1;} }
+  @keyframes fadeIn { 0%{opacity:0;transform:translateY(10px);} 100%{opacity:1;transform:translateY(0);} }
+  @keyframes loadbar { 0%{width:0;} 100%{width:100%;} }
+  #splashScreen.hide { opacity:0; pointer-events:none; }
+</style>
 
 <div id="loginScreen" class="hidden">
   <div class="login-box">
@@ -693,7 +705,7 @@
 
   const HOTEL_ID = 'hotel-main';
 
-  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingScreen = document.getElementById('splashScreen');
   const loginScreen = document.getElementById('loginScreen');
   const mainApp = document.getElementById('mainApp');
   const errorBox = document.getElementById('errorBox');
@@ -734,7 +746,13 @@
   function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function yesterdayStr() { const d = new Date(); d.setDate(d.getDate() - 1); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function formatDate(dateStr) { const p = dateStr.split('-'); if (p.length !== 3) return dateStr; const y = p[0], m = parseInt(p[1],10), d = parseInt(p[2],10); const names = ['ጃን','ፌብ','ማር','ኤፕ','ሜይ','ጁን','ጁል','ኦገ','ሴፕ','ኦክ','ኖቬ','ዲሴ']; return names[m-1] + ' ' + d + ', ' + y; }
-  function hideLoading() { loadingScreen.classList.add('hidden'); }
+  function hideLoading() {
+  const splash = document.getElementById('splashScreen');
+  if (splash) {
+    splash.classList.add('hide');
+    setTimeout(() => splash.style.display = 'none', 600);
+  }
+}
   function showError(msg) { errorBox.textContent = '⚠️ ' + msg; errorBox.classList.add('show'); setTimeout(() => errorBox.classList.remove('show'), 6000); }
   function setSyncStatus(status) { syncStatus.className = 'sync-status ' + status; syncStatus.textContent = status === 'syncing' ? '☁️' : (status === 'error' ? '⚠️' : '✅'); }
   function getUserRole(email) { if (!email) return 'unknown'; if (email.startsWith('owner@')) return 'owner'; if (email.startsWith('accountant@')) return 'accountant'; return 'unknown'; }
@@ -829,7 +847,8 @@
     applyRolePermissions(); setupRealtimeListeners(); renderAll();
   }
 
-  onAuthStateChanged(auth, (user) => { hideLoading(); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
+  onAuthStateChanged(auth, (user) => {
+    setTimeout(() => hideLoading(), 2000); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
   let listenersSet = false;
