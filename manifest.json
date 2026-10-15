@@ -1,7 +1,7 @@
 {
   "name": "NITSUH Hotel Sales Tracker",
   "short_name": "Hotel Tracker",
-  "description": "የሆቴል ሽያጭ፣ ወጪ እና ትርፍ መከታተያ",
+  "description": "Hotel Sales and Expense Tracker",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -9,7 +9,6 @@
   "background_color": "#1a365d",
   "theme_color": "#2c5282",
   "lang": "am",
-  "dir": "ltr",
   "icons": [
     {
       "src": "logo.jpg",
