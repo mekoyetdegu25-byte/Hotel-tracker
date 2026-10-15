@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f2f4f8; }
+    .card { background: white; border-radius: 12px; padding: 20px; max-width: 500px; margin: 0 auto; }
+    h1 { font-size: 18px; margin-bottom: 16px; }
+    input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    button { width: 100%; padding: 12px; background: #2c5282; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    #result { margin-top: 16px; padding: 14px; background: #f7fafc; border-radius: 8px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; min-height: 50px; }
+    .success { background: #f0fff4 !important; border: 2px solid #48bb78; }
+    .error { background: #fff5f5 !important; border: 2px solid #fc8181; }
+    .info { font-size: 12px; color: #718096; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔍 Firebase Login Test</h1>
+    <input type="email" id="email" placeholder="Email" value="admin@hotel.com">
+    <input type="password" id="password" placeholder="Password" value="123456">
+    <button onclick="testLogin()">🔓 ሞክር</button>
+    <div id="result">ውጤቱ እዚህ ይታያል...</div>
+    <p class="info">ይህ ገጽ የ Firebase Authentication ስህተቱን በትክክል ያሳየሃል።</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDCaITcZfOA9BU9KxngVOEih6TnEZb1-v0E",
+      authDomain: "hotel-tracker-c3571.firebaseapp.com",
+      projectId: "hotel-tracker-c3571",
+      storageBucket: "hotel-tracker-c3571.firebasestorage.app",
+      messagingSenderId: "1024629386649",
+      appId: "1:1024629386649:web:c689f920c780e400797708"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.testLogin = async function() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const result = document.getElementById('result');
+
+      result.className = '';
+      result.textContent = '⏳ በመሞከር ላይ...';
+
+      try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+        result.className = 'success';
+        result.textContent = 
+          '✅ SUCCESS!\n\n' +
+          '📧 Email: ' + user.user.email + '\n' +
+          '🆔 UID: ' + user.user.uid + '\n' +
+          '⏰ Time: ' + new Date().toLocaleTimeString();
+      } catch (err) {
+        result.className = 'error';
+        result.textContent = 
+          '❌ ERROR!\n\n' +
+          '🔴 Code: ' + err.code + '\n' +
+          '📝 Message: ' + err.message;
+      }
+    };
+  </script>
+</body>
+</html>
