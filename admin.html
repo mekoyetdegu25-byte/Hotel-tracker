@@ -413,9 +413,8 @@
       // 1. የሆቴል ID ፍጠር
       const hotelId = 'hotel-' + Date.now();
 
-      // 2. የተጠቃሚ መለያ ፍጠር
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+     // 2. 🆕 Firebase Auth ሳይጠቀም UID ፍጠር
+const uid = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
 
       // 3. የሆቴል መረጃ አስቀምጥ
       await setDoc(doc(db, 'hotels', hotelId), {
