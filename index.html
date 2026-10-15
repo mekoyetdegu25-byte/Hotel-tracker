@@ -215,6 +215,240 @@
   body.dark .perm-section { background: #4a5568; border-color: #4a5568; }
   .perm-section .perm-title { font-size: 13px; font-weight: 800; color: #2c5282; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   body.dark .perm-section .perm-title { color: #63b3ed; }
+ 
+/* ============================================ */
+/* ===== ለዴስክቶፕ ብቻ የሚሠራ ሙሉ ማስተካከያ ===== */
+/* ============================================ */
+@media (min-width: 768px) {
+  
+  /* ---------- 1. የገጹ አጠቃላይ አቀማመጥ ---------- */
+  body {
+    background: linear-gradient(135deg, #e8eef5 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+    font-size: 15px;
+  }
+  
+  .mainApp {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #f2f4f8;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(26, 54, 93, 0.12);
+  }
+  
+  /* ---------- 2. ራስጌ (Header) ---------- */
+  header {
+    max-width: 960px;
+    margin: 0 auto 20px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 2px 12px rgba(26, 54, 93, 0.15);
+  }
+  
+  /* ---------- 3. ታቦች (Tabs) ---------- */
+  .tabs {
+    max-width: 960px;
+    margin: 0 auto;
+    justify-content: center;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  
+  .tabs label {
+    flex: 0 1 auto;
+    min-width: 130px;
+    max-width: 180px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  /* ---------- 4. የይዘት ክፍሎች (Sections) ---------- */
+  .panels {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+  
+  .section-collapsible {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
+  
+  .section-header {
+    padding: 14px 20px;
+  }
+  
+  .section-body {
+    padding: 16px 20px;
+  }
+  
+  /* ---------- 5. ቁልፎች (Buttons) ---------- */
+  .btn {
+    max-width: 300px;
+  }
+  
+  .btn-sm {
+    max-width: 180px;
+  }
+  
+  /* ---------- 6. የቀን ምርጫ ቁልፎች ---------- */
+  .row-flex {
+    max-width: 480px;
+    gap: 10px;
+  }
+  
+  .row-flex button {
+    flex: 0 1 auto;
+    min-width: 130px;
+    max-width: 200px;
+  }
+  
+  /* ---------- 7. የማጠቃለያ ሳጥኖች (Summary Boxes) ---------- */
+  .summary-box {
+    max-width: 400px;
+  }
+  
+  /* ---------- 8. የግቤት ሳጥኖች (Inputs) ---------- */
+  .form-group {
+    max-width: 450px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    max-width: 100%;
+  }
+  
+  /* ---------- 9. የምርት ዝርዝሮች ---------- */
+  .list-item,
+  .seller-item,
+  .history-item,
+  .unsold-item,
+  .cat-tag {
+    max-width: 100%;
+  }
+  
+  /* ---------- 10. የምድብ ማከማቻ ---------- */
+  .cat-add-row {
+    max-width: 500px;
+  }
+  
+  /* ---------- 11. የግራፍ ሳጥኖች ---------- */
+  .chart-container {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* ---------- 12. የማስታወቂያ ሳጥኖች ---------- */
+  .info-banner {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* ---------- 13. የሎጊን ሳጥን ---------- */
+  .login-box {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* ---------- 14. የማስጠንቀቂያ ሳጥኖች ---------- */
+  .toast {
+    max-width: 500px;
+  }
+  
+  /* ---------- 15. የፍለጋ ሳጥን ---------- */
+  .search-box {
+    max-width: 500px;
+  }
+  
+  /* ---------- 16. የቀን ማሳያ ---------- */
+  .month-nav {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* ---------- 17. የተለዋዋጭ ወጪ ሳጥን ---------- */
+  .card {
+    max-width: 600px;
+  }
+  
+  /* ---------- 18. የመቼውም ጊዜ የማይለወጥ ወጪ ---------- */
+  .toggle-row {
+    max-width: 400px;
+  }
+  
+  /* ---------- 19. የቅንብሮች ቁልፎች ---------- */
+  .settings-btn-row {
+    max-width: 500px;
+  }
+  
+  /* ---------- 20. የላይ ማሳያ (Top sellers) ---------- */
+  .top-sellers,
+  .unsold-products {
+    max-width: 100%;
+  }
+  
+  .section-title {
+    font-size: 15px;
+  }
+  
+  /* ---------- 21. የገጹ ዳራ አረንጓዴ አሞሌ ---------- */
+  .sync-status {
+    border-radius: 20px;
+  }
+}
+
+/* ============================================ */
+/* ===== በጣም ሰፊ ዴስክቶፕ (1200px+) ===== */
+/* ============================================ */
+@media (min-width: 1200px) {
+  .mainApp,
+  header,
+  .tabs,
+  .panels {
+    max-width: 1100px;
+  }
+  
+  body {
+    font-size: 16px;
+  }
+  
+  .section-header {
+    padding: 16px 24px;
+  }
+  
+  .section-body {
+    padding: 20px 24px;
+  }
+}
+
+/* ============================================ */
+/* ===== ለሞባይል ብቻ ===== */
+/* ============================================ */
+@media (max-width: 767px) {
+  .mainApp {
+    border-radius: 0;
+    padding: 12px;
+  }
+  
+  .row-flex button {
+    flex: 1;
+  }
+  
+  .btn {
+    max-width: 100%;
+  }
+}
+
 </style>
 </head>
 <body>
