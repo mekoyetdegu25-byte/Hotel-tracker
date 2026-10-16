@@ -432,10 +432,7 @@ let uid;
 try {
   const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
   uid = userCredential.user.uid;
-  console.log('✅ Hotel owner created:', uid);
-  
-  // የ Hotel Owners Auth ሁኔታ አጥፋ (Super Admin አይነካ)
-  await signOut(secondaryAuth);
+console.log('✅ Hotel owner created:', uid);
 } catch (err) {
   console.error('❌ Auth error:', err);
   if (err.code === 'auth/email-already-in-use') {
