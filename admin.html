@@ -23,8 +23,7 @@
   }
   header h1 { font-size: 22px; font-weight: 800; }
   header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-  
-  /* ===== COLLAPSIBLE CARD ===== */
+
   .card {
     background: white;
     border-radius: 12px;
@@ -42,9 +41,7 @@
     gap: 10px;
     transition: background 0.2s;
   }
-  .card-header:hover {
-    background: #f7fafc;
-  }
+  .card-header:hover { background: #f7fafc; }
   .card-header h2 {
     font-size: 16px;
     font-weight: 700;
@@ -60,9 +57,7 @@
     transition: transform 0.25s;
     display: inline-block;
   }
-  .card-header.open .arrow {
-    transform: rotate(90deg);
-  }
+  .card-header.open .arrow { transform: rotate(90deg); }
   .card-header .badge-count {
     background: #2c5282;
     color: white;
@@ -77,10 +72,8 @@
     border-top: 2px solid #e2e8f0;
     padding-top: 16px;
   }
-  .card-body.open {
-    display: block;
-  }
-  
+  .card-body.open { display: block; }
+
   .card h3 {
     font-size: 14px;
     font-weight: 700;
@@ -90,9 +83,8 @@
     background: #ebf4ff;
     border-radius: 8px;
   }
-  .card h3:first-of-type {
-    margin-top: 0;
-  }
+  .card h3:first-of-type { margin-top: 0; }
+
   .form-group { margin-bottom: 14px; }
   .form-group label {
     display: block;
@@ -129,8 +121,10 @@
   .btn-primary:hover { background: #1a365d; }
   .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
   .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 6px; }
+  .btn-success { background: #276749; color: white; }
   .btn-danger { background: #e53e3e; color: white; }
-  
+  .btn-warning { background: #c05621; color: white; }
+
   .hotel-list { display: grid; gap: 12px; }
   .hotel-item {
     background: #f7fafc;
@@ -138,9 +132,8 @@
     border-radius: 10px;
     padding: 14px 16px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
   }
   .hotel-item-info h3 {
     font-size: 15px;
@@ -151,6 +144,20 @@
     padding: 0;
   }
   .hotel-item-info p { font-size: 12px; color: #718096; }
+  
+  /* የክፍያ ሁኔታ ባጅ */
+  .payment-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+  .payment-paid { background: #c6f6d5; color: #22543d; }
+  .payment-due { background: #fefcbf; color: #744210; }
+  .payment-overdue { background: #fed7d7; color: #742a2a; }
+
   .badge {
     display: inline-block;
     padding: 3px 10px;
@@ -161,7 +168,37 @@
   .badge-active { background: #c6f6d5; color: #22543d; }
   .badge-inactive { background: #fed7d7; color: #742a2a; }
   .badge-trial { background: #fefcbf; color: #744210; }
-  
+
+  .hotel-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* የክፍያ ታሪክ (Collapsible) */
+  .history-section {
+    display: none;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  .history-section.open { display: block; }
+
+  .history-item {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .history-item .month { font-weight: 700; color: #2c5282; font-size: 13px; }
+  .history-item .amount { font-weight: 700; color: #276749; font-size: 13px; }
+  .history-item .date { font-size: 11px; color: #718096; }
+
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -181,7 +218,11 @@
     color: #2c5282;
     margin-bottom: 4px;
   }
+  .stat-value.green { color: #276749; }
+  .stat-value.red { color: #c53030; }
+  .stat-value.orange { color: #c05621; }
   .stat-label { font-size: 12px; color: #718096; font-weight: 600; }
+
   .error-box {
     background: #fff5f5;
     border: 1.5px solid #fc8181;
@@ -207,8 +248,10 @@
   }
   .success-box.show { display: block; }
   .hidden { display: none !important; }
+
   @media (max-width: 600px) {
-    .hotel-item { flex-direction: column; align-items: flex-start; }
+    .hotel-actions { flex-direction: column; }
+    .hotel-actions .btn { width: 100%; }
   }
 </style>
 </head>
@@ -252,23 +295,34 @@
         <div class="stat-label">🏢 ጠቅላላ ሆቴሎች</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="activeHotels">0</div>
-        <div class="stat-label">✅ ንቁ ሆቴሎች</div>
+        <div class="stat-value green" id="paidHotels">0</div>
+        <div class="stat-label">✅ ተከፍሏል</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="trialHotels">0</div>
-        <div class="stat-label">⏳ በሙከራ</div>
+        <div class="stat-value orange" id="dueHotels">0</div>
+        <div class="stat-label">⏳ የክፍያ ጊዜ</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="monthlyRevenue">0</div>
-        <div class="stat-label">💰 ወርሃዊ ገቢ (ብር)</div>
+        <div class="stat-value red" id="overdueHotels">0</div>
+        <div class="stat-label">❌ ዘግይቷል</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value green" id="monthlyRevenue">0</div>
+        <div class="stat-label">💰 የተከፈለ (ብር)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value red" id="expectedRevenue">0</div>
+        <div class="stat-label">⏳ ያልተከፈለ (ብር)</div>
       </div>
     </div>
 
     <div class="error-box" id="errorBox2"></div>
     <div class="success-box" id="successBox"></div>
 
-    <!-- ➕ አዲስ ሆቴል መጨመሪያ (COLLAPSIBLE) -->
+    <!-- ➕ አዲስ ሆቴል መጨመሪያ -->
     <div class="card">
       <div class="card-header" id="hdrAddHotel" onclick="toggleCard('hdrAddHotel', 'bodyAddHotel')">
         <h2>➕ አዲስ ሆቴል ጨምር</h2>
@@ -334,7 +388,7 @@
       </div>
     </div>
 
-    <!-- 📋 የሆቴሎች ዝርዝር (COLLAPSIBLE) -->
+    <!-- 📋 የሆቴሎች ዝርዝር -->
     <div class="card">
       <div class="card-header" id="hdrHotelList" onclick="toggleCard('hdrHotelList', 'bodyHotelList')">
         <h2>📋 የሆቴሎች ዝርዝር <span class="badge-count" id="hotelCountBadge">0</span></h2>
@@ -360,10 +414,9 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp }
+  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, orderBy, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  // ===== App 1 — Super Admin =====
   const firebaseConfig = {
     apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
     authDomain: "hotel-tracker-c3571.firebaseapp.com",
@@ -377,7 +430,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ===== App 2 — Hotel Owners =====
   const firebaseConfig2 = {
     apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
     authDomain: "hotel-owners-abe2c.firebaseapp.com",
@@ -405,7 +457,6 @@
   const addHotelBtnText = document.getElementById('addHotelBtnText');
   const hotelList = document.getElementById('hotelList');
 
-  // ===== COLLAPSIBLE CARD =====
   window.toggleCard = function(headerId, bodyId) {
     const header = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
@@ -414,54 +465,63 @@
     header.classList.toggle('open', isOpen);
   };
 
-  // ===== ስህተት ማሳያዎች =====
+  window.toggleHistory = function(hotelId) {
+    const el = document.getElementById('history-' + hotelId);
+    if (el) el.classList.toggle('open');
+  };
+
+  function getPaymentStatus(hotel) {
+    if (hotel.paidUntil) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const paidUntil = new Date(hotel.paidUntil);
+      paidUntil.setHours(0, 0, 0, 0);
+      const diffDays = Math.floor((paidUntil - today) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) return { status: 'overdue', label: '❌ ዘግይቷል (' + Math.abs(diffDays) + ' ቀን)', cls: 'payment-overdue' };
+      if (diffDays <= 3) return { status: 'due', label: '⏳ የክፍያ ጊዜ (' + diffDays + ' ቀን)', cls: 'payment-due' };
+      return { status: 'paid', label: '✅ ተከፍሏል (' + diffDays + ' ቀን)', cls: 'payment-paid' };
+    }
+    if (hotel.status === 'trial') return { status: 'trial', label: '⏳ በሙከራ', cls: 'payment-due' };
+    if (hotel.status === 'active') return { status: 'paid', label: '✅ ንቁ', cls: 'payment-paid' };
+    return { status: 'inactive', label: '❌ ተቋርጧል', cls: 'payment-overdue' };
+  }
+
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
     errorBox.classList.add('show');
-    console.error('❌ ERROR:', msg);
   }
-
   function showError2(msg) {
     errorBox2.textContent = '⚠️ ' + msg;
     errorBox2.classList.add('show');
     setTimeout(() => errorBox2.classList.remove('show'), 5000);
   }
-
   function showSuccess(msg) {
     successBox.textContent = '✅ ' + msg;
     successBox.classList.add('show');
     setTimeout(() => successBox.classList.remove('show'), 10000);
   }
 
-  // ===== መግቢያ =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-
     if (!email) return showError('Email አስገቡ');
     if (!password) return showError('የይለፍ ቃል አስገቡ');
-
     loginBtn.disabled = true;
     loginBtnText.textContent = '⏳ በመግባት ላይ...';
-
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log('✅ Login success:', result.user.email);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       loginBtn.disabled = false;
       loginBtnText.textContent = '🔓 ግባ';
-      showError('ስህተት: ' + err.code + ' | ' + err.message);
-      console.error(err);
+      showError('ስህተት: ' + err.code);
     }
   };
 
-  // ===== መውጫ =====
   window.doLogout = async function() {
     if (!confirm('እርግጠኛ ነህ?')) return;
     await signOut(auth);
   };
 
-  // ===== Auth ሁኔታ =====
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       if (user.email !== ADMIN_EMAIL) {
@@ -472,7 +532,6 @@
       loginScreen.classList.add('hidden');
       mainApp.classList.remove('hidden');
       await loadHotels();
-      await updateStats();
     } else {
       loginScreen.classList.remove('hidden');
       mainApp.classList.add('hidden');
@@ -481,7 +540,6 @@
     }
   });
 
-  // ===== አዲስ ሆቴል ጨምር =====
   window.addHotel = async function() {
     const name = document.getElementById('hotelName').value.trim();
     const domain = document.getElementById('hotelDomain').value.trim().toLowerCase();
@@ -505,125 +563,145 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
-      // 1. ባለቤት ፍጠር
       let ownerUid;
       try {
         const ownerCred = await createUserWithEmailAndPassword(secondaryAuth, ownerEmail, ownerPassword);
         ownerUid = ownerCred.user.uid;
-        console.log('✅ Owner created:', ownerUid);
       } catch (authErr) {
-        console.error('❌ Owner Auth error:', authErr);
         if (authErr.code === 'auth/email-already-in-use') {
           showError2('የባለቤት Email ቀድሞ ተጠቅሟል');
           addHotelBtn.disabled = false;
           addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
           return;
         }
-        showError2('የባለቤት Auth ስህተት: ' + authErr.code);
+        showError2('Auth ስህተት: ' + authErr.code);
         addHotelBtn.disabled = false;
         addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
         return;
       }
 
-      // 2. ማናጀር ፍጠር (ካለ)
       let managerUid = null;
       if (managerEmail && managerPassword && managerPassword.length >= 6) {
         try {
           const mgrCred = await createUserWithEmailAndPassword(secondaryAuth, managerEmail, managerPassword);
           managerUid = mgrCred.user.uid;
-          console.log('✅ Manager created:', managerUid);
         } catch (authErr) {
-          console.error('❌ Manager Auth error:', authErr);
-          showError2('የማናጀር Email ቀድሞ ተጠቅሟል ወይም ስህተት አለ');
+          showError2('የማናጀር Email ቀድሞ ተጠቅሟል');
         }
       }
 
-      // 3. አካውንታንት ፍጠር (ካለ)
       let accountantUid = null;
       if (accountantEmail && accountantPassword && accountantPassword.length >= 6) {
         try {
           const accCred = await createUserWithEmailAndPassword(secondaryAuth, accountantEmail, accountantPassword);
           accountantUid = accCred.user.uid;
-          console.log('✅ Accountant created:', accountantUid);
         } catch (authErr) {
-          console.error('❌ Accountant Auth error:', authErr);
-          showError2('የአካውንታንት Email ቀድሞ ተጠቅሟል ወይም ስህተት አለ');
+          showError2('የአካውንታንት Email ቀድሞ ተጠቅሟል');
         }
       }
 
-      // 4. የሆቴል ሰነድ
+      const today = new Date().toISOString().split('T')[0];
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const paidUntil = nextMonth.toISOString().split('T')[0];
+
       await setDoc(doc(db, 'hotels', hotelId), {
-        name: name,
-        domain: domain,
-        ownerEmail: ownerEmail,
-        ownerUid: ownerUid,
-        managerEmail: managerEmail || null,
-        managerUid: managerUid,
-        accountantEmail: accountantEmail || null,
-        accountantUid: accountantUid,
-        monthlyPrice: price,
-        status: status,
+        name, domain, ownerEmail, ownerUid,
+        managerEmail: managerEmail || null, managerUid,
+        accountantEmail: accountantEmail || null, accountantUid,
+        monthlyPrice: price, status,
         createdAt: serverTimestamp(),
-        startDate: new Date().toISOString().split('T')[0]
+        startDate: today,
+        lastPaymentDate: today,
+        paidUntil: paidUntil
       });
 
-      // 5. የባለቤት ሰነድ
       await setDoc(doc(db, 'users', ownerUid), {
-        email: ownerEmail,
-        hotelId: hotelId,
-        role: 'owner',
-        createdAt: serverTimestamp()
+        email: ownerEmail, hotelId, role: 'owner', createdAt: serverTimestamp()
       });
 
-      // 6. የማናጀር ሰነድ
       if (managerUid) {
         await setDoc(doc(db, 'users', managerUid), {
-          email: managerEmail,
-          hotelId: hotelId,
-          role: 'manager',
-          createdAt: serverTimestamp()
+          email: managerEmail, hotelId, role: 'manager', createdAt: serverTimestamp()
         });
       }
 
-      // 7. የአካውንታንት ሰነድ
       if (accountantUid) {
         await setDoc(doc(db, 'users', accountantUid), {
-          email: accountantEmail,
-          hotelId: hotelId,
-          role: 'accountant',
-          createdAt: serverTimestamp()
+          email: accountantEmail, hotelId, role: 'accountant', createdAt: serverTimestamp()
         });
       }
 
-      // ስኬት መልእክት
-      let msg = `🏢 ሆቴል "${name}" ተፈጠረ!\n\n`;
-      msg += `🌐 ዶሜይን: ${domain}\n`;
-      msg += `👑 ባለቤት: ${ownerEmail}\n`;
-      if (managerUid) msg += `🎯 ማናጀር: ${managerEmail}\n`;
-      if (accountantUid) msg += `💼 አካውንታንት: ${accountantEmail}\n`;
-      msg += `\n🔒 የይለፍ ቃል: (ያስገባኸው)`;
-      showSuccess(msg);
+      showSuccess(`🏢 ሆቴል "${name}" ተፈጠረ!\n\n🌐 ${domain}\n👑 ${ownerEmail}\n💰 ${price} ብር/ወር`);
 
-      // ፎርሙን አጽዳ
       document.getElementById('hotelName').value = '';
       document.getElementById('hotelDomain').value = '';
       document.getElementById('ownerEmail').value = '';
-      document.getElementById('ownerPassword').value = '123456';
       document.getElementById('managerEmail').value = '';
-      document.getElementById('managerPassword').value = '123456';
       document.getElementById('accountantEmail').value = '';
-      document.getElementById('accountantPassword').value = '123456';
-      document.getElementById('hotelPrice').value = '500';
 
       await loadHotels();
-      await updateStats();
-
     } catch (err) {
-      console.error(err);
       showError2('ስህተት: ' + err.message);
     } finally {
       addHotelBtn.disabled = false;
       addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
+    }
+  };
+
+  // ===== የክፍያ ታሪክ ማምጣት =====
+  async function loadPaymentHistory(hotelId) {
+    try {
+      const q = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
+      const snapshot = await getDocs(q);
+      const payments = [];
+      snapshot.forEach(doc => payments.push({ id: doc.id, ...doc.data() }));
+      payments.sort((a, b) => (b.month || '').localeCompare(a.month || ''));
+      return payments;
+    } catch (err) {
+      console.error('History error:', err);
+      return [];
+    }
+  }
+
+  // ===== ክፍያ ተከፈለ =====
+  window.markAsPaid = async function(hotelId, hotelName, monthlyPrice) {
+    if (!confirm(`"${hotelName}" — የ ${monthlyPrice} ብር ክፍያ ተከፍሏል?`)) return;
+    
+    try {
+      const today = new Date();
+      const month = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const paidUntil = nextMonth.toISOString().split('T')[0];
+      
+      // 1. የክፍያ ሰነድ
+      const paymentId = hotelId + '-' + month;
+      await setDoc(doc(db, 'payments', paymentId), {
+        hotelId,
+        hotelName,
+        amount: monthlyPrice,
+        month,
+        paidAt: todayStr,
+        paidBy: ADMIN_EMAIL,
+        status: 'paid',
+        createdAt: serverTimestamp()
+      });
+      
+      // 2. የሆቴል ሰነድ አሻሽል
+      await updateDoc(doc(db, 'hotels', hotelId), {
+        lastPaymentDate: todayStr,
+        paidUntil: paidUntil,
+        status: 'active'
+      });
+      
+      showSuccess(`✅ "${hotelName}" ክፍያ ተመዝግቧል!\n💰 ${monthlyPrice} ብር\n📅 እስከ ${paidUntil} ድረስ`);
+      await loadHotels();
+    } catch (err) {
+      console.error(err);
+      showError2('ክፍያ መመዝገብ አልተቻለም: ' + err.message);
     }
   };
 
@@ -634,81 +712,90 @@
       const hotels = [];
       snapshot.forEach(doc => hotels.push({ id: doc.id, ...doc.data() }));
 
-      // badge ቁጥር
       document.getElementById('hotelCountBadge').textContent = hotels.length;
+
+      // Statistics
+      let paid = 0, due = 0, overdue = 0, paidRevenue = 0, expectedRevenue = 0;
+      hotels.forEach(h => {
+        const ps = getPaymentStatus(h);
+        if (ps.status === 'paid') { paid++; paidRevenue += (h.monthlyPrice || 0); }
+        else if (ps.status === 'due' || ps.status === 'trial') { due++; expectedRevenue += (h.monthlyPrice || 0); }
+        else { overdue++; expectedRevenue += (h.monthlyPrice || 0); }
+      });
+      document.getElementById('totalHotels').textContent = hotels.length;
+      document.getElementById('paidHotels').textContent = paid;
+      document.getElementById('dueHotels').textContent = due;
+      document.getElementById('overdueHotels').textContent = overdue;
+      document.getElementById('monthlyRevenue').textContent = paidRevenue.toLocaleString();
+      document.getElementById('expectedRevenue').textContent = expectedRevenue.toLocaleString();
 
       if (hotels.length === 0) {
         hotelList.innerHTML = '<p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>';
         return;
       }
 
-      hotelList.innerHTML = hotels.map(h => {
-        const statusBadge = {
-          'active': '<span class="badge badge-active">✅ ንቁ</span>',
-          'trial': '<span class="badge badge-trial">⏳ በሙከራ</span>',
-          'inactive': '<span class="badge badge-inactive">❌ ተቋርጧል</span>'
-        }[h.status] || '';
-
+      // የክፍያ ታሪክ ለሁሉም
+      let html = '';
+      for (const h of hotels) {
+        const ps = getPaymentStatus(h);
         const managerInfo = h.managerEmail ? `🎯 ${h.managerEmail}` : '🎯 —';
         const accInfo = h.accountantEmail ? `💼 ${h.accountantEmail}` : '💼 —';
+        
+        const payments = await loadPaymentHistory(h.id);
+        const historyHtml = payments.length === 0
+          ? '<p style="text-align:center; color:#a0aec0; padding:12px; font-size:13px;">ምንም የክፍያ ታሪክ የለም</p>'
+          : payments.map(p => `
+            <div class="history-item">
+              <div>
+                <div class="month">📅 ${p.month}</div>
+                <div class="date">${p.paidAt || '—'}</div>
+              </div>
+              <div class="amount">💰 ${p.amount} ብር</div>
+            </div>
+          `).join('');
 
-        return `
+        html += `
           <div class="hotel-item">
             <div class="hotel-item-info">
               <h3>🏢 ${h.name || 'ስም የለም'}</h3>
               <p>🌐 ${h.domain || '—'}</p>
               <p>👑 ${h.ownerEmail || '—'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
               <p style="margin-top:2px;">${managerInfo} • ${accInfo}</p>
-              <p style="margin-top:4px;">${statusBadge}</p>
+              <span class="payment-badge ${ps.cls}">${ps.label}</span>
+              ${h.paidUntil ? `<p style="font-size:11px;color:#718096;margin-top:2px;">📅 እስከ ${h.paidUntil}</p>` : ''}
             </div>
-            <div>
-              <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${h.name || 'ስም የለም'}')">🗑️ አጥፋ</button>
+            
+            <div class="hotel-actions">
+              <button class="btn btn-sm btn-success" onclick="markAsPaid('${h.id}', '${(h.name || '').replace(/'/g, '')}', ${h.monthlyPrice || 0})">💰 ክፍያ ተከፈለ</button>
+              <button class="btn btn-sm btn-primary" onclick="toggleHistory('${h.id}')">📜 ታሪክ (${payments.length})</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️ አጥፋ</button>
+            </div>
+            
+            <div class="history-section" id="history-${h.id}">
+              <div style="font-weight:700;color:#2c5282;margin-bottom:8px;font-size:13px;">📜 የክፍያ ታሪክ</div>
+              ${historyHtml}
             </div>
           </div>
         `;
-      }).join('');
+      }
+      hotelList.innerHTML = html;
     } catch (err) {
       console.error(err);
       showError2('የሆቴሎችን ዝርዝር ማግኘት አልተቻለም');
     }
   }
 
-  // ===== ሆቴል አጥፋ =====
   window.deleteHotel = async function(hotelId, hotelName) {
     if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?')) return;
     try {
       await deleteDoc(doc(db, 'hotels', hotelId));
       showSuccess('ሆቴል ተጠፍቷል');
       await loadHotels();
-      await updateStats();
     } catch (err) {
       showError2('ማጥፋት አልተቻለም');
     }
   };
 
-  // ===== Statistics =====
-  async function updateStats() {
-    try {
-      const snapshot = await getDocs(collection(db, 'hotels'));
-      let total = 0, active = 0, trial = 0, revenue = 0;
-
-      snapshot.forEach(doc => {
-        const h = doc.data();
-        total++;
-        if (h.status === 'active') { active++; revenue += (h.monthlyPrice || 0); }
-        if (h.status === 'trial') trial++;
-      });
-
-      document.getElementById('totalHotels').textContent = total;
-      document.getElementById('activeHotels').textContent = active;
-      document.getElementById('trialHotels').textContent = trial;
-      document.getElementById('monthlyRevenue').textContent = revenue.toLocaleString();
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  // ===== Enter ቁልፍ =====
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) {
       doLogin();
