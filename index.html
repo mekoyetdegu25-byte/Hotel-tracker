@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>የሆቴል ሽያጭ እና ወጪ መከታተያ</title>
-<link rel="manifest" href="/Hotel-tracker/manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2c5282">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -215,240 +215,6 @@
   body.dark .perm-section { background: #4a5568; border-color: #4a5568; }
   .perm-section .perm-title { font-size: 13px; font-weight: 800; color: #2c5282; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   body.dark .perm-section .perm-title { color: #63b3ed; }
- 
-/* ============================================ */
-/* ===== ለዴስክቶፕ ብቻ የሚሠራ ሙሉ ማስተካከያ ===== */
-/* ============================================ */
-@media (min-width: 768px) {
-  
-  /* ---------- 1. የገጹ አጠቃላይ አቀማመጥ ---------- */
-  body {
-    background: linear-gradient(135deg, #e8eef5 0%, #d9e2ec 100%);
-    min-height: 100vh;
-    padding: 20px 0;
-    font-size: 15px;
-  }
-  
-  .mainApp {
-    max-width: 960px;
-    margin: 0 auto;
-    background: #f2f4f8;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(26, 54, 93, 0.12);
-  }
-  
-  /* ---------- 2. ራስጌ (Header) ---------- */
-  header {
-    max-width: 960px;
-    margin: 0 auto 20px;
-    border-radius: 12px 12px 0 0;
-    box-shadow: 0 2px 12px rgba(26, 54, 93, 0.15);
-  }
-  
-  /* ---------- 3. ታቦች (Tabs) ---------- */
-  .tabs {
-    max-width: 960px;
-    margin: 0 auto;
-    justify-content: center;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  
-  .tabs label {
-    flex: 0 1 auto;
-    min-width: 130px;
-    max-width: 180px;
-    padding: 12px 20px;
-    font-size: 14px;
-  }
-  
-  /* ---------- 4. የይዘት ክፍሎች (Sections) ---------- */
-  .panels {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px 0;
-  }
-  
-  .section-collapsible {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 16px;
-  }
-  
-  .section-header {
-    padding: 14px 20px;
-  }
-  
-  .section-body {
-    padding: 16px 20px;
-  }
-  
-  /* ---------- 5. ቁልፎች (Buttons) ---------- */
-  .btn {
-    max-width: 300px;
-  }
-  
-  .btn-sm {
-    max-width: 180px;
-  }
-  
-  /* ---------- 6. የቀን ምርጫ ቁልፎች ---------- */
-  .row-flex {
-    max-width: 480px;
-    gap: 10px;
-  }
-  
-  .row-flex button {
-    flex: 0 1 auto;
-    min-width: 130px;
-    max-width: 200px;
-  }
-  
-  /* ---------- 7. የማጠቃለያ ሳጥኖች (Summary Boxes) ---------- */
-  .summary-box {
-    max-width: 400px;
-  }
-  
-  /* ---------- 8. የግቤት ሳጥኖች (Inputs) ---------- */
-  .form-group {
-    max-width: 450px;
-  }
-  
-  input[type="text"],
-  input[type="number"],
-  input[type="date"],
-  input[type="email"],
-  input[type="password"],
-  select {
-    max-width: 100%;
-  }
-  
-  /* ---------- 9. የምርት ዝርዝሮች ---------- */
-  .list-item,
-  .seller-item,
-  .history-item,
-  .unsold-item,
-  .cat-tag {
-    max-width: 100%;
-  }
-  
-  /* ---------- 10. የምድብ ማከማቻ ---------- */
-  .cat-add-row {
-    max-width: 500px;
-  }
-  
-  /* ---------- 11. የግራፍ ሳጥኖች ---------- */
-  .chart-container {
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  /* ---------- 12. የማስታወቂያ ሳጥኖች ---------- */
-  .info-banner {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  /* ---------- 13. የሎጊን ሳጥን ---------- */
-  .login-box {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  /* ---------- 14. የማስጠንቀቂያ ሳጥኖች ---------- */
-  .toast {
-    max-width: 500px;
-  }
-  
-  /* ---------- 15. የፍለጋ ሳጥን ---------- */
-  .search-box {
-    max-width: 500px;
-  }
-  
-  /* ---------- 16. የቀን ማሳያ ---------- */
-  .month-nav {
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  /* ---------- 17. የተለዋዋጭ ወጪ ሳጥን ---------- */
-  .card {
-    max-width: 600px;
-  }
-  
-  /* ---------- 18. የመቼውም ጊዜ የማይለወጥ ወጪ ---------- */
-  .toggle-row {
-    max-width: 400px;
-  }
-  
-  /* ---------- 19. የቅንብሮች ቁልፎች ---------- */
-  .settings-btn-row {
-    max-width: 500px;
-  }
-  
-  /* ---------- 20. የላይ ማሳያ (Top sellers) ---------- */
-  .top-sellers,
-  .unsold-products {
-    max-width: 100%;
-  }
-  
-  .section-title {
-    font-size: 15px;
-  }
-  
-  /* ---------- 21. የገጹ ዳራ አረንጓዴ አሞሌ ---------- */
-  .sync-status {
-    border-radius: 20px;
-  }
-}
-
-/* ============================================ */
-/* ===== በጣም ሰፊ ዴስክቶፕ (1200px+) ===== */
-/* ============================================ */
-@media (min-width: 1200px) {
-  .mainApp,
-  header,
-  .tabs,
-  .panels {
-    max-width: 1100px;
-  }
-  
-  body {
-    font-size: 16px;
-  }
-  
-  .section-header {
-    padding: 16px 24px;
-  }
-  
-  .section-body {
-    padding: 20px 24px;
-  }
-}
-
-/* ============================================ */
-/* ===== ለሞባይል ብቻ ===== */
-/* ============================================ */
-@media (max-width: 767px) {
-  .mainApp {
-    border-radius: 0;
-    padding: 12px;
-  }
-  
-  .row-flex button {
-    flex: 1;
-  }
-  
-  .btn {
-    max-width: 100%;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -477,8 +243,6 @@
     <button class="btn-login" id="loginBtn" onclick="doLogin()">
       <span id="loginBtnText">🔓 ግባ</span>
     </button>
-    
-    </div>
   </div>
 </div>
 
@@ -514,7 +278,7 @@
     </div>
 
     <div class="panels">
-      <!-- ===== TAB 1: PRODUCTS ===== -->
+      <!-- TAB 1: PRODUCTS -->
       <div class="panel" id="panel1">
         <div class="section-collapsible" id="secDatePicker">
           <div class="section-header" id="hdrDatePicker" onclick="toggleSection('hdrDatePicker','bodyDatePicker')">
@@ -597,7 +361,7 @@
         </div>
       </div>
 
-      <!-- ===== TAB 2: DAILY ===== -->
+      <!-- TAB 2: DAILY -->
       <div class="panel" id="panel2">
         <div class="section-collapsible">
           <div class="section-header open" id="hdrDailyIncome" onclick="toggleSection('hdrDailyIncome','bodyDailyIncome')">
@@ -701,7 +465,7 @@
         </div>
       </div>
 
-      <!-- ===== TAB 3: MONTHLY ===== -->
+      <!-- TAB 3: MONTHLY -->
       <div class="panel" id="panel3">
         <div class="section-collapsible">
           <div class="section-header open" id="hdrMonthPick" onclick="toggleSection('hdrMonthPick','bodyMonthPick')">
@@ -811,7 +575,7 @@
         </div>
       </div>
 
-      <!-- ===== TAB 4: DASHBOARD ===== -->
+      <!-- TAB 4: DASHBOARD -->
       <div class="panel" id="panel4">
         <div class="section-collapsible">
           <div class="section-header open" id="hdrChart1" onclick="toggleSection('hdrChart1','bodyChart1')">
@@ -845,7 +609,7 @@
         </div>
       </div>
 
-      <!-- ===== TAB 5: SETTINGS ===== -->
+      <!-- TAB 5: SETTINGS -->
       <div class="panel" id="panel5">
         <div class="section-collapsible" id="secHotelSettings">
           <div class="section-header open" id="hdrHotelSettings" onclick="toggleSection('hdrHotelSettings','bodyHotelSettings')">
@@ -883,7 +647,6 @@
           </div>
         </div>
 
-        <!-- 🆕 PERMISSIONS (owner only) -->
         <div class="section-collapsible" id="secPermissions">
           <div class="section-header open" id="hdrPermissions" onclick="toggleSection('hdrPermissions','bodyPermissions')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🎯</span><span class="sec-title">የተጠቃሚዎች ፈቃዶች (Permissions)</span></div>
@@ -892,7 +655,6 @@
           <div class="section-body open" id="bodyPermissions">
             <div class="info-banner">💡 እያንዳንዱ ተጠቃሚ ምን ማየት እንዳለበት እዚህ ያስተካክሉ። ወዲያውኑ ይተገበራል።</div>
 
-            <!-- Manager -->
             <div class="perm-section">
               <div class="perm-title">🎯 ማናጀር (Manager)</div>
               <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_sales"><span class="slider"></span></label></div>
@@ -908,7 +670,6 @@
               <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_mgr_reset"><span class="slider"></span></label></div>
             </div>
 
-            <!-- Accountant -->
             <div class="perm-section">
               <div class="perm-title">💼 አካውንታንት (Accountant)</div>
               <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_sales"><span class="slider"></span></label></div>
@@ -944,30 +705,48 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  // ===== APP 2: Hotel-Owners (Authentication) =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+  // ===== APP 1: Hotel-Tracker (Firestore DB) =====
   import { getFirestore, doc, setDoc, getDoc, deleteDoc,
            collection, getDocs, onSnapshot, writeBatch, serverTimestamp,
            enableIndexedDbPersistence }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-  apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
-  authDomain: "hotel-owners-abe2c.firebaseapp.com",
-  projectId: "hotel-owners-abe2c",
-  storageBucket: "hotel-owners-abe2c.firebasestorage.app",
-  messagingSenderId: "372834019536",
-  appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
-};
+  // 🆕 App 2 - Hotel-Owners (Auth)
+  const firebaseConfigAuth = {
+    apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
+    authDomain: "hotel-owners-abe2c.firebaseapp.com",
+    projectId: "hotel-owners-abe2c",
+    storageBucket: "hotel-owners-abe2c.firebasestorage.app",
+    messagingSenderId: "372834019536",
+    appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
+  };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  // 🆕 App 1 - Hotel-Tracker (Firestore DB)
+  const firebaseConfigDB = {
+    apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
+    authDomain: "hotel-tracker-c3571.firebaseapp.com",
+    projectId: "hotel-tracker-c3571",
+    storageBucket: "hotel-tracker-c3571.firebasestorage.app",
+    messagingSenderId: "1024629386649",
+    appId: "1:1024629386649:web:c689f920c780e400797708"
+  };
+
+  const appAuth = initializeApp(firebaseConfigAuth, 'auth-app');
+  const auth = getAuth(appAuth);
+  
+  const appDB = initializeApp(firebaseConfigDB, 'db-app');
+  const db = getFirestore(appDB);
+  
   enableIndexedDbPersistence(db).then(() => console.log('✅ Offline')).catch(e => console.warn(e.code));
 
-let HOTEL_ID = 'hotel-main';
+  // 🆕 HOTEL_ID ተለዋዋጭ ነው — ከ users collection ያነባል
+  let HOTEL_ID = 'hotel-main';
 
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
@@ -984,7 +763,7 @@ let HOTEL_ID = 'hotel-main';
 
   let currentUser = null;
   let currentRole = 'unknown';
-  let permissions = {}; // { manager: {...}, accountant: {...} }
+  let permissions = {};
   let products = [], sales = {}, expenses = [], fixed = [], history = [];
   let categories = {
     'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -1001,18 +780,9 @@ let HOTEL_ID = 'hotel-main';
   let dailyChartInstance = null, pieChartInstance = null, dayLineChartInstance = null;
   const MONTH_NAMES_AM = ['ጃንዋሪ','ፌብሩዋሪ','ማርች','ኤፕሪል','ሜይ','ጁን','ጁላይ','ኦገስት','ሴፕቴምበር','ኦክቶበር','ኖቬምበር','ዲሴምበር'];
 
-  // ===== DEFAULT PERMISSIONS =====
   const DEFAULT_PERMS = {
-    manager: {
-      sales: true, expense: true, product: true, cat: true,
-      top: true, unsold: true, history: true, monthly: true,
-      dashboard: true, settings: false, reset: true
-    },
-    accountant: {
-      sales: true, expense: true, product: true, cat: true,
-      top: false, unsold: false, history: false, monthly: false,
-      dashboard: false, settings: false, reset: true
-    }
+    manager: { sales: true, expense: true, product: true, cat: true, top: true, unsold: true, history: true, monthly: true, dashboard: true, settings: false, reset: true },
+    accountant: { sales: true, expense: true, product: true, cat: true, top: false, unsold: false, history: false, monthly: false, dashboard: false, settings: false, reset: true }
   };
 
   function money(n) { return (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -1033,10 +803,9 @@ let HOTEL_ID = 'hotel-main';
     if (email.startsWith('owner@')) return 'owner';
     if (email.startsWith('manager@')) return 'manager';
     if (email.startsWith('accountant@')) return 'accountant';
-    return 'unknown';
+    return 'owner';
   }
 
-  // ===== Permission check =====
   function can(perm) {
     if (currentRole === 'owner') return true;
     if (!permissions[currentRole]) return false;
@@ -1063,10 +832,19 @@ let HOTEL_ID = 'hotel-main';
   }
   async function loadHotelName() {
     try {
+      console.log('🔍 Loading hotel:', HOTEL_ID);
       const snap = await getDoc(hotelRef());
       if (snap.exists()) {
         const data = snap.data();
-        if (data.name) { hdrHotelName.textContent = data.name; const inp = document.getElementById('hotelNameInput'); if (inp) inp.value = data.name; }
+        console.log('✅ Hotel data:', data);
+        if (data.name) {
+          hdrHotelName.textContent = data.name;
+          const inp = document.getElementById('hotelNameInput');
+          if (inp) inp.value = data.name;
+        }
+      } else {
+        console.log('❌ Hotel not found:', HOTEL_ID);
+        hdrHotelName.textContent = HOTEL_ID;
       }
     } catch (e) { console.warn(e); }
   }
@@ -1081,7 +859,6 @@ let HOTEL_ID = 'hotel-main';
     catch (e) { console.error(e); setSyncStatus('error'); }
   }
 
-  // ===== PERMISSIONS (NEW) =====
   async function loadPermissions() {
     try {
       const snap = await getDoc(permsRef());
@@ -1132,17 +909,13 @@ let HOTEL_ID = 'hotel-main';
     });
   }
 
-  // ===== APPLY PERMISSIONS (NEW) =====
   function applyPermissionsToUI() {
-    // Owner: everything visible
     if (currentRole === 'owner') {
       showAllTabs();
       document.getElementById('secPermissions').style.display = '';
       document.getElementById('secHotelSettings').style.display = '';
       return;
     }
-
-    // Manager & Accountant
     const canTop = can('top');
     const canUnsold = can('unsold');
     const canHistory = can('history');
@@ -1155,58 +928,40 @@ let HOTEL_ID = 'hotel-main';
     const canExpense = can('expense');
     const canSales = can('sales');
 
-    // Tab 1 - product mgmt
     document.getElementById('secAddProduct').style.display = canProduct ? '' : 'none';
     document.getElementById('secCatMgr').style.display = canCat ? '' : 'none';
     document.getElementById('hdrSaleEntry').parentElement.style.display = canSales ? '' : 'none';
 
-    // Tab 2 - reports
     document.getElementById('secTodayTop').style.display = canTop ? '' : 'none';
     document.getElementById('secTodayUnsold').style.display = canUnsold ? '' : 'none';
     document.getElementById('secHistory').style.display = canHistory ? '' : 'none';
     document.getElementById('secExpCats').style.display = canExpense ? '' : 'none';
     document.getElementById('hdrDailyExp').parentElement.style.display = canExpense ? '' : 'none';
 
-    // Tab 3 - monthly
     const tab3 = document.getElementById('tab3');
     const tab3Label = document.querySelector('label[for="tab3"]');
-    if (canMonthly) {
-      if (tab3) tab3.disabled = false;
-      if (tab3Label) tab3Label.style.display = '';
-    } else {
-      if (tab3) { tab3.disabled = true; tab3.checked = false; }
-      if (tab3Label) tab3Label.style.display = 'none';
-    }
+    if (canMonthly) { if (tab3) tab3.disabled = false; if (tab3Label) tab3Label.style.display = ''; }
+    else { if (tab3) { tab3.disabled = true; tab3.checked = false; } if (tab3Label) tab3Label.style.display = 'none'; }
 
-    // Tab 4 - dashboard
     const tab4 = document.getElementById('tab4');
     const tab4Label = document.querySelector('label[for="tab4"]');
-    if (canDashboard) {
-      if (tab4) tab4.disabled = false;
-      if (tab4Label) tab4Label.style.display = '';
-    } else {
-      if (tab4) { tab4.disabled = true; tab4.checked = false; }
-      if (tab4Label) tab4Label.style.display = 'none';
-    }
+    if (canDashboard) { if (tab4) tab4.disabled = false; if (tab4Label) tab4Label.style.display = ''; }
+    else { if (tab4) { tab4.disabled = true; tab4.checked = false; } if (tab4Label) tab4Label.style.display = 'none'; }
 
-    // Tab 5 - settings
     const tab5 = document.getElementById('tab5');
     const tab5Label = document.querySelector('label[for="tab5"]');
     if (canSettings) {
       if (tab5) tab5.disabled = false;
       if (tab5Label) tab5Label.style.display = '';
-      // Settings: no permissions section for non-owner
       document.getElementById('secPermissions').style.display = 'none';
     } else {
       if (tab5) { tab5.disabled = true; tab5.checked = false; }
       if (tab5Label) tab5Label.style.display = 'none';
     }
 
-    // Reset button
     const resetBtn = document.querySelector('#bodyReset .btn-outline');
     if (resetBtn) resetBtn.style.display = canReset ? '' : 'none';
 
-    // Force tab 1 if tab3/4/5 are hidden
     const activeTab = document.querySelector('input[name="tabs"]:checked');
     if (activeTab) {
       const activeId = activeTab.id;
@@ -1233,12 +988,10 @@ let HOTEL_ID = 'hotel-main';
     if (resetBtn) resetBtn.style.display = '';
   }
 
-  // ===== DARK MODE =====
   function applyDarkMode(isDark) { if (isDark) { document.body.classList.add('dark'); const t = document.getElementById('darkModeToggle'); if (t) t.checked = true; } else { document.body.classList.remove('dark'); const t = document.getElementById('darkModeToggle'); if (t) t.checked = false; } }
   window.toggleDarkMode = function() { const t = document.getElementById('darkModeToggle'); const isDark = t.checked; applyDarkMode(isDark); localStorage.setItem('hotel_dark', isDark ? '1' : '0'); toast(isDark ? '🌙 Dark' : '☀️ Light'); renderDailyChart(); renderMonthlyPieChart(); renderDailyLineChart(); };
   function loadDarkMode() { const saved = localStorage.getItem('hotel_dark'); if (saved === '1') applyDarkMode(true); }
 
-  // ===== NOTIFICATIONS =====
   window.enableNotifications = async function() {
     const status = document.getElementById('notifStatus');
     if (!('Notification' in window)) { status.textContent = '❌ አይደግፍም'; status.style.color = '#c53030'; return; }
@@ -1248,7 +1001,6 @@ let HOTEL_ID = 'hotel-main';
   function scheduleDailyReminder() { const now = new Date(); const target = new Date(); target.setHours(20, 0, 0, 0); if (target <= now) target.setDate(target.getDate() + 1); const delay = target.getTime() - now.getTime(); setTimeout(() => { if (Notification.permission === 'granted') new Notification('🏨 የሆቴል ሽያጭ መከታተያ', { body: 'የዛሬ ሽያጭ አስገባ! 📊' }); scheduleDailyReminder(); }, delay); }
   function loadNotificationStatus() { const status = document.getElementById('notifStatus'); if (!status) return; if (!('Notification' in window)) { status.textContent = '❌ አይደግፍም'; return; } if (Notification.permission === 'granted') { status.textContent = '✅ ተነስቷል'; status.style.color = '#276749'; scheduleDailyReminder(); } else if (Notification.permission === 'denied') { status.textContent = '❌ አልተፈቀደም'; status.style.color = '#c53030'; } }
 
-  // ===== PRINT / EXCEL =====
   window.printReport = function() {
     const monthLabel = MONTH_NAMES_AM[currentMonth] + ' ' + currentYear;
     const monthPrefix = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
@@ -1277,7 +1029,6 @@ let HOTEL_ID = 'hotel-main';
     toast('📊 Excel ተወርሷል');
   };
 
-  // ===== LOGIN =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -1299,31 +1050,38 @@ let HOTEL_ID = 'hotel-main';
   window.doLogout = async function() { if (!confirm('መውጣት ትፈልጋለህ?')) return; try { await signOut(auth); } catch (err) { showError(err.message); } };
   function showLogin() { loginScreen.classList.remove('hidden'); mainApp.classList.remove('show'); passwordInput.value = ''; }
 
+  // 🆕 ዋናው ተግባር — HOTEL_ID ን ከ users collection ያነባል
   async function showMainApp(user) {
-    currentUser = user; currentRole = getUserRole(user.email);
-   // 🆕 HOTEL_ID ን ከ Firebase አንብብ
-try {
-  const userDoc = await getDoc(doc(db, 'users', user.uid));
-  if (userDoc.exists()) {
-    HOTEL_ID = userDoc.data().hotelId || 'hotel-main';
-    console.log('✅ HOTEL_ID set:', HOTEL_ID);
-  } else {
-    console.log('⚠️ User doc not found, using:', HOTEL_ID);
-  }
-} catch (e) {
-  console.error('Error loading HOTEL_ID:', e);
-}
-    loginScreen.classList.add('hidden'); mainApp.classList.add('show');
+    currentUser = user;
+    currentRole = getUserRole(user.email);
+    
+    // 🆕 HOTEL_ID ከ Hotel-Tracker Firestore users collection አንብብ
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        HOTEL_ID = userData.hotelId || 'hotel-main';
+        console.log('✅ HOTEL_ID from users:', HOTEL_ID);
+      } else {
+        console.log('⚠️ User doc not found, using default:', HOTEL_ID);
+      }
+    } catch (e) {
+      console.error('Error loading HOTEL_ID:', e);
+    }
+    
+    loginScreen.classList.add('hidden');
+    mainApp.classList.add('show');
     hdrUserEmail.textContent = user.email;
     const roleLabels = { owner: '👑 ባለቤት', manager: '🎯 ማናጀር', accountant: '💼 አካውንታንት', unknown: '❓' };
-    hdrRoleBadge.textContent = roleLabels[currentRole] || '❓'; hdrRoleBadge.className = 'role-badge ' + currentRole;
+    hdrRoleBadge.textContent = roleLabels[currentRole] || '❓';
+    hdrRoleBadge.className = 'role-badge ' + currentRole;
     currentSaleDate = todayStr();
     document.getElementById('saleDateInput').value = currentSaleDate;
     const cdi = document.getElementById('chartDayInput'); if (cdi) cdi.value = currentSaleDate;
     updateDateBadge();
     loadDarkMode();
     await ensureHotelDoc();
-    await loadHotelName();
+    await loadHotelName();  // 🆕 አሁን HOTEL_ID ትክክል ነው
     await loadPermissions();
     loadNotificationStatus();
     fillPermissionsUI();
@@ -1332,25 +1090,7 @@ try {
     renderAll();
   }
 
-  onAuthStateChanged(auth, async (user) => {
-  hideLoading();
-  if (user) {
-    try {
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (userDoc.exists()) {
-        HOTEL_ID = userDoc.data().hotelId || 'hotel-main';
-        console.log('✅ HOTEL_ID:', HOTEL_ID);
-      }
-    } catch (e) {
-      console.error('Error loading HOTEL_ID:', e);
-    }
-    showMainApp(user);
-  } else {
-    showLogin();
-    loginBtn.disabled = false;
-    loginBtnText.textContent = '🔓 ግባ';
-  }
-});
+  onAuthStateChanged(auth, (user) => { hideLoading(); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
   let listenersSet = false;
@@ -1423,13 +1163,14 @@ try {
   window.renderDailyLineChart = function() { const c = document.getElementById('dayLineChart'); if (!c) return; const inp = document.getElementById('chartDayInput'); if (!inp) return; if (!inp.value) inp.value = todayStr(); const d = inp.value; const isDark = document.body.classList.contains('dark'); const ds = getSalesForDate(d); const ct = {}; products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) { if (!ct[p.main]) ct[p.main] = 0; ct[p.main] += s.qty * p.price; } }); const l = Object.keys(ct); const da = Object.values(ct); if (dayLineChartInstance) dayLineChartInstance.destroy(); if (l.length === 0) { const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = isDark ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } dayLineChartInstance = new Chart(c, { type: 'line', data: { labels: l, datasets: [{ label: 'ሽያጭ', data: da, borderColor: isDark ? '#63b3ed' : '#2c5282', backgroundColor: isDark ? 'rgba(99,179,237,0.2)' : 'rgba(44,82,130,0.2)', fill: true, tension: 0.3, pointBackgroundColor: isDark ? '#63b3ed' : '#2c5282', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => money(ctx.parsed.y) + ' ብር' } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } }, x: { ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } } } } }); };
   window.resetSelectedDateSales = async function() { const d = currentSaleDate; if (!confirm('📅 ' + formatDate(d) + '\n\nየዚህን ቀን ማጥፋት?')) return; setSyncStatus('syncing'); try { const b = writeBatch(db); const ss = await getDocs(salesCol()); ss.forEach(x => { const s = x.data(); if (s && s.date === d) b.delete(x.ref); }); const es = await getDocs(expensesCol()); es.forEach(x => { const e = x.data(); if (e && e.date === d) b.delete(x.ref); }); await b.commit(); setSyncStatus('online'); toast('🔄 ተጠፍቷል'); } catch (e) { setSyncStatus('error'); console.error(e); } };
   function renderAll() { renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange(); renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags(); renderProducts(); renderDaily(); renderMonthly(); updateDateBadge(); }
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/Hotel-tracker/sw.js', { scope: '/Hotel-tracker/' })
-      .then(reg => console.log('✅ SW:', reg))
-      .catch(err => console.log('❌ SW:', err));
-  });
-}
+  
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('✅ SW:', reg))
+        .catch(err => console.log('❌ SW:', err));
+    });
+  }
 </script>
 
 </body>
