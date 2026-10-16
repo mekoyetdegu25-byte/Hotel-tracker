@@ -967,7 +967,7 @@
   const db = getFirestore(app);
   enableIndexedDbPersistence(db).then(() => console.log('✅ Offline')).catch(e => console.warn(e.code));
 
-  const HOTEL_ID = 'hotel-main';
+let HOTEL_ID = 'hotel-main';
 
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
@@ -1320,7 +1320,25 @@
     renderAll();
   }
 
-  onAuthStateChanged(auth, (user) => { hideLoading(); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
+  onAuthStateChanged(auth, async (user) => {
+  hideLoading();
+  if (user) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        HOTEL_ID = userDoc.data().hotelId || 'hotel-main';
+        console.log('✅ HOTEL_ID:', HOTEL_ID);
+      }
+    } catch (e) {
+      console.error('Error loading HOTEL_ID:', e);
+    }
+    showMainApp(user);
+  } else {
+    showLogin();
+    loginBtn.disabled = false;
+    loginBtnText.textContent = '🔓 ግባ';
+  }
+});
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
   let listenersSet = false;
