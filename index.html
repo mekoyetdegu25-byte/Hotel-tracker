@@ -828,23 +828,23 @@
     } catch (e) { console.warn(e); }
   }
   async function loadHotelName() {
-    try {
-      console.log('🏨 Loading hotel name for:', HOTEL_ID);
-      const snap = await getDoc(hotelRef());
-      if (snap.exists()) {
-        const data = snap.data();
-        console.log('🏨 Hotel data:', data);
-        if (data.name) {
-          hdrHotelName.textContent = data.name;
-          const inp = document.getElementById('hotelNameInput');
-          if (inp) inp.value = data.name;
-        }
-      } else {
-        console.log('❌ Hotel not found:', HOTEL_ID);
-        hdrHotelName.textContent = HOTEL_ID;
+  try {
+    alert('🏨 Loading: ' + HOTEL_ID);
+    const snap = await getDoc(hotelRef());
+    if (snap.exists()) {
+      const data = snap.data();
+      alert('🏨 Data: ' + JSON.stringify(data));
+      if (data.name) {
+        hdrHotelName.textContent = data.name;
+        const inp = document.getElementById('hotelNameInput');
+        if (inp) inp.value = data.name;
       }
-    } catch (e) { console.warn(e); }
-  }
+    } else {
+      alert('❌ Not found: ' + HOTEL_ID);
+      hdrHotelName.textContent = HOTEL_ID;
+    }
+  } catch (e) { alert('❌ Error: ' + e.message); }
+}
   async function saveDoc(colRef, id, data) {
     setSyncStatus('syncing');
     try { await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true }); setSyncStatus('online'); }
@@ -1064,28 +1064,24 @@
     
     // 🆕 HOTEL_ID ከ users collection አንብብ — ጊዜ ገደብ 5 ሰከንድ
     let hotelIdFound = false;
-    try {
-      console.log('🔍 Reading user doc UID:', user.uid);
-      const userDocPromise = getDoc(doc(db, 'users', user.uid));
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Firestore timeout')), 5000)
-      );
-      const userDoc = await Promise.race([userDocPromise, timeoutPromise]);
-      
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        console.log('✅ User data found:', JSON.stringify(userData));
-        HOTEL_ID = userData.hotelId || 'hotel-main';
-        hotelIdFound = true;
-        // 🆕 localStorage ላይ አስቀምጥ
-        localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
-        console.log('✅ HOTEL_ID =', HOTEL_ID);
-      } else {
-        console.log('❌ User doc not found');
-      }
-    } catch (e) {
-      console.error('❌ Error:', e);
-    }
+try {
+  alert('🔍 UID: ' + user.uid);
+  const userDoc = await getDoc(doc(db, 'users', user.uid));
+  alert('📄 exists: ' + userDoc.exists());
+  
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    alert('📄 Data: ' + JSON.stringify(userData));
+    HOTEL_ID = userData.hotelId || 'hotel-main';
+    alert('✅ HOTEL_ID: ' + HOTEL_ID);
+    hotelIdFound = true;
+    localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
+  } else {
+    alert('❌ User doc not found');
+  }
+} catch (e) {
+  alert('❌ Error: ' + e.message);
+}
     
     // 🆕 ካልተገኘ — localStorage ሞክር
     if (!hotelIdFound) {
