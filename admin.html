@@ -145,7 +145,6 @@
   }
   .hotel-item-info p { font-size: 12px; color: #718096; }
   
-  /* የክፍያ ሁኔታ ባጅ */
   .payment-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -158,24 +157,12 @@
   .payment-due { background: #fefcbf; color: #744210; }
   .payment-overdue { background: #fed7d7; color: #742a2a; }
 
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 700;
-    border-radius: 20px;
-  }
-  .badge-active { background: #c6f6d5; color: #22543d; }
-  .badge-inactive { background: #fed7d7; color: #742a2a; }
-  .badge-trial { background: #fefcbf; color: #744210; }
-
   .hotel-actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
   }
 
-  /* የክፍያ ታሪክ (Collapsible) */
   .history-section {
     display: none;
     background: white;
@@ -259,7 +246,6 @@
 
 <div class="container">
 
-  <!-- የሎጊን ገጽ -->
   <div id="loginScreen">
     <div class="card" style="max-width: 400px; margin: 60px auto;">
       <div class="card-header open" style="cursor: default;">
@@ -282,7 +268,6 @@
     </div>
   </div>
 
-  <!-- ዋናው ገጽ -->
   <div id="mainApp" class="hidden">
     <header>
       <h1>👑 Super Admin Panel</h1>
@@ -322,7 +307,6 @@
     <div class="error-box" id="errorBox2"></div>
     <div class="success-box" id="successBox"></div>
 
-    <!-- ➕ አዲስ ሆቴል መጨመሪያ -->
     <div class="card">
       <div class="card-header" id="hdrAddHotel" onclick="toggleCard('hdrAddHotel', 'bodyAddHotel')">
         <h2>➕ አዲስ ሆቴል ጨምር</h2>
@@ -388,7 +372,6 @@
       </div>
     </div>
 
-    <!-- 📋 የሆቴሎች ዝርዝር -->
     <div class="card">
       <div class="card-header" id="hdrHotelList" onclick="toggleCard('hdrHotelList', 'bodyHotelList')">
         <h2>📋 የሆቴሎች ዝርዝር <span class="badge-count" id="hotelCountBadge">0</span></h2>
@@ -414,9 +397,10 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, orderBy, updateDoc }
+  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+  // 🆕 አንድ project ብቻ — hotel-tracker (Auth + Firestore)
   const firebaseConfig = {
     apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
     authDomain: "hotel-tracker-c3571.firebaseapp.com",
@@ -430,16 +414,9 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  const firebaseConfig2 = {
-    apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
-    authDomain: "hotel-owners-abe2c.firebaseapp.com",
-    projectId: "hotel-owners-abe2c",
-    storageBucket: "hotel-owners-abe2c.firebasestorage.app",
-    messagingSenderId: "372834019536",
-    appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
-  };
-
-  const secondaryApp = initializeApp(firebaseConfig2, 'hotel-owners');
+  // 🆕 ሁለተኛው app — ተጠቃሚዎችን ለመፍጠር
+  // (Admin ሳይወጣ ሌሎችን መፍጠር እንዲቻል)
+  const secondaryApp = initializeApp(firebaseConfig, 'secondary');
   const secondaryAuth = getAuth(secondaryApp);
 
   const ADMIN_EMAIL = "admin@hotel.com";
@@ -540,12 +517,11 @@
     }
   });
 
-  // ===== ተጠቃሚ መፍጠር (ነባር ካለ ነባሩን uid ይመልሳል) =====
+  // ===== ተጠቃሚ መፍጠር =====
   async function createOrGetUser(email, password) {
     try {
       const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
       const uid = cred.user.uid;
-      // አዲሱን user ከ secondary auth አውጣ
       await signOut(secondaryAuth);
       return { uid, created: true };
     } catch (err) {
@@ -555,8 +531,7 @@
           const q = query(collection(db, 'users'), where('email', '==', email));
           const snap = await getDocs(q);
           if (!snap.empty) {
-            const existing = snap.docs[0].data();
-            return { uid: existing.hotelId ? snap.docs[0].id : null, created: false, existing: true };
+            return { uid: snap.docs[0].id, created: false, existing: true };
           }
         } catch (e) {
           console.warn('existing user lookup failed:', e);
@@ -590,7 +565,7 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
-      // Owner ፍጠር / አግኝ
+      // Owner ፍጠር
       let ownerUid;
       try {
         const result = await createOrGetUser(ownerEmail, ownerPassword);
@@ -630,26 +605,23 @@
         }
       }
 
-      // 🆕 paidUntil በ status መሠረት አስላ
+      // paidUntil በ status መሠረት
       const today = new Date().toISOString().split('T')[0];
       let paidUntil;
 
       if (status === 'trial') {
-        // ⏳ በሙከራ — 14 ቀን ብቻ
         const trialEnd = new Date();
         trialEnd.setDate(trialEnd.getDate() + 14);
         paidUntil = trialEnd.toISOString().split('T')[0];
       } else if (status === 'active') {
-        // ✅ ንቁ — 1 ወር
         const nextMonth = new Date();
         nextMonth.setMonth(nextMonth.getMonth() + 1);
         paidUntil = nextMonth.toISOString().split('T')[0];
       } else {
-        // ❌ ተቋርጧል — ዛሬ (ወዲያውኑ ዘግይቷል)
         paidUntil = today;
       }
 
-      // የሆቴል ሰነድ ፍጠር
+      // Hotel ሰነድ
       await setDoc(doc(db, 'hotels', hotelId), {
         name, domain, ownerEmail, ownerUid,
         managerEmail: managerEmail || null, managerUid,
@@ -661,7 +633,7 @@
         paidUntil: paidUntil
       });
 
-      // Owner የ users ሰነድ
+      // Users ሰነዶች
       if (ownerUid) {
         await setDoc(doc(db, 'users', ownerUid), {
           email: ownerEmail, hotelId, role: 'owner', createdAt: serverTimestamp()
@@ -698,7 +670,6 @@
     }
   };
 
-  // ===== የክፍያ ታሪክ ማምጣት =====
   async function loadPaymentHistory(hotelId) {
     try {
       const q = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
@@ -713,7 +684,6 @@
     }
   }
 
-  // ===== ክፍያ ተከፈለ =====
   window.markAsPaid = async function(hotelId, hotelName, monthlyPrice) {
     if (!confirm(`"${hotelName}" — የ ${monthlyPrice} ብር ክፍያ ተከፍሏል?`)) return;
     
@@ -726,7 +696,6 @@
       nextMonth.setMonth(nextMonth.getMonth() + 1);
       const paidUntil = nextMonth.toISOString().split('T')[0];
       
-      // 1. የክፍያ ሰነድ
       const paymentId = hotelId + '-' + month;
       await setDoc(doc(db, 'payments', paymentId), {
         hotelId,
@@ -739,7 +708,6 @@
         createdAt: serverTimestamp()
       });
       
-      // 2. የሆቴል ሰነድ አሻሽል
       await updateDoc(doc(db, 'hotels', hotelId), {
         lastPaymentDate: todayStr,
         paidUntil: paidUntil,
@@ -754,7 +722,6 @@
     }
   };
 
-  // ===== ሆቴሎችን ጫን =====
   async function loadHotels() {
     try {
       const snapshot = await getDocs(collection(db, 'hotels'));
@@ -763,7 +730,6 @@
 
       document.getElementById('hotelCountBadge').textContent = hotels.length;
 
-      // Statistics
       let paid = 0, due = 0, overdue = 0, paidRevenue = 0, expectedRevenue = 0;
       hotels.forEach(h => {
         const ps = getPaymentStatus(h);
@@ -783,7 +749,6 @@
         return;
       }
 
-      // የክፍያ ታሪክ ለሁሉም
       let html = '';
       for (const h of hotels) {
         const ps = getPaymentStatus(h);
@@ -834,12 +799,10 @@
     }
   }
 
-  // ===== ሆቴል አጥፋ (users + payments ሁሉ ያጠፋል) =====
   window.deleteHotel = async function(hotelId, hotelName) {
     if (!confirm('"' + hotelName + '"\n\n⚠️ ማስጠንቀቂያ፦ ይህ ሆቴል + ሁሉም ተጠቃሚዎች + ሁሉም ክፍያዎች ይጠፋሉ!\n\nእርግጠኛ ነህ?')) return;
     
     try {
-      // 1. Hotel ሰነድ አንብብ
       const hotelSnap = await getDoc(doc(db, 'hotels', hotelId));
       if (!hotelSnap.exists()) {
         showError2('ሆቴል አልተገኘም');
@@ -847,20 +810,20 @@
       }
       const hotel = hotelSnap.data();
 
-      // 2. Users አጥፋ
+      // Users አጥፋ
       const uids = [hotel.ownerUid, hotel.managerUid, hotel.accountantUid].filter(Boolean);
       for (const uid of uids) {
         try { await deleteDoc(doc(db, 'users', uid)); } catch(e) { console.warn('user delete:', e); }
       }
 
-      // 3. Payments አጥፋ
+      // Payments አጥፋ
       const payQ = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
       const paySnap = await getDocs(payQ);
       for (const p of paySnap.docs) {
         try { await deleteDoc(doc(db, 'payments', p.id)); } catch(e) { console.warn('payment delete:', e); }
       }
 
-      // 4. Hotel አጥፋ
+      // Hotel አጥፋ
       await deleteDoc(doc(db, 'hotels', hotelId));
 
       showSuccess(`✅ "${hotelName}" እና ሁሉም ተያያዥ መረጃ ተጠፍቷል\n\n🗑️ ${uids.length} ተጠቃሚዎች\n🗑️ ${paySnap.size} ክፍያዎች`);
