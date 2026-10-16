@@ -826,23 +826,23 @@
       if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
     } catch (e) { console.warn(e); }
   }
-  async function loadHotelName() {
+ async function loadHotelName() {
   try {
-    alert('🏨 Loading: ' + HOTEL_ID);
+    console.log('🏨 Loading:', HOTEL_ID);
     const snap = await getDoc(hotelRef());
     if (snap.exists()) {
       const data = snap.data();
-      alert('🏨 Data: ' + JSON.stringify(data));
+      console.log('🏨 Data:', data);
       if (data.name) {
         hdrHotelName.textContent = data.name;
         const inp = document.getElementById('hotelNameInput');
         if (inp) inp.value = data.name;
       }
     } else {
-      alert('❌ Not found: ' + HOTEL_ID);
+      console.log('❌ Not found:', HOTEL_ID);
       hdrHotelName.textContent = HOTEL_ID;
     }
-  } catch (e) { alert('❌ Error: ' + e.message); }
+  } catch (e) { console.warn(e); }
 }
   async function saveDoc(colRef, id, data) {
     setSyncStatus('syncing');
@@ -1061,22 +1061,22 @@
     // 🆕 HOTEL_ID ከ users collection አንብብ — ጊዜ ገደብ 5 ሰከንድ
     let hotelIdFound = false;
 try {
-  alert('🔍 UID: ' + user.uid);
+  console.log('🔍 UID:', user.uid);
   const userDoc = await getDoc(doc(db, 'users', user.uid));
-  alert('📄 exists: ' + userDoc.exists());
+  console.log('📄 exists:', userDoc.exists());
   
   if (userDoc.exists()) {
     const userData = userDoc.data();
-    alert('📄 Data: ' + JSON.stringify(userData));
+    console.log('📄 Data:', userData);
     HOTEL_ID = userData.hotelId || 'hotel-main';
-    alert('✅ HOTEL_ID: ' + HOTEL_ID);
+    console.log('✅ HOTEL_ID:', HOTEL_ID);
     hotelIdFound = true;
     localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
   } else {
-    alert('❌ User doc not found');
+    console.log('❌ User doc not found');
   }
 } catch (e) {
-  alert('❌ Error: ' + e.message);
+  console.error('❌ Error:', e);
 }
     
     // 🆕 ካልተገኘ — localStorage ሞክር
