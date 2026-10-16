@@ -1090,7 +1090,22 @@
     renderAll();
   }
 
-  onAuthStateChanged(auth, (user) => { hideLoading(); if (user) showMainApp(user); else { showLogin(); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ'; } });
+  let authInitialized = false;
+onAuthStateChanged(auth, (user) => {
+  hideLoading();
+  if (authInitialized) {
+    console.log('⏭️ Skipping duplicate auth callback');
+    return;
+  }
+  authInitialized = true;
+  if (user) {
+    showMainApp(user);
+  } else {
+    showLogin();
+    loginBtn.disabled = false;
+    loginBtnText.textContent = '🔓 ግባ';
+  }
+});
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
   let listenersSet = false;
