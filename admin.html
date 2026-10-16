@@ -23,21 +23,64 @@
   }
   header h1 { font-size: 22px; font-weight: 800; }
   header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  
+  /* ===== COLLAPSIBLE CARD ===== */
   .card {
     background: white;
     border-radius: 12px;
-    padding: 20px;
     margin-bottom: 16px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
   }
-  .card h2 {
+  .card-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: background 0.2s;
+  }
+  .card-header:hover {
+    background: #f7fafc;
+  }
+  .card-header h2 {
     font-size: 16px;
     font-weight: 700;
     color: #2d3748;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
+  .card-header .arrow {
+    font-size: 14px;
+    font-weight: 900;
+    color: #4a5568;
+    transition: transform 0.25s;
+    display: inline-block;
+  }
+  .card-header.open .arrow {
+    transform: rotate(90deg);
+  }
+  .card-header .badge-count {
+    background: #2c5282;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .card-body {
+    display: none;
+    padding: 0 20px 20px 20px;
+    border-top: 2px solid #e2e8f0;
+    padding-top: 16px;
+  }
+  .card-body.open {
+    display: block;
+  }
+  
   .card h3 {
     font-size: 14px;
     font-weight: 700;
@@ -46,6 +89,9 @@
     padding: 8px 12px;
     background: #ebf4ff;
     border-radius: 8px;
+  }
+  .card h3:first-of-type {
+    margin-top: 0;
   }
   .form-group { margin-bottom: 14px; }
   .form-group label {
@@ -84,6 +130,7 @@
   .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
   .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 6px; }
   .btn-danger { background: #e53e3e; color: white; }
+  
   .hotel-list { display: grid; gap: 12px; }
   .hotel-item {
     background: #f7fafc;
@@ -114,6 +161,7 @@
   .badge-active { background: #c6f6d5; color: #22543d; }
   .badge-inactive { background: #fed7d7; color: #742a2a; }
   .badge-trial { background: #fefcbf; color: #744210; }
+  
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -154,6 +202,8 @@
     font-size: 13px;
     margin-bottom: 14px;
     display: none;
+    white-space: pre-wrap;
+    line-height: 1.6;
   }
   .success-box.show { display: block; }
   .hidden { display: none !important; }
@@ -169,19 +219,23 @@
   <!-- የሎጊን ገጽ -->
   <div id="loginScreen">
     <div class="card" style="max-width: 400px; margin: 60px auto;">
-      <h2>🔐 Super Admin መግቢያ</h2>
-      <div class="error-box" id="errorBox"></div>
-      <div class="form-group">
-        <label>📧 Email</label>
-        <input type="email" id="emailInput" placeholder="admin@hotel.com">
+      <div class="card-header open" style="cursor: default;">
+        <h2>🔐 Super Admin መግቢያ</h2>
       </div>
-      <div class="form-group">
-        <label>🔒 Password</label>
-        <input type="password" id="passwordInput" placeholder="••••••••">
+      <div class="card-body open">
+        <div class="error-box" id="errorBox"></div>
+        <div class="form-group">
+          <label>📧 Email</label>
+          <input type="email" id="emailInput" placeholder="admin@hotel.com">
+        </div>
+        <div class="form-group">
+          <label>🔒 Password</label>
+          <input type="password" id="passwordInput" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+          <span id="loginBtnText">🔓 ግባ</span>
+        </button>
       </div>
-      <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
-        <span id="loginBtnText">🔓 ግባ</span>
-      </button>
     </div>
   </div>
 
@@ -214,77 +268,89 @@
     <div class="error-box" id="errorBox2"></div>
     <div class="success-box" id="successBox"></div>
 
-    <!-- አዲስ ሆቴል መጨመሪያ -->
+    <!-- ➕ አዲስ ሆቴል መጨመሪያ (COLLAPSIBLE) -->
     <div class="card">
-      <h2>➕ አዲስ ሆቴል ጨምር</h2>
+      <div class="card-header" id="hdrAddHotel" onclick="toggleCard('hdrAddHotel', 'bodyAddHotel')">
+        <h2>➕ አዲስ ሆቴል ጨምር</h2>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="card-body" id="bodyAddHotel">
 
-      <h3>🏢 የሆቴል መረጃ</h3>
-      <div class="form-group">
-        <label>🏢 የሆቴል ስም</label>
-        <input type="text" id="hotelName" placeholder="ለምሳሌ: ሀናኒ ሆቴል">
-      </div>
-      <div class="form-group">
-        <label>🌐 የሆቴል ዶሜይን (ለተጠቃሚዎች)</label>
-        <input type="text" id="hotelDomain" placeholder="ለምሳሌ: hanani.com">
-      </div>
-      <div class="form-group">
-        <label>💰 ወርሃዊ ክፍያ (ብር)</label>
-        <input type="number" id="hotelPrice" placeholder="500" value="500">
-      </div>
-      <div class="form-group">
-        <label>📅 የክፍያ ሁኔታ</label>
-        <select id="hotelStatus">
-          <option value="trial">⏳ በሙከራ (14 ቀን)</option>
-          <option value="active">✅ ንቁ</option>
-          <option value="inactive">❌ ተቋርጧል</option>
-        </select>
-      </div>
+        <h3>🏢 የሆቴል መረጃ</h3>
+        <div class="form-group">
+          <label>🏢 የሆቴል ስም</label>
+          <input type="text" id="hotelName" placeholder="ለምሳሌ: ሀናኒ ሆቴል">
+        </div>
+        <div class="form-group">
+          <label>🌐 የሆቴል ዶሜይን (ለተጠቃሚዎች)</label>
+          <input type="text" id="hotelDomain" placeholder="ለምሳሌ: hanani.com">
+        </div>
+        <div class="form-group">
+          <label>💰 ወርሃዊ ክፍያ (ብር)</label>
+          <input type="number" id="hotelPrice" placeholder="500" value="500">
+        </div>
+        <div class="form-group">
+          <label>📅 የክፍያ ሁኔታ</label>
+          <select id="hotelStatus">
+            <option value="trial">⏳ በሙከራ (14 ቀን)</option>
+            <option value="active">✅ ንቁ</option>
+            <option value="inactive">❌ ተቋርጧል</option>
+          </select>
+        </div>
 
-      <h3>👑 የባለቤት (Owner) መለያ</h3>
-      <div class="form-group">
-        <label>📧 የባለቤት Email</label>
-        <input type="email" id="ownerEmail" placeholder="owner@hanani.com">
-      </div>
-      <div class="form-group">
-        <label>🔒 የባለቤት Password</label>
-        <input type="text" id="ownerPassword" placeholder="123456" value="123456">
-      </div>
+        <h3>👑 የባለቤት (Owner) መለያ</h3>
+        <div class="form-group">
+          <label>📧 የባለቤት Email</label>
+          <input type="email" id="ownerEmail" placeholder="owner@hanani.com">
+        </div>
+        <div class="form-group">
+          <label>🔒 የባለቤት Password</label>
+          <input type="text" id="ownerPassword" placeholder="123456" value="123456">
+        </div>
 
-      <h3>🎯 ማናጀር (Manager) — አማራጭ</h3>
-      <div class="form-group">
-        <label>📧 የማናጀር Email (ባዶ ለቅ)</label>
-        <input type="email" id="managerEmail" placeholder="manager@hanani.com">
-      </div>
-      <div class="form-group">
-        <label>🔒 የማናጀር Password</label>
-        <input type="text" id="managerPassword" placeholder="123456" value="123456">
-      </div>
+        <h3>🎯 ማናጀር (Manager) — አማራጭ</h3>
+        <div class="form-group">
+          <label>📧 የማናጀር Email (ባዶ ለቅ)</label>
+          <input type="email" id="managerEmail" placeholder="manager@hanani.com">
+        </div>
+        <div class="form-group">
+          <label>🔒 የማናጀር Password</label>
+          <input type="text" id="managerPassword" placeholder="123456" value="123456">
+        </div>
 
-      <h3>💼 አካውንታንት (Accountant) — አማራጭ</h3>
-      <div class="form-group">
-        <label>📧 የአካውንታንት Email (ባዶ ለቅ)</label>
-        <input type="email" id="accountantEmail" placeholder="accountant@hanani.com">
-      </div>
-      <div class="form-group">
-        <label>🔒 የአካውንታንት Password</label>
-        <input type="text" id="accountantPassword" placeholder="123456" value="123456">
-      </div>
+        <h3>💼 አካውንታንት (Accountant) — አማራጭ</h3>
+        <div class="form-group">
+          <label>📧 የአካውንታንት Email (ባዶ ለቅ)</label>
+          <input type="email" id="accountantEmail" placeholder="accountant@hanani.com">
+        </div>
+        <div class="form-group">
+          <label>🔒 የአካውንታንት Password</label>
+          <input type="text" id="accountantPassword" placeholder="123456" value="123456">
+        </div>
 
-      <button class="btn btn-primary" id="addHotelBtn" onclick="addHotel()">
-        <span id="addHotelBtnText">✅ ሆቴል ጨምር</span>
-      </button>
-    </div>
-
-    <!-- የሆቴሎች ዝርዝር -->
-    <div class="card">
-      <h2>📋 የሆቴሎች ዝርዝር</h2>
-      <div class="hotel-list" id="hotelList">
-        <p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>
+        <button class="btn btn-primary" id="addHotelBtn" onclick="addHotel()">
+          <span id="addHotelBtnText">✅ ሆቴል ጨምር</span>
+        </button>
       </div>
     </div>
 
+    <!-- 📋 የሆቴሎች ዝርዝር (COLLAPSIBLE) -->
     <div class="card">
-      <button class="btn btn-danger btn-sm" onclick="doLogout()">🚪 ውጣ</button>
+      <div class="card-header" id="hdrHotelList" onclick="toggleCard('hdrHotelList', 'bodyHotelList')">
+        <h2>📋 የሆቴሎች ዝርዝር <span class="badge-count" id="hotelCountBadge">0</span></h2>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="card-body" id="bodyHotelList">
+        <div class="hotel-list" id="hotelList">
+          <p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body open" style="border-top: none; padding-top: 0;">
+        <button class="btn btn-danger btn-sm" onclick="doLogout()">🚪 ውጣ</button>
+      </div>
     </div>
   </div>
 
@@ -339,6 +405,15 @@
   const addHotelBtnText = document.getElementById('addHotelBtnText');
   const hotelList = document.getElementById('hotelList');
 
+  // ===== COLLAPSIBLE CARD =====
+  window.toggleCard = function(headerId, bodyId) {
+    const header = document.getElementById(headerId);
+    const body = document.getElementById(bodyId);
+    if (!header || !body) return;
+    const isOpen = body.classList.toggle('open');
+    header.classList.toggle('open', isOpen);
+  };
+
   // ===== ስህተት ማሳያዎች =====
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
@@ -355,7 +430,7 @@
   function showSuccess(msg) {
     successBox.textContent = '✅ ' + msg;
     successBox.classList.add('show');
-    setTimeout(() => successBox.classList.remove('show'), 8000);
+    setTimeout(() => successBox.classList.remove('show'), 10000);
   }
 
   // ===== መግቢያ =====
@@ -419,7 +494,6 @@
     const price = parseFloat(document.getElementById('hotelPrice').value) || 500;
     const status = document.getElementById('hotelStatus').value;
 
-    // ማረጋገጫ
     if (!name) return showError2('የሆቴል ስም አስገቡ');
     if (!domain) return showError2('የሆቴል ዶሜይን አስገቡ');
     if (!ownerEmail) return showError2('የባለቤት Email አስገቡ');
@@ -431,7 +505,7 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
-      // ===== 1. ባለቤት (Owner) ፍጠር =====
+      // 1. ባለቤት ፍጠር
       let ownerUid;
       try {
         const ownerCred = await createUserWithEmailAndPassword(secondaryAuth, ownerEmail, ownerPassword);
@@ -451,7 +525,7 @@
         return;
       }
 
-      // ===== 2. ማናጀር (Manager) ፍጠር (ካለ) =====
+      // 2. ማናጀር ፍጠር (ካለ)
       let managerUid = null;
       if (managerEmail && managerPassword && managerPassword.length >= 6) {
         try {
@@ -464,7 +538,7 @@
         }
       }
 
-      // ===== 3. አካውንታንት (Accountant) ፍጠር (ካለ) =====
+      // 3. አካውንታንት ፍጠር (ካለ)
       let accountantUid = null;
       if (accountantEmail && accountantPassword && accountantPassword.length >= 6) {
         try {
@@ -477,7 +551,7 @@
         }
       }
 
-      // ===== 4. የሆቴል ሰነድ አስቀምጥ =====
+      // 4. የሆቴል ሰነድ
       await setDoc(doc(db, 'hotels', hotelId), {
         name: name,
         domain: domain,
@@ -493,7 +567,7 @@
         startDate: new Date().toISOString().split('T')[0]
       });
 
-      // ===== 5. የባለቤት ሰነድ =====
+      // 5. የባለቤት ሰነድ
       await setDoc(doc(db, 'users', ownerUid), {
         email: ownerEmail,
         hotelId: hotelId,
@@ -501,7 +575,7 @@
         createdAt: serverTimestamp()
       });
 
-      // ===== 6. የማናጀር ሰነድ =====
+      // 6. የማናጀር ሰነድ
       if (managerUid) {
         await setDoc(doc(db, 'users', managerUid), {
           email: managerEmail,
@@ -511,7 +585,7 @@
         });
       }
 
-      // ===== 7. የአካውንታንት ሰነድ =====
+      // 7. የአካውንታንት ሰነድ
       if (accountantUid) {
         await setDoc(doc(db, 'users', accountantUid), {
           email: accountantEmail,
@@ -521,13 +595,13 @@
         });
       }
 
-      // ===== ስኬት መልእክት =====
-      let msg = `ሆቴል "${name}" ተፈጠረ!\n\n`;
+      // ስኬት መልእክት
+      let msg = `🏢 ሆቴል "${name}" ተፈጠረ!\n\n`;
+      msg += `🌐 ዶሜይን: ${domain}\n`;
       msg += `👑 ባለቤት: ${ownerEmail}\n`;
       if (managerUid) msg += `🎯 ማናጀር: ${managerEmail}\n`;
       if (accountantUid) msg += `💼 አካውንታንት: ${accountantEmail}\n`;
-      msg += `\n🔒 የይለፍ ቃል: (ያስገባኸው)\n`;
-      msg += `🌐 ዶሜይን: ${domain}`;
+      msg += `\n🔒 የይለፍ ቃል: (ያስገባኸው)`;
       showSuccess(msg);
 
       // ፎርሙን አጽዳ
@@ -560,6 +634,9 @@
       const hotels = [];
       snapshot.forEach(doc => hotels.push({ id: doc.id, ...doc.data() }));
 
+      // badge ቁጥር
+      document.getElementById('hotelCountBadge').textContent = hotels.length;
+
       if (hotels.length === 0) {
         hotelList.innerHTML = '<p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>';
         return;
@@ -580,7 +657,7 @@
             <div class="hotel-item-info">
               <h3>🏢 ${h.name || 'ስም የለም'}</h3>
               <p>🌐 ${h.domain || '—'}</p>
-              <p>👑 ${h.ownerEmail || 'undefined'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
+              <p>👑 ${h.ownerEmail || '—'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
               <p style="margin-top:2px;">${managerInfo} • ${accInfo}</p>
               <p style="margin-top:4px;">${statusBadge}</p>
             </div>
@@ -598,7 +675,7 @@
 
   // ===== ሆቴል አጥፋ =====
   window.deleteHotel = async function(hotelId, hotelName) {
-    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?\n\n⚠️ ሁሉም ተጠቃሚዎች አይጠፉም — እነሱ ለብቻ ማጥፋት ይችላሉ')) return;
+    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?')) return;
     try {
       await deleteDoc(doc(db, 'hotels', hotelId));
       showSuccess('ሆቴል ተጠፍቷል');
