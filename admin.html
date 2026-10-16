@@ -344,14 +344,13 @@ const ADMIN_EMAIL = "admin@hotel.com";
   const loginBtnText = document.getElementById('loginBtnText');
   const addHotelBtn = document.getElementById('addHotelBtn');
   const addHotelBtnText = document.getElementById('addHotelBtnText');
-  const hotelList = document.getElementById('hotelList');
-
-  function showError(msg) {
-    errorBox.textContent = '⚠️ ' + msg;
-    errorBox.classList.add('show');
-    setTimeout(() => errorBox.classList.remove('show'), 5000);
-  }
-
+  const hotelList = document.getElementById('hotelList')
+function showError(msg) {
+  errorBox.textContent = '⚠️ ' + msg;
+  errorBox.classList.add('show');
+  console.error('❌ ERROR:', msg);
+  // ለሙከራ — ስህተቱ ዘላለም እንዲታይ
+}
   function showError2(msg) {
     errorBox2.textContent = '⚠️ ' + msg;
     errorBox2.classList.add('show');
