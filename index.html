@@ -743,7 +743,6 @@
   const db = getFirestore(appDB);
 
   let HOTEL_ID = 'hotel-main';
-  let showMainAppCalled = false;
 
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
@@ -1055,9 +1054,6 @@
 
   // 🆕 ዋናው ተግባር — HOTEL_ID ከ users collection አንብቦ ከዚያ ብቻ ገጹን ያሳያል
   async function showMainApp(user) {
-    if (showMainAppCalled) { console.log('⏭️ Already called'); return; }
-    showMainAppCalled = true;
-    
     console.log('🚀 showMainApp called for:', user.email);
     currentUser = user;
     currentRole = getUserRole(user.email);
