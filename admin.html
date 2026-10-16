@@ -375,13 +375,14 @@ const ADMIN_EMAIL = "admin@hotel.com";
     loginBtnText.textContent = '⏳ በመግባት ላይ...';
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      loginBtn.disabled = false;
-      loginBtnText.textContent = '🔓 ግባ';
-      showError('የተሳሳተ Email ወይም የይለፍ ቃል');
-      console.error(err);
-    }
+  const result = await signInWithEmailAndPassword(auth, email, password);
+  console.log('✅ Login success:', result.user.email);
+} catch (err) {
+  loginBtn.disabled = false;
+  loginBtnText.textContent = '🔓 ግባ';
+  showError('ስህተት: ' + err.code + ' | ' + err.message);
+  console.error(err);
+}
   };
 
   window.doLogout = async function() {
