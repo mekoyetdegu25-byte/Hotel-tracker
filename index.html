@@ -1090,14 +1090,8 @@
     renderAll();
   }
 
-  let authInitialized = false;
-onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, (user) => {
   hideLoading();
-  if (authInitialized) {
-    console.log('⏭️ Skipping duplicate auth callback');
-    return;
-  }
-  authInitialized = true;
   if (user) {
     showMainApp(user);
   } else {
