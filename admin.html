@@ -540,6 +540,33 @@
     }
   });
 
+  // ===== ተጠቃሚ መፍጠር (ነባር ካለ ነባሩን uid ይመልሳል) =====
+  async function createOrGetUser(email, password) {
+    try {
+      const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+      const uid = cred.user.uid;
+      // አዲሱን user ከ secondary auth አውጣ
+      await signOut(secondaryAuth);
+      return { uid, created: true };
+    } catch (err) {
+      if (err.code === 'auth/email-already-in-use') {
+        // ነባር ተጠቃሚ — Firestore users collection ውስጥ ፈልግ
+        try {
+          const q = query(collection(db, 'users'), where('email', '==', email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const existing = snap.docs[0].data();
+            return { uid: existing.hotelId ? snap.docs[0].id : null, created: false, existing: true };
+          }
+        } catch (e) {
+          console.warn('existing user lookup failed:', e);
+        }
+        return { uid: null, created: false, duplicate: true };
+      }
+      throw err;
+    }
+  }
+
   window.addHotel = async function() {
     const name = document.getElementById('hotelName').value.trim();
     const domain = document.getElementById('hotelDomain').value.trim().toLowerCase();
@@ -563,48 +590,66 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
+      // Owner ፍጠር / አግኝ
       let ownerUid;
       try {
-        const ownerCred = await createUserWithEmailAndPassword(secondaryAuth, ownerEmail, ownerPassword);
-        ownerUid = ownerCred.user.uid;
-      } catch (authErr) {
-        if (authErr.code === 'auth/email-already-in-use') {
-          showError2('የባለቤት Email ቀድሞ ተጠቅሟል');
+        const result = await createOrGetUser(ownerEmail, ownerPassword);
+        if (result.duplicate) {
+          showError2('የባለቤት Email ቀድሞ ተጠቅሟል — ሌላ Email ሞክር');
           addHotelBtn.disabled = false;
           addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
           return;
         }
+        ownerUid = result.uid;
+      } catch (authErr) {
         showError2('Auth ስህተት: ' + authErr.code);
         addHotelBtn.disabled = false;
         addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
         return;
       }
 
+      // Manager ፍጠር (አማራጭ)
       let managerUid = null;
       if (managerEmail && managerPassword && managerPassword.length >= 6) {
         try {
-          const mgrCred = await createUserWithEmailAndPassword(secondaryAuth, managerEmail, managerPassword);
-          managerUid = mgrCred.user.uid;
+          const result = await createOrGetUser(managerEmail, managerPassword);
+          if (!result.duplicate) managerUid = result.uid;
         } catch (authErr) {
-          showError2('የማናጀር Email ቀድሞ ተጠቅሟል');
+          console.warn('Manager creation failed:', authErr.code);
         }
       }
 
+      // Accountant ፍጠር (አማራጭ)
       let accountantUid = null;
       if (accountantEmail && accountantPassword && accountantPassword.length >= 6) {
         try {
-          const accCred = await createUserWithEmailAndPassword(secondaryAuth, accountantEmail, accountantPassword);
-          accountantUid = accCred.user.uid;
+          const result = await createOrGetUser(accountantEmail, accountantPassword);
+          if (!result.duplicate) accountantUid = result.uid;
         } catch (authErr) {
-          showError2('የአካውንታንት Email ቀድሞ ተጠቅሟል');
+          console.warn('Accountant creation failed:', authErr.code);
         }
       }
 
+      // 🆕 paidUntil በ status መሠረት አስላ
       const today = new Date().toISOString().split('T')[0];
-      const nextMonth = new Date();
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const paidUntil = nextMonth.toISOString().split('T')[0];
+      let paidUntil;
 
+      if (status === 'trial') {
+        // ⏳ በሙከራ — 14 ቀን ብቻ
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 14);
+        paidUntil = trialEnd.toISOString().split('T')[0];
+      } else if (status === 'active') {
+        // ✅ ንቁ — 1 ወር
+        const nextMonth = new Date();
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        paidUntil = nextMonth.toISOString().split('T')[0];
+      } else {
+        // ❌ ተቋርጧል — ዛሬ (ወዲያውኑ ዘግይቷል)
+        paidUntil = today;
+      }
+
+      // የሆቴል ሰነድ ፍጠር
       await setDoc(doc(db, 'hotels', hotelId), {
         name, domain, ownerEmail, ownerUid,
         managerEmail: managerEmail || null, managerUid,
@@ -616,9 +661,12 @@
         paidUntil: paidUntil
       });
 
-      await setDoc(doc(db, 'users', ownerUid), {
-        email: ownerEmail, hotelId, role: 'owner', createdAt: serverTimestamp()
-      });
+      // Owner የ users ሰነድ
+      if (ownerUid) {
+        await setDoc(doc(db, 'users', ownerUid), {
+          email: ownerEmail, hotelId, role: 'owner', createdAt: serverTimestamp()
+        });
+      }
 
       if (managerUid) {
         await setDoc(doc(db, 'users', managerUid), {
@@ -632,7 +680,8 @@
         });
       }
 
-      showSuccess(`🏢 ሆቴል "${name}" ተፈጠረ!\n\n🌐 ${domain}\n👑 ${ownerEmail}\n💰 ${price} ብር/ወር`);
+      const statusLabel = status === 'trial' ? '⏳ በሙከራ (14 ቀን)' : (status === 'active' ? '✅ ንቁ (30 ቀን)' : '❌ ተቋርጧል');
+      showSuccess(`🏢 ሆቴል "${name}" ተፈጠረ!\n\n🌐 ${domain}\n👑 ${ownerEmail}\n💰 ${price} ብር/ወር\n📅 ${statusLabel}\n⏰ እስከ ${paidUntil} ድረስ`);
 
       document.getElementById('hotelName').value = '';
       document.getElementById('hotelDomain').value = '';
@@ -785,14 +834,40 @@
     }
   }
 
+  // ===== ሆቴል አጥፋ (users + payments ሁሉ ያጠፋል) =====
   window.deleteHotel = async function(hotelId, hotelName) {
-    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?')) return;
+    if (!confirm('"' + hotelName + '"\n\n⚠️ ማስጠንቀቂያ፦ ይህ ሆቴል + ሁሉም ተጠቃሚዎች + ሁሉም ክፍያዎች ይጠፋሉ!\n\nእርግጠኛ ነህ?')) return;
+    
     try {
+      // 1. Hotel ሰነድ አንብብ
+      const hotelSnap = await getDoc(doc(db, 'hotels', hotelId));
+      if (!hotelSnap.exists()) {
+        showError2('ሆቴል አልተገኘም');
+        return;
+      }
+      const hotel = hotelSnap.data();
+
+      // 2. Users አጥፋ
+      const uids = [hotel.ownerUid, hotel.managerUid, hotel.accountantUid].filter(Boolean);
+      for (const uid of uids) {
+        try { await deleteDoc(doc(db, 'users', uid)); } catch(e) { console.warn('user delete:', e); }
+      }
+
+      // 3. Payments አጥፋ
+      const payQ = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
+      const paySnap = await getDocs(payQ);
+      for (const p of paySnap.docs) {
+        try { await deleteDoc(doc(db, 'payments', p.id)); } catch(e) { console.warn('payment delete:', e); }
+      }
+
+      // 4. Hotel አጥፋ
       await deleteDoc(doc(db, 'hotels', hotelId));
-      showSuccess('ሆቴል ተጠፍቷል');
+
+      showSuccess(`✅ "${hotelName}" እና ሁሉም ተያያዥ መረጃ ተጠፍቷል\n\n🗑️ ${uids.length} ተጠቃሚዎች\n🗑️ ${paySnap.size} ክፍያዎች`);
       await loadHotels();
     } catch (err) {
-      showError2('ማጥፋት አልተቻለም');
+      console.error(err);
+      showError2('ማጥፋት አልተቻለም: ' + err.message);
     }
   };
 
