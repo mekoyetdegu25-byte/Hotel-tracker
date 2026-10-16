@@ -1301,6 +1301,18 @@ let HOTEL_ID = 'hotel-main';
 
   async function showMainApp(user) {
     currentUser = user; currentRole = getUserRole(user.email);
+   // 🆕 HOTEL_ID ን ከ Firebase አንብብ
+try {
+  const userDoc = await getDoc(doc(db, 'users', user.uid));
+  if (userDoc.exists()) {
+    HOTEL_ID = userDoc.data().hotelId || 'hotel-main';
+    console.log('✅ HOTEL_ID set:', HOTEL_ID);
+  } else {
+    console.log('⚠️ User doc not found, using:', HOTEL_ID);
+  }
+} catch (e) {
+  console.error('Error loading HOTEL_ID:', e);
+}
     loginScreen.classList.add('hidden'); mainApp.classList.add('show');
     hdrUserEmail.textContent = user.email;
     const roleLabels = { owner: '👑 ባለቤት', manager: '🎯 ማናጀር', accountant: '💼 አካውንታንት', unknown: '❓' };
