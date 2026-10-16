@@ -1027,23 +1027,29 @@
   };
 
   window.doLogin = async function() {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    if (!email) { showError('Email ያስፈልጋል'); return; }
-    if (!password) { showError('Password ያስፈልጋል'); return; }
-    loginBtn.disabled = true;
-    loginBtnText.innerHTML = '<span class="spinner"></span> በመግባት ላይ...';
-    try { await signInWithEmailAndPassword(auth, email, password); } catch (err) {
-      let msg = 'የ Login ስህተት'; const code = err.code || '';
-      if (code.includes('invalid-email')) msg = 'Email ትክክል አይደለም';
-      else if (code.includes('user-not-found')) msg = 'ተጠቃሚ አልተገኘም';
-      else if (code.includes('wrong-password') || code.includes('invalid-credential')) msg = 'Password ትክክል አይደለም';
-      else if (code.includes('too-many-requests')) msg = 'ብዙ ሙከራ';
-      else if (code.includes('network')) msg = 'ኢንተርኔት የለም';
-      else msg += ': ' + (err.message || code);
-      showError(msg); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ';
-    }
-  };
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  if (!email) { showError('Email ያስፈልጋል'); return; }
+  if (!password) { showError('Password ያስፈልጋል'); return; }
+  loginBtn.disabled = true;
+  loginBtnText.innerHTML = '<span class="spinner"></span> በመግባት ላይ...';
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    console.log('✅ Login success:', result.user.email);
+    // 🆕 በቀጥታ ወደ showMainApp ሂድ
+    showMainAppCalled = false;
+    await showMainApp(result.user);
+  } catch (err) {
+    let msg = 'የ Login ስህተት'; const code = err.code || '';
+    if (code.includes('invalid-email')) msg = 'Email ትክክል አይደለም';
+    else if (code.includes('user-not-found')) msg = 'ተጠቃሚ አልተገኘም';
+    else if (code.includes('wrong-password') || code.includes('invalid-credential')) msg = 'Password ትክክል አይደለም';
+    else if (code.includes('too-many-requests')) msg = 'ብዙ ሙከራ';
+    else if (code.includes('network')) msg = 'ኢንተርኔት የለም';
+    else msg += ': ' + (err.message || code);
+    showError(msg); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ';
+  }
+};
   window.doLogout = async function() { if (!confirm('መውጣት ትፈልጋለህ?')) return; try { await signOut(auth); } catch (err) { showError(err.message); } };
   function showLogin() { loginScreen.classList.remove('hidden'); mainApp.classList.remove('show'); passwordInput.value = ''; }
 
@@ -1113,17 +1119,19 @@
   }
 
   // 🆕 onAuthStateChanged — አንድ ጊዜ ብቻ
-  onAuthStateChanged(auth, (user) => {
-    hideLoading();
-    if (user) {
-      showMainApp(user);
-    } else {
-      showLogin();
-      showMainAppCalled = false;
-      loginBtn.disabled = false;
-      loginBtnText.textContent = '🔓 ግባ';
-    }
-  });
+onAuthStateChanged(auth, async (user) => {
+  hideLoading();
+  if (user) {
+    console.log('✅ Auth state changed - user:', user.email);
+    await showMainApp(user);
+  } else {
+    console.log('❌ Auth state changed - no user');
+    showLogin();
+    showMainAppCalled = false;
+    loginBtn.disabled = false;
+    loginBtnText.textContent = '🔓 ግባ';
+  }
+});
 
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
