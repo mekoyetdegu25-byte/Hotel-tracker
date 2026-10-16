@@ -713,8 +713,7 @@
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   // ===== APP 1: Hotel-Tracker (Firestore DB) =====
   import { getFirestore, doc, setDoc, getDoc, deleteDoc,
-           collection, getDocs, onSnapshot, writeBatch, serverTimestamp,
-           enableIndexedDbPersistence }
+           collection, getDocs, onSnapshot, writeBatch, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
   // App 2 - Hotel-Owners (Auth)
@@ -743,9 +742,8 @@
   const appDB = initializeApp(firebaseConfigDB, 'db-app');
   const db = getFirestore(appDB);
 
-  enableIndexedDbPersistence(db).then(() => console.log('✅ Offline')).catch(e => console.warn(e.code));
-
   let HOTEL_ID = 'hotel-main';
+  let showMainAppCalled = false;
 
   const loadingScreen = document.getElementById('loadingScreen');
   const loginScreen = document.getElementById('loginScreen');
@@ -831,15 +829,18 @@
   }
   async function loadHotelName() {
     try {
+      console.log('🏨 Loading hotel name for:', HOTEL_ID);
       const snap = await getDoc(hotelRef());
       if (snap.exists()) {
         const data = snap.data();
+        console.log('🏨 Hotel data:', data);
         if (data.name) {
           hdrHotelName.textContent = data.name;
           const inp = document.getElementById('hotelNameInput');
           if (inp) inp.value = data.name;
         }
       } else {
+        console.log('❌ Hotel not found:', HOTEL_ID);
         hdrHotelName.textContent = HOTEL_ID;
       }
     } catch (e) { console.warn(e); }
@@ -1046,28 +1047,50 @@
   window.doLogout = async function() { if (!confirm('መውጣት ትፈልጋለህ?')) return; try { await signOut(auth); } catch (err) { showError(err.message); } };
   function showLogin() { loginScreen.classList.remove('hidden'); mainApp.classList.remove('show'); passwordInput.value = ''; }
 
-  // 🆕 ዋናው ተግባር — HOTEL_ID ን ከ users collection ያነባል ከዚያ ብቻ ያሳያል
+  // 🆕 ዋናው ተግባር — HOTEL_ID ከ users collection አንብቦ ከዚያ ብቻ ገጹን ያሳያል
   async function showMainApp(user) {
+    if (showMainAppCalled) { console.log('⏭️ Already called'); return; }
+    showMainAppCalled = true;
+    
+    console.log('🚀 showMainApp called for:', user.email);
     currentUser = user;
     currentRole = getUserRole(user.email);
     
-    // 🆕 HOTEL_ID ከ Hotel-Tracker Firestore users collection አንብብ (ከማሳየት በፊት!)
+    // 🆕 HOTEL_ID ከ users collection አንብብ — ጊዜ ገደብ 5 ሰከንድ
+    let hotelIdFound = false;
     try {
-      console.log('🔍 user.uid:', user.uid);
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      console.log('🔍 userDoc.exists():', userDoc.exists());
+      console.log('🔍 Reading user doc UID:', user.uid);
+      const userDocPromise = getDoc(doc(db, 'users', user.uid));
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Firestore timeout')), 5000)
+      );
+      const userDoc = await Promise.race([userDocPromise, timeoutPromise]);
+      
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        console.log('🔍 userData:', JSON.stringify(userData));
+        console.log('✅ User data found:', JSON.stringify(userData));
         HOTEL_ID = userData.hotelId || 'hotel-main';
-        console.log('✅ HOTEL_ID set to:', HOTEL_ID);
+        hotelIdFound = true;
+        // 🆕 localStorage ላይ አስቀምጥ
+        localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
+        console.log('✅ HOTEL_ID =', HOTEL_ID);
       } else {
-        console.log('❌ User doc NOT FOUND for UID:', user.uid);
+        console.log('❌ User doc not found');
       }
     } catch (e) {
-      console.error('❌ Error loading HOTEL_ID:', e);
+      console.error('❌ Error:', e);
     }
     
+    // 🆕 ካልተገኘ — localStorage ሞክር
+    if (!hotelIdFound) {
+      const saved = localStorage.getItem('hotel_id_' + user.uid);
+      if (saved) {
+        HOTEL_ID = saved;
+        console.log('✅ HOTEL_ID from localStorage:', HOTEL_ID);
+      }
+    }
+    
+    // 🆕 አሁን ገጹን አሳይ
     loginScreen.classList.add('hidden');
     mainApp.classList.add('show');
     hdrUserEmail.textContent = user.email;
@@ -1090,18 +1113,13 @@
   }
 
   // 🆕 onAuthStateChanged — አንድ ጊዜ ብቻ
-  let authCallbackDone = false;
   onAuthStateChanged(auth, (user) => {
     hideLoading();
-    if (authCallbackDone) {
-      console.log('⏭️ auth callback already handled');
-      return;
-    }
-    authCallbackDone = true;
     if (user) {
       showMainApp(user);
     } else {
       showLogin();
+      showMainAppCalled = false;
       loginBtn.disabled = false;
       loginBtnText.textContent = '🔓 ግባ';
     }
