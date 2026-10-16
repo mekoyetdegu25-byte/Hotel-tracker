@@ -1,202 +1,155 @@
 <!DOCTYPE html>
 <html lang="am">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Admin - Hotel Tracker</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f2f4f8;
-      color: #1a202c;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    header {
-      background: linear-gradient(135deg, #1a365d, #2c5282);
-      color: white;
-      padding: 20px 24px;
-      border-radius: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(26, 54, 93, 0.2);
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 800;
-    }
-    header p {
-      font-size: 13px;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    .card h2 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #2d3748;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    .form-group {
-      margin-bottom: 14px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 6px;
-    }
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 10px 14px;
-      font-size: 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      background: #f7fafc;
-      transition: all 0.2s;
-    }
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #2c5282;
-      background: white;
-    }
-    .btn {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 700;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: #2c5282;
-      color: white;
-      width: 100%;
-    }
-    .btn-primary:hover {
-      background: #1a365d;
-    }
-    .btn-primary:disabled {
-      background: #a0aec0;
-      cursor: not-allowed;
-    }
-    .btn-sm {
-      padding: 8px 14px;
-      font-size: 12px;
-      border-radius: 6px;
-    }
-    .btn-danger {
-      background: #e53e3e;
-      color: white;
-    }
-    .btn-success {
-      background: #38a169;
-      color: white;
-    }
-    .hotel-list {
-      display: grid;
-      gap: 12px;
-    }
-    .hotel-item {
-      background: #f7fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-    .hotel-item-info h3 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1a202c;
-      margin-bottom: 4px;
-    }
-    .hotel-item-info p {
-      font-size: 12px;
-      color: #718096;
-    }
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 20px;
-    }
-    .badge-active { background: #c6f6d5; color: #22543d; }
-    .badge-inactive { background: #fed7d7; color: #742a2a; }
-    .badge-trial { background: #fefcbf; color: #744210; }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    .stat-value {
-      font-size: 28px;
-      font-weight: 800;
-      color: #2c5282;
-      margin-bottom: 4px;
-    }
-    .stat-label {
-      font-size: 12px;
-      color: #718096;
-      font-weight: 600;
-    }
-    .error-box {
-      background: #fff5f5;
-      border: 1.5px solid #fc8181;
-      color: #c53030;
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 14px;
-      display: none;
-    }
-    .error-box.show { display: block; }
-    .success-box {
-      background: #f0fff4;
-      border: 1.5px solid #68d391;
-      color: #22543d;
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 14px;
-      display: none;
-    }
-    .success-box.show { display: block; }
-    .hidden { display: none !important; }
-    @media (max-width: 600px) {
-      .hotel-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Admin - Hotel Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f2f4f8;
+    color: #1a202c;
+    min-height: 100vh;
+  }
+  .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  header {
+    background: linear-gradient(135deg, #1a365d, #2c5282);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(26, 54, 93, 0.2);
+  }
+  header h1 { font-size: 22px; font-weight: 800; }
+  header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f7fafc;
+  }
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #2c5282;
+    background: white;
+  }
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: #2c5282; color: white; width: 100%; }
+  .btn-primary:hover { background: #1a365d; }
+  .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+  .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 6px; }
+  .btn-danger { background: #e53e3e; color: white; }
+  .hotel-list { display: grid; gap: 12px; }
+  .hotel-item {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .hotel-item-info h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 4px;
+  }
+  .hotel-item-info p { font-size: 12px; color: #718096; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+  }
+  .badge-active { background: #c6f6d5; color: #22543d; }
+  .badge-inactive { background: #fed7d7; color: #742a2a; }
+  .badge-trial { background: #fefcbf; color: #744210; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2c5282;
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 12px; color: #718096; font-weight: 600; }
+  .error-box {
+    background: #fff5f5;
+    border: 1.5px solid #fc8181;
+    color: #c53030;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .error-box.show { display: block; }
+  .success-box {
+    background: #f0fff4;
+    border: 1.5px solid #68d391;
+    color: #22543d;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .success-box.show { display: block; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) {
+    .hotel-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
 </head>
 <body>
 
@@ -228,7 +181,6 @@
       <p>የሁሉም ሆቴሎች ማስተዳደሪያ</p>
     </header>
 
-    <!-- ስታቲስቲክስ -->
     <div class="stats">
       <div class="stat-card">
         <div class="stat-value" id="totalHotels">0</div>
@@ -299,14 +251,15 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+  // ===== App 1 — Super Admin =====
   const firebaseConfig = {
-    apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
+    apiKey: "AIzaSyDCA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
     authDomain: "hotel-tracker-c3571.firebaseapp.com",
     projectId: "hotel-tracker-c3571",
     storageBucket: "hotel-tracker-c3571.firebasestorage.app",
@@ -314,25 +267,25 @@
     appId: "1:1024629386649:web:c689f920c780e400797708"
   };
 
-  // App 1 — Super Admin (hotel-tracker-c3571)
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// 🆕 App 2 — Hotel Owners (hotel-owners-abe2c)
-const firebaseConfig = {
-  apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
-  authDomain: "hotel-owners-abe2c.firebaseapp.com",
-  projectId: "hotel-owners-abe2c",
-  storageBucket: "hotel-owners-abe2c.firebasestorage.app",
-  messagingSenderId: "372834019536",
-  appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
-};
+  // ===== App 2 — Hotel Owners =====
+  const firebaseConfig2 = {
+    apiKey: "AIzaSyAgfUPoO--ZfslsWZeoOHCiEpiUAZX6j_A",
+    authDomain: "hotel-owners-abe2c.firebaseapp.com",
+    projectId: "hotel-owners-abe2c",
+    storageBucket: "hotel-owners-abe2c.firebasestorage.app",
+    messagingSenderId: "372834019536",
+    appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
+  };
 
-const secondaryApp = initializeApp(firebaseConfig2, 'hotel-owners');
-const secondaryAuth = getAuth(secondaryApp);
+  const secondaryApp = initializeApp(firebaseConfig2, 'hotel-owners');
+  const secondaryAuth = getAuth(secondaryApp);
 
-const ADMIN_EMAIL = "admin@hotel.com";
+  const ADMIN_EMAIL = "admin@hotel.com";
+
   const loginScreen = document.getElementById('loginScreen');
   const mainApp = document.getElementById('mainApp');
   const errorBox = document.getElementById('errorBox');
@@ -344,13 +297,15 @@ const ADMIN_EMAIL = "admin@hotel.com";
   const loginBtnText = document.getElementById('loginBtnText');
   const addHotelBtn = document.getElementById('addHotelBtn');
   const addHotelBtnText = document.getElementById('addHotelBtnText');
-  const hotelList = document.getElementById('hotelList')
-function showError(msg) {
-  errorBox.textContent = '⚠️ ' + msg;
-  errorBox.classList.add('show');
-  console.error('❌ ERROR:', msg);
-  // ለሙከራ — ስህተቱ ዘላለም እንዲታይ
-}
+  const hotelList = document.getElementById('hotelList');
+
+  // ===== ስህተት ማሳያዎች =====
+  function showError(msg) {
+    errorBox.textContent = '⚠️ ' + msg;
+    errorBox.classList.add('show');
+    console.error('❌ ERROR:', msg);
+  }
+
   function showError2(msg) {
     errorBox2.textContent = '⚠️ ' + msg;
     errorBox2.classList.add('show');
@@ -363,6 +318,7 @@ function showError(msg) {
     setTimeout(() => successBox.classList.remove('show'), 5000);
   }
 
+  // ===== መግቢያ =====
   window.doLogin = async function() {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
@@ -374,24 +330,25 @@ function showError(msg) {
     loginBtnText.textContent = '⏳ በመግባት ላይ...';
 
     try {
-  const result = await signInWithEmailAndPassword(auth, email, password);
-  console.log('✅ Login success:', result.user.email);
-} catch (err) {
-  loginBtn.disabled = false;
-  loginBtnText.textContent = '🔓 ግባ';
-  showError('ስህተት: ' + err.code + ' | ' + err.message);
-  console.error(err);
-}
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('✅ Login success:', result.user.email);
+    } catch (err) {
+      loginBtn.disabled = false;
+      loginBtnText.textContent = '🔓 ግባ';
+      showError('ስህተት: ' + err.code + ' | ' + err.message);
+      console.error(err);
+    }
   };
 
+  // ===== መውጫ =====
   window.doLogout = async function() {
     if (!confirm('እርግጠኛ ነህ?')) return;
     await signOut(auth);
   };
 
+  // ===== Auth ሁኔታ =====
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // የ Admin አይነት ማረጋገጥ
       if (user.email !== ADMIN_EMAIL) {
         showError('ይህ ገጽ ለ Super Admin ብቻ ነው');
         await signOut(auth);
@@ -409,6 +366,7 @@ function showError(msg) {
     }
   });
 
+  // ===== አዲስ ሆቴል ጨምር =====
   window.addHotel = async function() {
     const name = document.getElementById('hotelName').value.trim();
     const email = document.getElementById('hotelEmail').value.trim();
@@ -424,31 +382,30 @@ function showError(msg) {
     addHotelBtnText.textContent = '⏳ በመፍጠር ላይ...';
 
     try {
-      // 1. የሆቴል ID ፍጠር
       const hotelId = 'hotel-' + Date.now();
 
-     // 2. 🆕 Hotel Owners Firebase Auth ውስጥ ተጠቃሚ ፍጠር
-let uid;
-try {
-  const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-  uid = userCredential.user.uid;
-console.log('✅ Hotel owner created:', uid);
-} catch (err) {
-  console.error('❌ Auth error:', err);
-  showError2('Auth ስህተት: ' + err.code + ' - ' + err.message);
-  addHotelBtn.disabled = false;
-  addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
-  return;
-  if (err.code === 'auth/email-already-in-use') {
-    showError2('ይህ Email ቀድሞ ተጠቅሟል');
-    addHotelBtn.disabled = false;
-    addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
-    return;
-  }
-  // ሌላ ስህተት ከሆነ ቀጥል (በ Firestore ብቻ አስቀምጥ)
-  uid = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
-}
-      // 3. የሆቴል መረጃ አስቀምጥ
+      // 1. Hotel Owners Auth ውስጥ ተጠቃሚ ፍጠር
+      let uid;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        uid = userCredential.user.uid;
+        console.log('✅ Hotel owner created:', uid);
+      } catch (authErr) {
+        console.error('❌ Auth error:', authErr);
+        if (authErr.code === 'auth/email-already-in-use') {
+          showError2('ይህ Email ቀድሞ ተጠቅሟል');
+          addHotelBtn.disabled = false;
+          addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
+          return;
+        }
+        // ሌላ ስህተት — ለሙከራ አሳይ
+        showError2('Auth ስህተት: ' + authErr.code);
+        addHotelBtn.disabled = false;
+        addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
+        return;
+      }
+
+      // 2. የሆቴል መረጃ አስቀምጥ
       await setDoc(doc(db, 'hotels', hotelId), {
         name: name,
         email: email,
@@ -459,7 +416,7 @@ console.log('✅ Hotel owner created:', uid);
         startDate: new Date().toISOString().split('T')[0]
       });
 
-      // 4. የተጠቃሚ መረጃ አስቀምጥ
+      // 3. የተጠቃሚ መረጃ አስቀምጥ
       await setDoc(doc(db, 'users', uid), {
         email: email,
         hotelId: hotelId,
@@ -467,9 +424,8 @@ console.log('✅ Hotel owner created:', uid);
         createdAt: serverTimestamp()
       });
 
-      showSuccess(`ሆቴል "${name}" በተሳካ ሁኔታ ተፈጠረ!`);
+      showSuccess('ሆቴል "' + name + '" በተሳካ ሁኔታ ተፈጠረ!');
 
-      // ፎርሙን አጽዳ
       document.getElementById('hotelName').value = '';
       document.getElementById('hotelEmail').value = '';
       document.getElementById('hotelPassword').value = '';
@@ -480,17 +436,14 @@ console.log('✅ Hotel owner created:', uid);
 
     } catch (err) {
       console.error(err);
-      if (err.code === 'auth/email-already-in-use') {
-        showError2('ይህ Email ቀድሞ ተጠቅሟል');
-      } else {
-        showError2('ስህተት: ' + err.message);
-      }
+      showError2('ስህተት: ' + err.message);
     } finally {
       addHotelBtn.disabled = false;
       addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
     }
   };
 
+  // ===== ሆቴሎችን ጫን =====
   async function loadHotels() {
     try {
       const snapshot = await getDocs(collection(db, 'hotels'));
@@ -512,12 +465,12 @@ console.log('✅ Hotel owner created:', uid);
         return `
           <div class="hotel-item">
             <div class="hotel-item-info">
-              <h3>🏢 ${h.name}</h3>
-              <p>📧 ${h.email} • 💰 ${h.monthlyPrice} ብር/ወር</p>
+              <h3>🏢 ${h.name || 'ስም የለም'}</h3>
+              <p>📧 ${h.email || 'undefined'} • 💰 ${h.monthlyPrice || 'undefined'} ብር/ወር</p>
               <p style="margin-top:4px;">${statusBadge}</p>
             </div>
             <div>
-              <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${h.name}')">🗑️ አጥፋ</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${h.name || 'ስም የለም'}')">🗑️ አጥፋ</button>
             </div>
           </div>
         `;
@@ -528,8 +481,9 @@ console.log('✅ Hotel owner created:', uid);
     }
   }
 
+  // ===== ሆቴል አጥፋ =====
   window.deleteHotel = async function(hotelId, hotelName) {
-    if (!confirm(`"${hotelName}" ን ማጥፋት እርግጠኛ ነህ?`)) return;
+    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?')) return;
     try {
       await deleteDoc(doc(db, 'hotels', hotelId));
       showSuccess('ሆቴል ተጠፍቷል');
@@ -540,6 +494,7 @@ console.log('✅ Hotel owner created:', uid);
     }
   };
 
+  // ===== Statistics =====
   async function updateStats() {
     try {
       const snapshot = await getDocs(collection(db, 'hotels'));
@@ -561,7 +516,7 @@ console.log('✅ Hotel owner created:', uid);
     }
   }
 
-  // Enter ቁልፍ ለሎጊን
+  // ===== Enter ቁልፍ =====
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) {
       doLogin();
