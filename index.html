@@ -1036,7 +1036,6 @@
     const result = await signInWithEmailAndPassword(auth, email, password);
     console.log('✅ Login success:', result.user.email);
     // 🆕 በቀጥታ ወደ showMainApp ሂድ
-    showMainAppCalled = false;
     await showMainApp(result.user);
   } catch (err) {
     let msg = 'የ Login ስህተት'; const code = err.code || '';
