@@ -38,6 +38,15 @@
     padding-bottom: 10px;
     border-bottom: 2px solid #e2e8f0;
   }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c5282;
+    margin: 16px 0 10px 0;
+    padding: 8px 12px;
+    background: #ebf4ff;
+    border-radius: 8px;
+  }
   .form-group { margin-bottom: 14px; }
   .form-group label {
     display: block;
@@ -91,6 +100,8 @@
     font-weight: 700;
     color: #1a202c;
     margin-bottom: 4px;
+    background: none;
+    padding: 0;
   }
   .hotel-item-info p { font-size: 12px; color: #718096; }
   .badge {
@@ -206,17 +217,15 @@
     <!-- አዲስ ሆቴል መጨመሪያ -->
     <div class="card">
       <h2>➕ አዲስ ሆቴል ጨምር</h2>
+
+      <h3>🏢 የሆቴል መረጃ</h3>
       <div class="form-group">
         <label>🏢 የሆቴል ስም</label>
-        <input type="text" id="hotelName" placeholder="ለምሳሌ: አበበ ሆቴል">
+        <input type="text" id="hotelName" placeholder="ለምሳሌ: ሀናኒ ሆቴል">
       </div>
       <div class="form-group">
-        <label>📧 የባለቤት Email</label>
-        <input type="email" id="hotelEmail" placeholder="owner@abebehotel.com">
-      </div>
-      <div class="form-group">
-        <label>🔒 የይለፍ ቃል (ቢያንስ 6 ፊደል)</label>
-        <input type="password" id="hotelPassword" placeholder="••••••••">
+        <label>🌐 የሆቴል ዶሜይን (ለተጠቃሚዎች)</label>
+        <input type="text" id="hotelDomain" placeholder="ለምሳሌ: hanani.com">
       </div>
       <div class="form-group">
         <label>💰 ወርሃዊ ክፍያ (ብር)</label>
@@ -230,6 +239,37 @@
           <option value="inactive">❌ ተቋርጧል</option>
         </select>
       </div>
+
+      <h3>👑 የባለቤት (Owner) መለያ</h3>
+      <div class="form-group">
+        <label>📧 የባለቤት Email</label>
+        <input type="email" id="ownerEmail" placeholder="owner@hanani.com">
+      </div>
+      <div class="form-group">
+        <label>🔒 የባለቤት Password</label>
+        <input type="text" id="ownerPassword" placeholder="123456" value="123456">
+      </div>
+
+      <h3>🎯 ማናጀር (Manager) — አማራጭ</h3>
+      <div class="form-group">
+        <label>📧 የማናጀር Email (ባዶ ለቅ)</label>
+        <input type="email" id="managerEmail" placeholder="manager@hanani.com">
+      </div>
+      <div class="form-group">
+        <label>🔒 የማናጀር Password</label>
+        <input type="text" id="managerPassword" placeholder="123456" value="123456">
+      </div>
+
+      <h3>💼 አካውንታንት (Accountant) — አማራጭ</h3>
+      <div class="form-group">
+        <label>📧 የአካውንታንት Email (ባዶ ለቅ)</label>
+        <input type="email" id="accountantEmail" placeholder="accountant@hanani.com">
+      </div>
+      <div class="form-group">
+        <label>🔒 የአካውንታንት Password</label>
+        <input type="text" id="accountantPassword" placeholder="123456" value="123456">
+      </div>
+
       <button class="btn btn-primary" id="addHotelBtn" onclick="addHotel()">
         <span id="addHotelBtnText">✅ ሆቴል ጨምር</span>
       </button>
@@ -272,14 +312,14 @@
   const db = getFirestore(app);
 
   // ===== App 2 — Hotel Owners =====
- const firebaseConfig2 = {
-  apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
-  authDomain: "hotel-owners-abe2c.firebaseapp.com",
-  projectId: "hotel-owners-abe2c",
-  storageBucket: "hotel-owners-abe2c.firebasestorage.app",
-  messagingSenderId: "372834019536",
-  appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
-};
+  const firebaseConfig2 = {
+    apiKey: "AIzaSyAgfUPo0--ZfslsWZeOoHCiEpiUAZX6j_A",
+    authDomain: "hotel-owners-abe2c.firebaseapp.com",
+    projectId: "hotel-owners-abe2c",
+    storageBucket: "hotel-owners-abe2c.firebasestorage.app",
+    messagingSenderId: "372834019536",
+    appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
+  };
 
   const secondaryApp = initializeApp(firebaseConfig2, 'hotel-owners');
   const secondaryAuth = getAuth(secondaryApp);
@@ -315,7 +355,7 @@
   function showSuccess(msg) {
     successBox.textContent = '✅ ' + msg;
     successBox.classList.add('show');
-    setTimeout(() => successBox.classList.remove('show'), 5000);
+    setTimeout(() => successBox.classList.remove('show'), 8000);
   }
 
   // ===== መግቢያ =====
@@ -369,14 +409,21 @@
   // ===== አዲስ ሆቴል ጨምር =====
   window.addHotel = async function() {
     const name = document.getElementById('hotelName').value.trim();
-    const email = document.getElementById('hotelEmail').value.trim();
-    const password = document.getElementById('hotelPassword').value.trim();
+    const domain = document.getElementById('hotelDomain').value.trim().toLowerCase();
+    const ownerEmail = document.getElementById('ownerEmail').value.trim().toLowerCase();
+    const ownerPassword = document.getElementById('ownerPassword').value.trim();
+    const managerEmail = document.getElementById('managerEmail').value.trim().toLowerCase();
+    const managerPassword = document.getElementById('managerPassword').value.trim();
+    const accountantEmail = document.getElementById('accountantEmail').value.trim().toLowerCase();
+    const accountantPassword = document.getElementById('accountantPassword').value.trim();
     const price = parseFloat(document.getElementById('hotelPrice').value) || 500;
     const status = document.getElementById('hotelStatus').value;
 
+    // ማረጋገጫ
     if (!name) return showError2('የሆቴል ስም አስገቡ');
-    if (!email) return showError2('Email አስገቡ');
-    if (!password || password.length < 6) return showError2('የይለፍ ቃል ቢያንስ 6 ፊደል ይሁን');
+    if (!domain) return showError2('የሆቴል ዶሜይን አስገቡ');
+    if (!ownerEmail) return showError2('የባለቤት Email አስገቡ');
+    if (!ownerPassword || ownerPassword.length < 6) return showError2('የባለቤት ይለፍ ቃል ቢያንስ 6 ፊደል ይሁን');
 
     addHotelBtn.disabled = true;
     addHotelBtnText.textContent = '⏳ በመፍጠር ላይ...';
@@ -384,51 +431,114 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
-      // 1. Hotel Owners Auth ውስጥ ተጠቃሚ ፍጠር
-      let uid;
+      // ===== 1. ባለቤት (Owner) ፍጠር =====
+      let ownerUid;
       try {
-        const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-        uid = userCredential.user.uid;
-        console.log('✅ Hotel owner created:', uid);
+        const ownerCred = await createUserWithEmailAndPassword(secondaryAuth, ownerEmail, ownerPassword);
+        ownerUid = ownerCred.user.uid;
+        console.log('✅ Owner created:', ownerUid);
       } catch (authErr) {
-        console.error('❌ Auth error:', authErr);
+        console.error('❌ Owner Auth error:', authErr);
         if (authErr.code === 'auth/email-already-in-use') {
-          showError2('ይህ Email ቀድሞ ተጠቅሟል');
+          showError2('የባለቤት Email ቀድሞ ተጠቅሟል');
           addHotelBtn.disabled = false;
           addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
           return;
         }
-        // ሌላ ስህተት — ለሙከራ አሳይ
-        showError2('Auth ስህተት: ' + authErr.code);
+        showError2('የባለቤት Auth ስህተት: ' + authErr.code);
         addHotelBtn.disabled = false;
         addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
         return;
       }
 
-      // 2. የሆቴል መረጃ አስቀምጥ
+      // ===== 2. ማናጀር (Manager) ፍጠር (ካለ) =====
+      let managerUid = null;
+      if (managerEmail && managerPassword && managerPassword.length >= 6) {
+        try {
+          const mgrCred = await createUserWithEmailAndPassword(secondaryAuth, managerEmail, managerPassword);
+          managerUid = mgrCred.user.uid;
+          console.log('✅ Manager created:', managerUid);
+        } catch (authErr) {
+          console.error('❌ Manager Auth error:', authErr);
+          showError2('የማናጀር Email ቀድሞ ተጠቅሟል ወይም ስህተት አለ');
+        }
+      }
+
+      // ===== 3. አካውንታንት (Accountant) ፍጠር (ካለ) =====
+      let accountantUid = null;
+      if (accountantEmail && accountantPassword && accountantPassword.length >= 6) {
+        try {
+          const accCred = await createUserWithEmailAndPassword(secondaryAuth, accountantEmail, accountantPassword);
+          accountantUid = accCred.user.uid;
+          console.log('✅ Accountant created:', accountantUid);
+        } catch (authErr) {
+          console.error('❌ Accountant Auth error:', authErr);
+          showError2('የአካውንታንት Email ቀድሞ ተጠቅሟል ወይም ስህተት አለ');
+        }
+      }
+
+      // ===== 4. የሆቴል ሰነድ አስቀምጥ =====
       await setDoc(doc(db, 'hotels', hotelId), {
         name: name,
-        email: email,
-        ownerUid: uid,
+        domain: domain,
+        ownerEmail: ownerEmail,
+        ownerUid: ownerUid,
+        managerEmail: managerEmail || null,
+        managerUid: managerUid,
+        accountantEmail: accountantEmail || null,
+        accountantUid: accountantUid,
         monthlyPrice: price,
         status: status,
         createdAt: serverTimestamp(),
         startDate: new Date().toISOString().split('T')[0]
       });
 
-      // 3. የተጠቃሚ መረጃ አስቀምጥ
-      await setDoc(doc(db, 'users', uid), {
-        email: email,
+      // ===== 5. የባለቤት ሰነድ =====
+      await setDoc(doc(db, 'users', ownerUid), {
+        email: ownerEmail,
         hotelId: hotelId,
         role: 'owner',
         createdAt: serverTimestamp()
       });
 
-      showSuccess('ሆቴል "' + name + '" በተሳካ ሁኔታ ተፈጠረ!');
+      // ===== 6. የማናጀር ሰነድ =====
+      if (managerUid) {
+        await setDoc(doc(db, 'users', managerUid), {
+          email: managerEmail,
+          hotelId: hotelId,
+          role: 'manager',
+          createdAt: serverTimestamp()
+        });
+      }
 
+      // ===== 7. የአካውንታንት ሰነድ =====
+      if (accountantUid) {
+        await setDoc(doc(db, 'users', accountantUid), {
+          email: accountantEmail,
+          hotelId: hotelId,
+          role: 'accountant',
+          createdAt: serverTimestamp()
+        });
+      }
+
+      // ===== ስኬት መልእክት =====
+      let msg = `ሆቴል "${name}" ተፈጠረ!\n\n`;
+      msg += `👑 ባለቤት: ${ownerEmail}\n`;
+      if (managerUid) msg += `🎯 ማናጀር: ${managerEmail}\n`;
+      if (accountantUid) msg += `💼 አካውንታንት: ${accountantEmail}\n`;
+      msg += `\n🔒 የይለፍ ቃል: (ያስገባኸው)\n`;
+      msg += `🌐 ዶሜይን: ${domain}`;
+      showSuccess(msg);
+
+      // ፎርሙን አጽዳ
       document.getElementById('hotelName').value = '';
-      document.getElementById('hotelEmail').value = '';
-      document.getElementById('hotelPassword').value = '';
+      document.getElementById('hotelDomain').value = '';
+      document.getElementById('ownerEmail').value = '';
+      document.getElementById('ownerPassword').value = '123456';
+      document.getElementById('managerEmail').value = '';
+      document.getElementById('managerPassword').value = '123456';
+      document.getElementById('accountantEmail').value = '';
+      document.getElementById('accountantPassword').value = '123456';
       document.getElementById('hotelPrice').value = '500';
 
       await loadHotels();
@@ -462,11 +572,16 @@
           'inactive': '<span class="badge badge-inactive">❌ ተቋርጧል</span>'
         }[h.status] || '';
 
+        const managerInfo = h.managerEmail ? `🎯 ${h.managerEmail}` : '🎯 —';
+        const accInfo = h.accountantEmail ? `💼 ${h.accountantEmail}` : '💼 —';
+
         return `
           <div class="hotel-item">
             <div class="hotel-item-info">
               <h3>🏢 ${h.name || 'ስም የለም'}</h3>
-              <p>📧 ${h.email || 'undefined'} • 💰 ${h.monthlyPrice || 'undefined'} ብር/ወር</p>
+              <p>🌐 ${h.domain || '—'}</p>
+              <p>👑 ${h.ownerEmail || 'undefined'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
+              <p style="margin-top:2px;">${managerInfo} • ${accInfo}</p>
               <p style="margin-top:4px;">${statusBadge}</p>
             </div>
             <div>
@@ -483,7 +598,7 @@
 
   // ===== ሆቴል አጥፋ =====
   window.deleteHotel = async function(hotelId, hotelName) {
-    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?')) return;
+    if (!confirm('"' + hotelName + '" ን ማጥፋት እርግጠኛ ነህ?\n\n⚠️ ሁሉም ተጠቃሚዎች አይጠፉም — እነሱ ለብቻ ማጥፋት ይችላሉ')) return;
     try {
       await deleteDoc(doc(db, 'hotels', hotelId));
       showSuccess('ሆቴል ተጠፍቷል');
