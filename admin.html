@@ -314,11 +314,25 @@
     appId: "1:1024629386649:web:c689f920c780e400797708"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  // App 1 — Super Admin (hotel-tracker-c3571)
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  const ADMIN_EMAIL = "admin@hotel.com";
+// 🆕 App 2 — Hotel Owners (hotel-owners-abe2c)
+const firebaseConfig2 = {
+  apiKey: "AIzaSyAgfUPoO--ZfslsWZeoOHCiEpiUAZX6j_A",
+  authDomain: "hotel-owners-abe2c.firebaseapp.com",
+  projectId: "hotel-owners-abe2c",
+  storageBucket: "hotel-owners-abe2c.firebasestorage.app",
+  messagingSenderId: "372834019536",
+  appId: "1:372834019536:web:9af0dbe99de41f6945d6d5"
+};
+
+const secondaryApp = initializeApp(firebaseConfig2, 'hotel-owners');
+const secondaryAuth = getAuth(secondaryApp);
+
+const ADMIN_EMAIL = "admin@hotel.com";
   const loginScreen = document.getElementById('loginScreen');
   const mainApp = document.getElementById('mainApp');
   const errorBox = document.getElementById('errorBox');
@@ -413,9 +427,26 @@
       // 1. የሆቴል ID ፍጠር
       const hotelId = 'hotel-' + Date.now();
 
-     // 2. 🆕 Firebase Auth ሳይጠቀም UID ፍጠር
-const uid = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
-
+     // 2. 🆕 Hotel Owners Firebase Auth ውስጥ ተጠቃሚ ፍጠር
+let uid;
+try {
+  const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+  uid = userCredential.user.uid;
+  console.log('✅ Hotel owner created:', uid);
+  
+  // የ Hotel Owners Auth ሁኔታ አጥፋ (Super Admin አይነካ)
+  await signOut(secondaryAuth);
+} catch (err) {
+  console.error('❌ Auth error:', err);
+  if (err.code === 'auth/email-already-in-use') {
+    showError2('ይህ Email ቀድሞ ተጠቅሟል');
+    addHotelBtn.disabled = false;
+    addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
+    return;
+  }
+  // ሌላ ስህተት ከሆነ ቀጥል (በ Firestore ብቻ አስቀምጥ)
+  uid = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+}
       // 3. የሆቴል መረጃ አስቀምጥ
       await setDoc(doc(db, 'hotels', hotelId), {
         name: name,
