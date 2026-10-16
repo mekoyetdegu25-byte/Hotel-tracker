@@ -435,6 +435,10 @@ try {
 console.log('✅ Hotel owner created:', uid);
 } catch (err) {
   console.error('❌ Auth error:', err);
+  showError2('Auth ስህተት: ' + err.code + ' - ' + err.message);
+  addHotelBtn.disabled = false;
+  addHotelBtnText.textContent = '✅ ሆቴል ጨምር';
+  return;
   if (err.code === 'auth/email-already-in-use') {
     showError2('ይህ Email ቀድሞ ተጠቅሟል');
     addHotelBtn.disabled = false;
