@@ -400,7 +400,6 @@
   import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  // 🆕 አንድ project ብቻ — hotel-tracker (Auth + Firestore)
   const firebaseConfig = {
     apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
     authDomain: "hotel-tracker-c3571.firebaseapp.com",
@@ -414,8 +413,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // 🆕 ሁለተኛው app — ተጠቃሚዎችን ለመፍጠር
-  // (Admin ሳይወጣ ሌሎችን መፍጠር እንዲቻል)
   const secondaryApp = initializeApp(firebaseConfig, 'secondary');
   const secondaryAuth = getAuth(secondaryApp);
 
@@ -517,7 +514,6 @@
     }
   });
 
-  // ===== ተጠቃሚ መፍጠር =====
   async function createOrGetUser(email, password) {
     try {
       const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
@@ -526,7 +522,6 @@
       return { uid, created: true };
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
-        // ነባር ተጠቃሚ — Firestore users collection ውስጥ ፈልግ
         try {
           const q = query(collection(db, 'users'), where('email', '==', email));
           const snap = await getDocs(q);
@@ -565,7 +560,6 @@
     try {
       const hotelId = 'hotel-' + Date.now();
 
-      // Owner ፍጠር
       let ownerUid;
       try {
         const result = await createOrGetUser(ownerEmail, ownerPassword);
@@ -583,7 +577,6 @@
         return;
       }
 
-      // Manager ፍጠር (አማራጭ)
       let managerUid = null;
       if (managerEmail && managerPassword && managerPassword.length >= 6) {
         try {
@@ -594,7 +587,6 @@
         }
       }
 
-      // Accountant ፍጠር (አማራጭ)
       let accountantUid = null;
       if (accountantEmail && accountantPassword && accountantPassword.length >= 6) {
         try {
@@ -605,7 +597,6 @@
         }
       }
 
-      // paidUntil በ status መሠረት
       const today = new Date().toISOString().split('T')[0];
       let paidUntil;
 
@@ -621,7 +612,6 @@
         paidUntil = today;
       }
 
-      // Hotel ሰነድ
       await setDoc(doc(db, 'hotels', hotelId), {
         name, domain, ownerEmail, ownerUid,
         managerEmail: managerEmail || null, managerUid,
@@ -633,7 +623,34 @@
         paidUntil: paidUntil
       });
 
-      // Users ሰነዶች
+      // 🆕 የምርት ምድቦች ጨምር
+      const defaultProdCats = {
+        'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
+        'መጠጥ': ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
+        'ባህላዊ ምግብ': ['ደረቅ ጥብስ', 'ክትፎ', 'ጥራህ', 'ሽሮ ወጥ', 'ፍርፍር', 'ጎመን']
+      };
+      for (const [catName, subs] of Object.entries(defaultProdCats)) {
+        await setDoc(doc(db, 'hotels', hotelId, 'categories', catName), {
+          name: catName, subs: subs, createdAt: serverTimestamp()
+        });
+      }
+
+      // 🆕 የወጪ ምድቦች
+      const defaultExpCats = ['ትራንስፖርት', 'የዕቃ ግዢ', 'ጥገና', 'ነዳጅ', 'ሌላ'];
+      for (const cat of defaultExpCats) {
+        await setDoc(doc(db, 'hotels', hotelId, 'expenseCategories', cat), {
+          name: cat, createdAt: serverTimestamp()
+        });
+      }
+
+      // 🆕 የቋሚ ወጪ ምድቦች
+      const defaultFixCats = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
+      for (const cat of defaultFixCats) {
+        await setDoc(doc(db, 'hotels', hotelId, 'fixedCategories', cat), {
+          name: cat, createdAt: serverTimestamp()
+        });
+      }
+
       if (ownerUid) {
         await setDoc(doc(db, 'users', ownerUid), {
           email: ownerEmail, hotelId, role: 'owner', createdAt: serverTimestamp()
@@ -684,23 +701,47 @@
     }
   }
 
+  // 🆕 የተሻሻለ markAsPaid - ስንት ወር እንደተከፈለ እና ዋጋውን በእጅ መስጠት ይቻላል
   window.markAsPaid = async function(hotelId, hotelName, monthlyPrice) {
-    if (!confirm(`"${hotelName}" — የ ${monthlyPrice} ብር ክፍያ ተከፍሏል?`)) return;
-    
+    // 1. ስንት ወር?
+    const monthsStr = prompt(`"${hotelName}"\n\nስንት ወር ክፍያ ተከፈለ?\n(ለምሳሌ፡ 1, 3, 6, 12)`, "1");
+    if (!monthsStr) return; // Cancel
+
+    const months = parseInt(monthsStr, 10);
+    if (isNaN(months) || months < 1) {
+      alert("እባክህ ትክክለኛ የወር ቁጥር አስገባ (1, 3, 6, 12)");
+      return;
+    }
+
+    // 2. ዋጋውን በእጅ ማስተካከል
+    const defaultAmount = monthlyPrice * months;
+    const amountStr = prompt(`"${hotelName}" — ${months} ወር\n\nየተከፈለውን ጠቅላላ ዋጋ (ብር) አስገባ፦\n(ቅናሽ ካለ ቀይረው)`, defaultAmount.toString());
+    if (amountStr === null) return; // Cancel
+
+    const totalAmount = parseFloat(amountStr);
+    if (isNaN(totalAmount) || totalAmount < 0) {
+      alert("እባክህ ትክክለኛ ዋጋ አስገባ");
+      return;
+    }
+
+    if (!confirm(`"${hotelName}"\n\n${months} ወር ክፍያ\nጠቅላላ፡ ${totalAmount} ብር\n\nትክክል ነው?`)) return;
+
     try {
       const today = new Date();
       const month = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
       const todayStr = today.toISOString().split('T')[0];
       
-      const nextMonth = new Date();
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const paidUntil = nextMonth.toISOString().split('T')[0];
+      // በወራት ቁጥር ወደፊት ሂድ
+      const nextDate = new Date();
+      nextDate.setMonth(nextDate.getMonth() + months);
+      const paidUntil = nextDate.toISOString().split('T')[0];
       
-      const paymentId = hotelId + '-' + month;
+      const paymentId = hotelId + '-' + month + '-' + Date.now();
       await setDoc(doc(db, 'payments', paymentId), {
         hotelId,
         hotelName,
-        amount: monthlyPrice,
+        amount: totalAmount,
+        monthsCovered: months, // 🆕 ስንት ወር?
         month,
         paidAt: todayStr,
         paidBy: ADMIN_EMAIL,
@@ -714,7 +755,7 @@
         status: 'active'
       });
       
-      showSuccess(`✅ "${hotelName}" ክፍያ ተመዝግቧል!\n💰 ${monthlyPrice} ብር\n📅 እስከ ${paidUntil} ድረስ`);
+      showSuccess(`✅ "${hotelName}" ክፍያ ተመዝግቧል!\n💰 ${totalAmount} ብር (${months} ወር)\n📅 እስከ ${paidUntil} ድረስ`);
       await loadHotels();
     } catch (err) {
       console.error(err);
@@ -761,7 +802,7 @@
           : payments.map(p => `
             <div class="history-item">
               <div>
-                <div class="month">📅 ${p.month}</div>
+                <div class="month">📅 ${p.month} ${p.monthsCovered ? `(${p.monthsCovered} ወር)` : ''}</div>
                 <div class="date">${p.paidAt || '—'}</div>
               </div>
               <div class="amount">💰 ${p.amount} ብር</div>
@@ -810,20 +851,17 @@
       }
       const hotel = hotelSnap.data();
 
-      // Users አጥፋ
       const uids = [hotel.ownerUid, hotel.managerUid, hotel.accountantUid].filter(Boolean);
       for (const uid of uids) {
         try { await deleteDoc(doc(db, 'users', uid)); } catch(e) { console.warn('user delete:', e); }
       }
 
-      // Payments አጥፋ
       const payQ = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
       const paySnap = await getDocs(payQ);
       for (const p of paySnap.docs) {
         try { await deleteDoc(doc(db, 'payments', p.id)); } catch(e) { console.warn('payment delete:', e); }
       }
 
-      // Hotel አጥፋ
       await deleteDoc(doc(db, 'hotels', hotelId));
 
       showSuccess(`✅ "${hotelName}" እና ሁሉም ተያያዥ መረጃ ተጠፍቷል\n\n🗑️ ${uids.length} ተጠቃሚዎች\n🗑️ ${paySnap.size} ክፍያዎች`);
