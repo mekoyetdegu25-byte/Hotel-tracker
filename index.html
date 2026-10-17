@@ -624,6 +624,18 @@
             <button class="btn btn-primary" onclick="saveHotelName()">💾 አስቀምጥ</button>
             <div id="hotelNameStatus" style="margin-top:10px;font-size:12.5px;color:#718096;"></div>
 
+           <div class="divider"></div>
+<h3 style="margin-bottom:10px; font-size:14px; color:#c05621;">🔒 የይለፍ ቃል ቀይር</h3>
+<div class="form-group">
+  <label>የአሁኑ ፓስወርድ</label>
+  <input type="password" id="currentPass" placeholder="••••••••">
+</div>
+<div class="form-group">
+  <label>አዲስ ፓስወርድ (ቢያንስ 6 ፊደል)</label>
+  <input type="password" id="newPass" placeholder="••••••••">
+</div>
+<button class="btn btn-warning" onclick="changePassword()">🔐 ፓስወርድ ቀይር</button>
+
             <div class="divider"></div>
             <div class="toggle-row">
               <label>🌙 Dark Mode</label>
@@ -712,8 +724,8 @@
 <script type="module">
   // ===== APP 2: Hotel-Owners (Authentication) =====
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   // ===== APP 1: Hotel-Tracker (Firestore DB) =====
   import { getFirestore, doc, setDoc, getDoc, deleteDoc,
            collection, getDocs, onSnapshot, writeBatch, serverTimestamp }
@@ -971,6 +983,36 @@ async function loadPaymentBanner() {
       toast('⚠️ ' + e.message);
     }
   };
+
+ // 🆕 ፓስወርድ መቀየሪያ
+window.changePassword = async function() {
+  const currentPass = document.getElementById('currentPass').value;
+  const newPass = document.getElementById('newPass').value;
+
+  if (!currentPass || !newPass) { toast('⚠️ ሁለቱንም ፓስወርዶች አስገባ'); return; }
+  if (newPass.length < 6) { toast('⚠️ አዲሱ ፓስወርድ ቢያንስ 6 ፊደል ይሁን'); return; }
+
+  try {
+    const user = auth.currentUser;
+    if (!user) { toast('⚠️ እባክህ መጀመሪያ ግባ'); return; }
+
+    const credential = EmailAuthProvider.credential(user.email, currentPass);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPass);
+
+    toast('✅ ፓስወርድ በተሳካ ሁኔታ ተቀይሯል!');
+    document.getElementById('currentPass').value = '';
+    document.getElementById('newPass').value = '';
+
+  } catch (err) {
+    console.error(err);
+    if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+      toast('❌ የድሮው ፓስወርድ ስህተት ነው');
+    } else {
+      toast('⚠️ ስህተት: ' + (err.message || err.code));
+    }
+  }
+};
 
   function fillPermissionsUI() {
     const keys = ['sales','expense','product','cat','top','unsold','history','monthly','dashboard','settings','reset'];
