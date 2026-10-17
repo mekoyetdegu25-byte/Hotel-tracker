@@ -623,7 +623,6 @@
         paidUntil: paidUntil
       });
 
-      // 🆕 የምርት ምድቦች ጨምር
       const defaultProdCats = {
         'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
         'መጠጥ': ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
@@ -635,7 +634,6 @@
         });
       }
 
-      // 🆕 የወጪ ምድቦች
       const defaultExpCats = ['ትራንስፖርት', 'የዕቃ ግዢ', 'ጥገና', 'ነዳጅ', 'ሌላ'];
       for (const cat of defaultExpCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'expenseCategories', cat), {
@@ -643,7 +641,6 @@
         });
       }
 
-      // 🆕 የቋሚ ወጪ ምድቦች
       const defaultFixCats = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
       for (const cat of defaultFixCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'fixedCategories', cat), {
@@ -701,11 +698,9 @@
     }
   }
 
-  // 🆕 የተሻሻለ markAsPaid - ስንት ወር እንደተከፈለ እና ዋጋውን በእጅ መስጠት ይቻላል
   window.markAsPaid = async function(hotelId, hotelName, monthlyPrice) {
-    // 1. ስንት ወር?
     const monthsStr = prompt(`"${hotelName}"\n\nስንት ወር ክፍያ ተከፈለ?\n(ለምሳሌ፡ 1, 3, 6, 12)`, "1");
-    if (!monthsStr) return; // Cancel
+    if (!monthsStr) return;
 
     const months = parseInt(monthsStr, 10);
     if (isNaN(months) || months < 1) {
@@ -713,10 +708,9 @@
       return;
     }
 
-    // 2. ዋጋውን በእጅ ማስተካከል
     const defaultAmount = monthlyPrice * months;
     const amountStr = prompt(`"${hotelName}" — ${months} ወር\n\nየተከፈለውን ጠቅላላ ዋጋ (ብር) አስገባ፦\n(ቅናሽ ካለ ቀይረው)`, defaultAmount.toString());
-    if (amountStr === null) return; // Cancel
+    if (amountStr === null) return;
 
     const totalAmount = parseFloat(amountStr);
     if (isNaN(totalAmount) || totalAmount < 0) {
@@ -731,7 +725,6 @@
       const month = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
       const todayStr = today.toISOString().split('T')[0];
       
-      // በወራት ቁጥር ወደፊት ሂድ
       const nextDate = new Date();
       nextDate.setMonth(nextDate.getMonth() + months);
       const paidUntil = nextDate.toISOString().split('T')[0];
@@ -741,7 +734,7 @@
         hotelId,
         hotelName,
         amount: totalAmount,
-        monthsCovered: months, // 🆕 ስንት ወር?
+        monthsCovered: months,
         month,
         paidAt: todayStr,
         paidBy: ADMIN_EMAIL,
@@ -760,6 +753,41 @@
     } catch (err) {
       console.error(err);
       showError2('ክፍያ መመዝገብ አልተቻለም: ' + err.message);
+    }
+  };
+
+  // 🆕 የተሳሳተ ክፍያ ማጥፊያ
+  window.deletePayment = async function(paymentId, hotelId, hotelName) {
+    if (!confirm(`⚠️ "${hotelName}"\n\nይህ የክፍያ መዝገብ ይጠፋል።\nየሆቴሉ የክፍያ ቀን (paidUntil) እንደገና ይሰላል።\n\nእርግጠኛ ነህ?`)) return;
+
+    try {
+      await deleteDoc(doc(db, 'payments', paymentId));
+
+      const q = query(collection(db, 'payments'), where('hotelId', '==', hotelId));
+      const snap = await getDocs(q);
+      const remaining = [];
+      snap.forEach(d => remaining.push(d.data()));
+
+      let newPaidUntil;
+      if (remaining.length === 0) {
+        newPaidUntil = new Date().toISOString().split('T')[0];
+      } else {
+        remaining.sort((a, b) => (b.paidAt || '').localeCompare(a.paidAt || ''));
+        const latest = remaining[0];
+        const baseDate = new Date(latest.paidAt);
+        baseDate.setMonth(baseDate.getMonth() + (latest.monthsCovered || 1));
+        newPaidUntil = baseDate.toISOString().split('T')[0];
+      }
+
+      await updateDoc(doc(db, 'hotels', hotelId), {
+        paidUntil: newPaidUntil
+      });
+
+      showSuccess(`🗑️ ክፍያ ተሰርዟል!\n📅 አዲስ የክፍያ ቀን: ${newPaidUntil}`);
+      await loadHotels();
+    } catch (err) {
+      console.error(err);
+      showError2('ክፍያ ማጥፋት አልተቻለም: ' + err.message);
     }
   };
 
@@ -800,12 +828,15 @@
         const historyHtml = payments.length === 0
           ? '<p style="text-align:center; color:#a0aec0; padding:12px; font-size:13px;">ምንም የክፍያ ታሪክ የለም</p>'
           : payments.map(p => `
-            <div class="history-item">
+            <div class="history-item" style="display:flex; justify-content:space-between; align-items:center;">
               <div>
                 <div class="month">📅 ${p.month} ${p.monthsCovered ? `(${p.monthsCovered} ወር)` : ''}</div>
                 <div class="date">${p.paidAt || '—'}</div>
               </div>
-              <div class="amount">💰 ${p.amount} ብር</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="amount">💰 ${p.amount} ብር</div>
+                <button class="btn btn-sm btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deletePayment('${p.id}', '${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️</button>
+              </div>
             </div>
           `).join('');
 
