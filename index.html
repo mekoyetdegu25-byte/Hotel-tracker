@@ -817,7 +817,7 @@ const db = getFirestore(app);
       if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
     } catch (e) { console.warn(e); }
   }
- // 🆕 Payment Banner አሳይ
+ // 🆕 Payment Banner አሳይ (Popup እና ቋሚ ማስጠንቀቂያ)
 async function loadPaymentBanner() {
   try {
     const snap = await getDoc(hotelRef());
@@ -838,21 +838,66 @@ async function loadPaymentBanner() {
     let bg, color, border, msg;
 
     if (diffDays < 0) {
+      // 🔴 ዘግይቷል - ሁልጊዜ ይታያል
       bg = '#fff5f5'; color = '#c53030'; border = '#fc8181';
       msg = '❌ ክፍያ ዘግይቷል — ' + Math.abs(diffDays) + ' ቀን አልፏል! እባክህ ይክፈሉ።';
+      
+      banner.style.background = bg;
+      banner.style.color = color;
+      banner.style.borderBottomColor = border;
+      banner.textContent = msg;
+      banner.style.display = 'block';
+
     } else if (diffDays <= 5) {
+      // 🟡 5 ቀን ሲቀረው - ሁልጊዜ ይታያል (ማስጠንቀቂያ)
       bg = '#fffaf0'; color = '#c05621'; border = '#fbd38d';
       msg = '⚠️ ክፍያ ማድረግ ያስፈልጋል — ' + diffDays + ' ቀን ቀርቷል';
+      
+      banner.style.background = bg;
+      banner.style.color = color;
+      banner.style.borderBottomColor = border;
+      banner.textContent = msg;
+      banner.style.display = 'block';
+
     } else {
+      // 🟢 ክፍያ ተከፍሏል - ለ 3 ሰከንድ ብቻ ታይቶ ይጠፋል (Popup)
       bg = '#f0fff4'; color = '#22543d'; border = '#68d391';
       msg = '✅ ክፍያ ተከፍሏል — ' + diffDays + ' ቀን ቀርቷል';
-    }
+      
+      banner.style.position = 'fixed';
+      banner.style.top = '60px'; 
+      banner.style.left = '50%';
+      banner.style.transform = 'translateX(-50%)';
+      banner.style.width = '90%';
+      banner.style.maxWidth = '400px';
+      banner.style.borderRadius = '10px';
+      banner.style.border = '2px solid ' + border;
+      banner.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      banner.style.zIndex = '9999';
+      
+      banner.style.background = bg;
+      banner.style.color = color;
+      banner.textContent = msg;
+      banner.style.display = 'block';
 
-    banner.style.background = bg;
-    banner.style.color = color;
-    banner.style.borderBottomColor = border;
-    banner.textContent = msg;
-    banner.style.display = 'block';
+      banner.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        banner.style.opacity = '0';
+        setTimeout(() => {
+          banner.style.display = 'none';
+          banner.style.position = '';
+          banner.style.top = '';
+          banner.style.left = '';
+          banner.style.transform = '';
+          banner.style.width = '';
+          banner.style.maxWidth = '';
+          banner.style.borderRadius = '';
+          banner.style.border = '';
+          banner.style.boxShadow = '';
+          banner.style.opacity = '1';
+        }, 500);
+      }, 3000);
+    }
   } catch (e) {
     console.warn('Payment banner error:', e);
   }
