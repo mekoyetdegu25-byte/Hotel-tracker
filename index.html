@@ -262,6 +262,9 @@
     </div>
   </header>
 
+ <!-- 🆕 Payment Banner -->
+<div id="paymentBanner" style="display:none; padding:12px 16px; margin:0; font-size:13px; font-weight:700; text-align:center; border-bottom:2px solid;"></div>
+
   <div class="tabs-wrapper">
     <input type="radio" name="tabs" id="tab1" checked>
     <input type="radio" name="tabs" id="tab2">
@@ -814,6 +817,47 @@ const db = getFirestore(app);
       if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
     } catch (e) { console.warn(e); }
   }
+ // 🆕 Payment Banner አሳይ
+async function loadPaymentBanner() {
+  try {
+    const snap = await getDoc(hotelRef());
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const paidUntil = data.paidUntil;
+    if (!paidUntil) return;
+
+    const banner = document.getElementById('paymentBanner');
+    if (!banner) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const until = new Date(paidUntil);
+    until.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((until - today) / (1000 * 60 * 60 * 24));
+
+    let bg, color, border, msg;
+
+    if (diffDays < 0) {
+      bg = '#fff5f5'; color = '#c53030'; border = '#fc8181';
+      msg = '❌ ክፍያ ዘግይቷል — ' + Math.abs(diffDays) + ' ቀን አልፏል! እባክህ ይክፈሉ።';
+    } else if (diffDays <= 5) {
+      bg = '#fffaf0'; color = '#c05621'; border = '#fbd38d';
+      msg = '⚠️ ክፍያ ማድረግ ያስፈልጋል — ' + diffDays + ' ቀን ቀርቷል';
+    } else {
+      bg = '#f0fff4'; color = '#22543d'; border = '#68d391';
+      msg = '✅ ክፍያ ተከፍሏል — ' + diffDays + ' ቀን ቀርቷል';
+    }
+
+    banner.style.background = bg;
+    banner.style.color = color;
+    banner.style.borderBottomColor = border;
+    banner.textContent = msg;
+    banner.style.display = 'block';
+  } catch (e) {
+    console.warn('Payment banner error:', e);
+  }
+}
+
  async function loadHotelName() {
   try {
     console.log('🏨 Loading:', HOTEL_ID);
@@ -1089,6 +1133,7 @@ try {
     loadDarkMode();
     await ensureHotelDoc();
     await loadHotelName();
+    await loadPaymentBanner();
     await loadPermissions();
     loadNotificationStatus();
     fillPermissionsUI();
