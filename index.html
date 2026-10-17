@@ -833,6 +833,9 @@ const db = getFirestore(app);
   }
  // 🆕 Payment Banner አሳይ (Popup እና ቋሚ ማስጠንቀቂያ)
 async function loadPaymentBanner() {
+ // 🆕 ባለቤት (Owner) ብቻ እንዲያየው
+if (currentRole !== 'owner') return;
+ 
   try {
     const snap = await getDoc(hotelRef());
     if (!snap.exists()) return;
