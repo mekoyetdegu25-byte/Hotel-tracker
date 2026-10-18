@@ -758,40 +758,52 @@
             <span class="sec-badge blue">Owner</span>
           </div>
           <div class="section-body open" id="bodyPermissions">
-            <div class="info-banner">💡 እያንዳንዱ ተጠቃሚ ምን ማየት እንዳለበት እዚህ ያስተካክሉ። ወዲያውኑ ይተገበራል።</div>
+  <div class="info-banner">💡 እያንዳንዱ ተጠቃሚ ምን ማየት እንዳለበት እዚህ ያስተካክሉ። ወዲያውኑ ይተገበራል።</div>
 
-            <div class="perm-section">
-              <div class="perm-title">🎯 ማናጀር (Manager)</div>
-              <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_sales"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_expense"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_mgr_product"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_mgr_cat"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_top"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_unsold"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_history"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_mgr_monthly"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_mgr_dashboard"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_mgr_settings"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_mgr_reset"><span class="slider"></span></label></div>
-            </div>
+  <!-- 🆕 ለየብቻ የሚያሳዩ ቁልፎች -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <button type="button" id="btnShowMgr" onclick="switchPermTab('manager')" style="flex:1; padding:10px; border-radius:8px; border:none; background:#2c5282; color:#fff; font-weight:700; cursor:pointer;">🎯 ማናጀር</button>
+    <button type="button" id="btnShowAcc" onclick="switchPermTab('accountant')" style="flex:1; padding:10px; border-radius:8px; border:none; background:#e2e8f0; color:#4a5568; font-weight:700; cursor:pointer;">💼 አካውንታንት</button>
+  </div>
 
-            <div class="perm-section">
-              <div class="perm-title">💼 አካውንታንት (Accountant)</div>
-              <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_sales"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_expense"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_acc_product"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_acc_cat"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_top"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_unsold"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_history"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_acc_monthly"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_acc_dashboard"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_acc_settings"><span class="slider"></span></label></div>
-              <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_acc_reset"><span class="slider"></span></label></div>
-            </div>
+  <!-- 🆕 የማናጀር ፈቃዶች (Default ክፍት ነው) -->
+  <div id="permMgrBox">
+    <div class="perm-section">
+      <div class="perm-title">🎯 ማናጀር (Manager)</div>
+      <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_sales"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_mgr_expense"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_mgr_product"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_mgr_cat"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_top"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_unsold"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_mgr_history"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_mgr_monthly"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_mgr_dashboard"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_mgr_settings"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_mgr_reset"><span class="slider"></span></label></div>
+    </div>
+  </div>
 
-            <button class="btn btn-success" onclick="savePermissions()">💾 ፈቃዶችን አስቀምጥ</button>
-          </div>
+  <!-- 🆕 የአካውንታንት ፈቃዶች (በመጀመሪያ ተደብቋል) -->
+  <div id="permAccBox" style="display:none;">
+    <div class="perm-section">
+      <div class="perm-title">💼 አካውንታንት (Accountant)</div>
+      <div class="toggle-row"><label>📝 ሽያጭ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_sales"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>💸 ወጪ ማስገባት</label><label class="switch"><input type="checkbox" id="perm_acc_expense"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>➕ ምርት ጨምር</label><label class="switch"><input type="checkbox" id="perm_acc_product"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🗂️ ምድቦች አስተዳድር</label><label class="switch"><input type="checkbox" id="perm_acc_cat"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🏆 ቶፕ ሴለር ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_top"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📉 ያልተሸጡ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_unsold"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📚 ታሪክ ማየት</label><label class="switch"><input type="checkbox" id="perm_acc_history"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📅 የወር ሂሳብ</label><label class="switch"><input type="checkbox" id="perm_acc_monthly"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>📊 Dashboard</label><label class="switch"><input type="checkbox" id="perm_acc_dashboard"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>⚙️ Settings</label><label class="switch"><input type="checkbox" id="perm_acc_settings"><span class="slider"></span></label></div>
+      <div class="toggle-row"><label>🔄 Reset</label><label class="switch"><input type="checkbox" id="perm_acc_reset"><span class="slider"></span></label></div>
+    </div>
+  </div>
+
+  <button class="btn btn-success" onclick="savePermissions()">💾 ፈቃዶችን አስቀምጥ</button>
+</div>
         </div>
 
         <div class="section-collapsible">
@@ -1008,6 +1020,26 @@
       permissions = JSON.parse(JSON.stringify(DEFAULT_PERMS));
     }
   }
+ 
+// 🆕 በማናጀር እና አካውንታንት መካከል መቀያየሪያ
+window.switchPermTab = function(role) {
+  const mgrBox = document.getElementById('permMgrBox');
+  const accBox = document.getElementById('permAccBox');
+  const btnMgr = document.getElementById('btnShowMgr');
+  const btnAcc = document.getElementById('btnShowAcc');
+
+  if (role === 'manager') {
+    mgrBox.style.display = 'block';
+    accBox.style.display = 'none';
+    btnMgr.style.background = '#2c5282'; btnMgr.style.color = '#fff';
+    btnAcc.style.background = '#e2e8f0'; btnAcc.style.color = '#4a5568';
+  } else {
+    mgrBox.style.display = 'none';
+    accBox.style.display = 'block';
+    btnAcc.style.background = '#2c5282'; btnAcc.style.color = '#fff';
+    btnMgr.style.background = '#e2e8f0'; btnMgr.style.color = '#4a5568';
+  }
+};
 
   window.savePermissions = async function() {
     if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; }
