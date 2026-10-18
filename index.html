@@ -265,16 +265,56 @@
   #tab4:checked ~ .panels #panel4,
   #tab5:checked ~ .panels #panel5 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* 2 አምድ */
     gap: 16px;
     align-items: start;
   }
 
-  /* 2. ሁሉም ካርዶች በነባሪነት ሙሉ ስፋት (span 2) ይያዙ */
+  /* 2. ሁሉም ካርዶች በነባሪነት 1 አምድ ይያዙ (ጎን ለጎን) */
   .section-collapsible {
-    grid-column: span 2;
     margin-bottom: 0;
     width: 100%;
+  }
+
+  /* 3. ሙሉ ስፋት የሚይዙት ልዩ ካርዶች (እነዚህ ብቻ 2 አምድ ይይዛሉ) */
+  
+  /* በምርቶች ታብ (Tab 1) */
+  #secAddProduct, 
+  #secCatMgr, 
+  #hdrSaleEntry { 
+    grid-column: span 2; 
+  }
+
+  /* በየቀን ታብ (Tab 2) */
+  #secTodayTop, 
+  #secTodayUnsold, 
+  #secHistory, 
+  #secExpCats,
+  #hdrSaveToday { 
+    grid-column: span 2; 
+  }
+
+  /* በየወር ታብ (Tab 3) */
+  #hdrMonSummary,
+  #hdrFixExp,
+  #hdrFixCats,
+  #hdrMonTop,
+  #hdrMonUnsold { 
+    grid-column: span 2; 
+  }
+
+  /* በDashboard ታብ (Tab 4) */
+  #hdrChart1, 
+  #hdrChart2, 
+  #hdrChart3 { 
+    grid-column: span 2; 
+  }
+
+  /* በSettings ታብ (Tab 5) */
+  #secHotelSettings, 
+  #secPermissions, 
+  #hdrReset { 
+    grid-column: span 2; 
   }
 }
 </style>
