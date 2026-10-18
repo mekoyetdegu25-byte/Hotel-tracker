@@ -67,7 +67,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   #mainApp { display: none; }
   #mainApp.show { display: block; }
-  header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  header { background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 0 0 16px 16px; margin-bottom: 10px; }
   header .h-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
   header .h-logo { font-size: 24px; width: 32px; height: 32px; object-fit: contain; border-radius: 8px; }
   header .h-title { font-size: 14px; font-weight: 700; line-height: 1.2; }
@@ -82,12 +82,17 @@
   .sync-status.syncing { background: #fefcbf; color: #744210; }
   .sync-status.online { background: #c6f6d5; color: #22543d; }
   .sync-status.error { background: #fed7d7; color: #742a2a; }
-  .tabs { display: flex; background: #fff; position: sticky; top: 60px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); overflow-x: auto; }
+  
+  /* 🆕 አዲሱ የ Tabs አቀማመጥ */
+  .tabs { display: flex; background: #fff; position: sticky; top: 60px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,0.06); overflow-x: auto; padding: 0 10px; border-radius: 0 0 16px 16px; gap: 5px;}
   .tabs input[type="radio"] { display: none; }
-  .tabs label { flex: 1; min-width: 68px; text-align: center; padding: 12px 3px; font-size: 11px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; user-select: none; white-space: nowrap; }
-  #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"], #tab4:checked ~ .tabs label[for="tab4"], #tab5:checked ~ .tabs label[for="tab5"] { color: #2c5282; border-bottom-color: #2c5282; background: #ebf4ff; }
+  .tabs label { flex: 1; min-width: 70px; text-align: center; padding: 12px 3px; font-size: 12px; font-weight: 700; color: #718096; cursor: pointer; border-radius: 12px; margin: 8px 0; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+  .tabs label i { font-size: 18px; font-style: normal;}
+  #tab1:checked ~ .tabs label[for="tab1"], #tab2:checked ~ .tabs label[for="tab2"], #tab3:checked ~ .tabs label[for="tab3"], #tab4:checked ~ .tabs label[for="tab4"], #tab5:checked ~ .tabs label[for="tab5"] { color: #2c5282; background: #ebf4ff; box-shadow: 0 2px 8px rgba(44,82,130,0.15);}
+  
   .panel { display: none; padding: 14px; }
   #tab1:checked ~ .panels #panel1, #tab2:checked ~ .panels #panel2, #tab3:checked ~ .panels #panel3, #tab4:checked ~ .panels #panel4, #tab5:checked ~ .panels #panel5 { display: block; }
+  
   label.field-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 5px; margin-top: 10px; }
   label.field-label:first-of-type { margin-top: 0; }
   input[type="text"], input[type="number"], input[type="date"], select { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; }
@@ -100,11 +105,13 @@
   .btn-warning { background: #c05621; color: #fff; }
   .btn-outline { background: #fff; color: #2c5282; border: 1.5px solid #2c5282; }
   .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; margin-top: 0; border-radius: 8px; }
+  
   .summary-box { background: linear-gradient(135deg, #2c5282, #1a365d); color: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; text-align: center; }
   .summary-box.green { background: linear-gradient(135deg, #276749, #22543d); }
   .summary-box.red { background: linear-gradient(135deg, #c53030, #9b2c2c); }
   .summary-box .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .summary-box .value { font-size: 26px; font-weight: 800; }
+  
   .list-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .list-item .info { flex: 1; min-width: 0; }
   .list-item .name { font-size: 14px; font-weight: 600; color: #2d3748; }
@@ -112,6 +119,7 @@
   .list-item .amount { font-size: 14px; font-weight: 700; color: #2c5282; margin-left: 10px; white-space: nowrap; }
   .list-item .amount.red { color: #c53030; }
   .list-item .qty-input { width: 70px; padding: 8px; font-size: 15px; text-align: center; border: 1.5px solid #cbd5e0; border-radius: 8px; margin-left: 8px; font-weight: 700; color: #2c5282; background: #fff; }
+  
   .empty-msg { text-align: center; color: #a0aec0; font-size: 13px; padding: 20px 10px; font-style: italic; }
   .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .row-flex { display: flex; gap: 8px; align-items: flex-end; }
@@ -119,14 +127,17 @@
   .row-flex .btn { margin-top: 0; width: auto; padding: 13px 18px; }
   .divider { height: 1px; background: #edf2f7; margin: 12px 0; }
   body.dark .divider { background: #4a5568; }
+  
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3748; color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: all 0.35s; z-index: 999; pointer-events: none; max-width: 90%; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  
   .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .cat-tag { display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 1px solid #bee3f8; color: #2c5282; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
   .cat-tag .del { cursor: pointer; color: #c53030; font-weight: 800; font-size: 14px; padding: 0 2px; }
   .cat-add-row { display: flex; gap: 6px; align-items: center; }
   .cat-add-row input { padding: 9px 10px; font-size: 13.5px; flex: 1; }
   .cat-add-row button { background: #2c5282; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  
   .month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .month-nav button { background: #2c5282; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
   .month-nav .month-label { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: #2c5282; }
@@ -135,6 +146,7 @@
   .stat-row .stat-value { font-weight: 800; color: #2d3748; }
   .stat-row .stat-value.red { color: #c53030; }
   .stat-row .stat-value.green { color: #276749; }
+  
   .seller-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; background: #f7fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .seller-item.gold { background: linear-gradient(135deg, #fffaf0, #fefcbf); border-color: #f6e05e; }
   .seller-item.silver { background: linear-gradient(135deg, #f7fafc, #e2e8f0); border-color: #cbd5e0; }
@@ -144,10 +156,12 @@
   .seller-item .seller-name { font-size: 14px; font-weight: 700; color: #2d3748; }
   .seller-item .seller-meta { font-size: 11.5px; color: #718096; margin-top: 2px; }
   .seller-item .seller-amount { font-size: 14px; font-weight: 800; color: #276749; white-space: nowrap; margin-left: 8px; }
+  
   .unsold-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: #fff5f5; border-radius: 10px; margin-bottom: 6px; border: 1px solid #fed7d7; }
   .unsold-item .u-name { font-size: 13.5px; font-weight: 600; color: #742a2a; }
   .unsold-item .u-cat { font-size: 11px; color: #a0aec0; margin-top: 2px; }
   .unsold-item .u-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #fed7d7; color: #742a2a; }
+  
   .cat-section { margin-bottom: 10px; }
   .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: linear-gradient(135deg, #ebf4ff, #bee3f8); border-radius: 12px; cursor: pointer; border: 1px solid #90cdf4; }
   .cat-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
@@ -160,6 +174,7 @@
   .cat-header .cat-total { font-size: 13px; font-weight: 800; color: #276749; }
   .cat-body { display: none; padding: 8px 6px 6px 6px; background: #fff; border: 1px solid #90cdf4; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
   .cat-body.open { display: block; }
+  
   .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f7fafc; border-radius: 8px; margin: 6px 4px; cursor: pointer; }
   .sub-header .sub-left { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #4a5568; }
   .sub-header .sub-arrow { font-size: 10px; font-weight: 900; color: #4a5568; transition: transform 0.2s; display: inline-block; }
@@ -167,8 +182,10 @@
   .sub-header .sub-count { font-size: 10.5px; font-weight: 700; background: #fff; color: #4a5568; padding: 2px 7px; border-radius: 10px; border: 1px solid #e2e8f0; }
   .sub-body { display: none; padding: 2px 0 4px 0; }
   .sub-body.open { display: block; }
+  
   .expand-controls { display: flex; gap: 8px; margin-bottom: 12px; }
   .expand-controls button { flex: 1; padding: 10px; font-size: 12.5px; font-weight: 700; border-radius: 10px; border: 1.5px solid #2c5282; background: #fff; color: #2c5282; cursor: pointer; }
+  
   .section-collapsible { background: #fff; border-radius: 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
   .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
   .section-header .sec-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
@@ -184,6 +201,7 @@
   .section-header .sec-badge.orange { background: #feebc8; color: #7b341e; }
   .section-body { display: none; padding: 0 16px 16px 16px; }
   .section-body.open { display: block; }
+  
   .history-item { background: #f7fafc; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid #edf2f7; }
   .history-item .h-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .history-item .h-date { font-size: 13.5px; font-weight: 700; color: #2c5282; }
@@ -191,19 +209,24 @@
   .history-item .h-net.green { color: #276749; }
   .history-item .h-net.red { color: #c53030; }
   .history-item .h-details { display: flex; gap: 12px; font-size: 12px; color: #718096; flex-wrap: wrap; align-items: center; }
+  
   .info-banner { background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #2c5282; margin-bottom: 12px; line-height: 1.5; }
   .info-banner.orange { background: #fffaf0; border-color: #fbd38d; color: #7b341e; }
+  
   .search-box { position: relative; }
   .search-box input { padding-left: 40px; }
   .search-box .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #a0aec0; pointer-events: none; }
+  
   .loading-screen { position: fixed; inset: 0; background: #f2f4f8; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; z-index: 999; }
   body.dark .loading-screen { background: #1a202c; }
   .loading-screen.hidden { display: none; }
   .loading-spinner { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: #2c5282; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .loading-text { font-size: 14px; color: #4a5568; font-weight: 600; }
+  
   .chart-container { position: relative; height: 240px; margin-bottom: 16px; }
   .settings-btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   .settings-btn-row .btn { flex: 1; min-width: 120px; margin-top: 0; }
+  
   .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 4px; }
   .toggle-row label { margin: 0; font-size: 13.5px; color: #2d3748; font-weight: 600; }
   .switch { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
@@ -212,6 +235,7 @@
   .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: #fff; transition: .3s; border-radius: 50%; }
   input:checked + .slider { background-color: #2c5282; }
   input:checked + .slider:before { transform: translateX(22px); }
+  
   .perm-section { background: #f7fafc; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; border: 1px solid #edf2f7; }
   body.dark .perm-section { background: #4a5568; border-color: #4a5568; }
   .perm-section .perm-title { font-size: 13px; font-weight: 800; color: #2c5282; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -266,6 +290,7 @@
   <!-- 🆕 Payment Banner -->
   <div id="paymentBanner" style="display:none; padding:12px 16px; margin:0; font-size:13px; font-weight:700; text-align:center; border-bottom:2px solid;"></div>
 
+  <!-- 🆕 አዲሱ የ Tabs አቀማመጥ -->
   <div class="tabs-wrapper">
     <input type="radio" name="tabs" id="tab1" checked>
     <input type="radio" name="tabs" id="tab2">
@@ -274,11 +299,11 @@
     <input type="radio" name="tabs" id="tab5">
 
     <div class="tabs">
-      <label for="tab1">🍽️<br>ምርቶች</label>
-      <label for="tab2">📋<br>የቀን</label>
-      <label for="tab3">📅<br>የወር</label>
-      <label for="tab4">📊<br>Dashboard</label>
-      <label for="tab5">⚙️<br>Settings</label>
+      <label for="tab1"><i>🍽️</i>ምርቶች</label>
+      <label for="tab2"><i>📋</i>የቀን</label>
+      <label for="tab3"><i>📅</i>የወር</label>
+      <label for="tab4"><i>📊</i>Dashboard</label>
+      <label for="tab5"><i>⚙️</i>Settings</label>
     </div>
 
     <div class="panels">
@@ -765,7 +790,7 @@
   let permissions = {};
   let products = [], sales = {}, expenses = [], fixed = [], history = [];
   let quickSales = []; 
-  let quickSaleCats = ['ምግብ', 'መጠጥ', 'ባህላዊ ምግብ', 'ሌላ']; // 🆕 የፈጣን ሽያጭ ምድቦች
+  let quickSaleCats = ['ምግብ', 'መጠጥ', 'ባህላዊ ምግብ', 'ሌላ'];
   
   let categories = {
     'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
@@ -839,11 +864,8 @@
   function permsRef() { return doc(db, 'hotels', HOTEL_ID, 'settings', 'permissions'); }
 
   async function ensureHotelDoc() {
-    try {
-      const ref = hotelRef();
-      const snap = await getDoc(ref);
-      if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
-    } catch (e) { console.warn(e); }
+    // 🆕 ሆቴል በራሱ እንዳይፈጠር አደረግነው
+    return;
   }
 
   async function loadPaymentBanner() {
@@ -1154,19 +1176,26 @@
       if (userDoc.exists()) {
         const userData = userDoc.data();
         console.log('📄 Data:', userData);
-        HOTEL_ID = userData.hotelId || 'hotel-main';
+        HOTEL_ID = userData.hotelId; // 🆕 'hotel-main' አስወግደናል
+        
+        if (!HOTEL_ID) {
+          await signOut(auth);
+          alert("⚠️ ይህ ተጠቃሚ ምንም ሆቴል አልተመደበለትም። እባክዎ አስተዳዳሪውን ያነጋግሩ።");
+          window.location.reload();
+          return;
+        }
 
-       // 🆕 ሆቴሉ መቋረጡን አረጋግጥ
-const hotelSnap = await getDoc(doc(db, 'hotels', HOTEL_ID));
-if (hotelSnap.exists()) {
-  const hotelData = hotelSnap.data();
-  if (hotelData.status === 'inactive') {
-    await signOut(auth);
-    alert("⚠️ ይህ ሆቴል አገልግሎቱ ተቋርጧል። እባክዎ አስተዳዳሪውን ያነጋግሩ።");
-    window.location.reload();
-    return;
-  }
-}
+        const hotelSnap = await getDoc(doc(db, 'hotels', HOTEL_ID));
+        if (hotelSnap.exists()) {
+          const hotelData = hotelSnap.data();
+          if (hotelData.status === 'inactive') {
+            await signOut(auth);
+            alert("⚠️ ይህ ሆቴል አገልግሎቱ ተቋርጧል። እባክዎ አስተዳዳሪውን ያነጋግሩ።");
+            window.location.reload();
+            return;
+          }
+        }
+
         console.log('✅ HOTEL_ID:', HOTEL_ID);
         hotelIdFound = true;
         localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
@@ -1243,7 +1272,6 @@ if (hotelSnap.exists()) {
       if (typeof renderQuickSales === 'function') renderQuickSales(); 
     });
 
-    // 🆕 የፈጣን ሽያጭ ምድቦችን አንብብ
     onSnapshot(collection(db, 'hotels', HOTEL_ID, 'quickSaleCategories'), snap => {
       if (snap.empty) {
         quickSaleCats.forEach(async (c) => {
@@ -1298,7 +1326,6 @@ if (hotelSnap.exists()) {
   function renderProducts() { const w = document.getElementById('productList'); if (products.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ምርት የለም።</div>'; updateSalesTotals(); return; } let f = products; if (searchQuery) { f = products.filter(p => p.name.toLowerCase().includes(searchQuery) || p.main.toLowerCase().includes(searchQuery) || p.sub.toLowerCase().includes(searchQuery)); if (f.length === 0) { w.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" አልተገኘም።</div>'; updateSalesTotals(); return; } } const ds = getSalesForDate(currentSaleDate); const g = {}; f.forEach(p => { if (!g[p.main]) g[p.main] = {}; if (!g[p.main][p.sub]) g[p.main][p.sub] = []; g[p.main][p.sub].push(p); }); let h = ''; Object.keys(g).forEach(main => { const mo = !!openCats[main] || !!searchQuery; let mt = 0, mc = 0; Object.keys(g[main]).forEach(sub => g[main][sub].forEach(p => { const s = ds[p.id]; mt += (s ? s.qty : 0) * p.price; mc++; })); h += `<div class="cat-section"><div class="cat-header ${mo?'open':''}" onclick="toggleCategory('${escJs(main)}')"><div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">${esc(main)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">${mc}</span><span class="cat-total">${money(mt)} ብር</span></div></div><div class="cat-body ${mo?'open':''}">`; Object.keys(g[main]).forEach(sub => { const sk = main + '||' + sub; const so = !!openSubCats[sk] || !!searchQuery; h += `<div class="sub-header ${so?'open':''}" onclick="toggleSubCategory('${escJs(main)}','${escJs(sub)}')"><div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ${esc(sub)}</span></div><span class="sub-count">${g[main][sub].length}</span></div><div class="sub-body ${so?'open':''}">`; g[main][sub].forEach(p => { const s = ds[p.id]; const q = s ? s.qty : ''; h += `<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">${esc(p.name)}</div><div class="meta">${money(p.price)} ብር</div></div><input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="${q}" onchange="setQty('${p.id}', this.value)" oninput="setQty('${p.id}', this.value)" onclick="event.stopPropagation()">${can('product') ? `<button class="btn btn-primary btn-sm" style="margin-left:4px;padding:8px 10px;background:#3182ce;margin-top:0;" onclick="event.stopPropagation();openEditProduct('${p.id}')">✏️</button><button class="btn btn-danger btn-sm" style="margin-left:4px;padding:8px 10px;margin-top:0;" onclick="event.stopPropagation();deleteProduct('${p.id}')">✕</button>` : ''}</div>`; }); h += '</div>'; }); h += '</div></div>'; }); w.innerHTML = h; updateSalesTotals(); }
   function updateSalesTotals() { const ds = getSalesForDate(currentSaleDate); let t = 0; products.forEach(p => { const s = ds[p.id]; if (s) t += s.qty * p.price; }); document.getElementById('todaySalesTotal').textContent = money(t) + ' ብር'; document.getElementById('hdrSaleTotal').textContent = money(t) + ' ብር'; renderDaily(); }
 
-  // 🆕 የፈጣን ሽያጭ ምድብ Dropdown አሳያ
   function renderQuickSaleCatDropdown() {
     const sel = document.getElementById('quickSaleCat');
     if (!sel) return;
@@ -1348,7 +1375,6 @@ if (hotelSnap.exists()) {
     `).join('');
   }
 
-  // 🆕 ምድብ ማስተዳደሪያ መስኮት ክፈት
   window.openCatManager = function() {
     if (!can('sales')) { toast('⚠️ ፈቃድ የለህም'); return; }
     let m = document.getElementById('catManagerModal');
@@ -1389,7 +1415,6 @@ if (hotelSnap.exists()) {
     if (m) m.style.display = 'none';
   };
 
-  // 🆕 ምድብ ጨምር
   window.addQuickSaleCat = async function() {
     const inp = document.getElementById('newQuickCat');
     const n = inp.value.trim();
@@ -1401,7 +1426,6 @@ if (hotelSnap.exists()) {
     toast('✅ ተጨምሯል');
   };
 
-  // 🆕 ምድብ አጥፋ
   window.deleteQuickSaleCat = async function(name) {
     if (!confirm(`"${name}" ማጥፋት ትፈልጋለህ?`)) return;
     await deleteDocById(collection(db, 'hotels', HOTEL_ID, 'quickSaleCategories'), name);
@@ -1417,7 +1441,6 @@ if (hotelSnap.exists()) {
     let inc = 0; 
     products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); 
 
-    // 🆕 የፈጣን ሽያጮችን ደምር
     let quickTotal = 0;
     quickSales.forEach(q => { if(q.date === currentSaleDate) quickTotal += q.amount; });
     inc += quickTotal;
@@ -1452,7 +1475,6 @@ if (hotelSnap.exists()) {
     let inc = 0; 
     products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); 
 
-    // 🆕 የፈጣን ሽያጮችን ደምር
     quickSales.forEach(q => { if(q.date === currentSaleDate) inc += q.amount; });
 
     const de = expenses.filter(e => e.date === d); 
