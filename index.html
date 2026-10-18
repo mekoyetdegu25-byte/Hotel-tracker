@@ -266,7 +266,6 @@
   <!-- 🆕 Payment Banner -->
   <div id="paymentBanner" style="display:none; padding:12px 16px; margin:0; font-size:13px; font-weight:700; text-align:center; border-bottom:2px solid;"></div>
 
-  <!-- 🆕 ሰርዘኸው የነበረው DIV እዚህ ተመልሷል -->
   <div class="tabs-wrapper">
     <input type="radio" name="tabs" id="tab1" checked>
     <input type="radio" name="tabs" id="tab2">
@@ -347,6 +346,23 @@
             <span class="sec-badge green" id="hdrSaleTotal">0.00 ብር</span>
           </div>
           <div class="section-body" id="bodySaleEntry">
+            
+            <!-- 🆕 ፈጣን ጠቅላላ ሽያጭ ማስገቢያ -->
+            <div style="background:#f0fff4; border:1.5px solid #68d391; border-radius:10px; padding:12px; margin-bottom:14px;">
+              <label class="field-label" style="color:#276749; margin-top:0;">💡 በአጠቃላይ ሽያጭ ማስገባት ከፈለጉ (ያለ ዝርዝር)</label>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <select id="quickSaleCat" style="flex:1; padding:10px; border-radius:8px; border:1px solid #cbd5e0;">
+                  <option value="ምግብ">🍲 ምግብ</option>
+                  <option value="መጠጥ">🥤 መጠጥ</option>
+                  <option value="ባህላዊ ምግብ">🍛 ባህላዊ ምግብ</option>
+                  <option value="ሌላ">📦 ሌላ</option>
+                </select>
+                <input type="number" id="quickSaleAmount" placeholder="ብር" inputmode="decimal" step="any" min="0" style="flex:1; padding:10px; border-radius:8px; border:1px solid #cbd5e0;">
+                <button onclick="addQuickSale()" style="background:#276749; color:#fff; border:none; padding:10px 16px; border-radius:8px; font-weight:700; cursor:pointer;">+ ጨምር</button>
+              </div>
+              <div id="quickSaleList" style="margin-top:10px; display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+
             <div class="search-box" style="margin-bottom:12px;">
               <span class="search-icon">🔍</span>
               <input type="text" id="searchProductInput" placeholder="ምርት ፈልግ..." oninput="onSearchProduct()" autocomplete="off">
@@ -724,48 +740,33 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-  // ===== APP 2: Hotel-Owners (Authentication) =====
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
   from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-  // ===== APP 1: Hotel-Tracker (Firestore DB) =====
   import { getFirestore, doc, setDoc, getDoc, deleteDoc,
            collection, getDocs, onSnapshot, writeBatch, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  // 🆕 አንድ project — hotel-tracker (Auth + Firestore)
-const firebaseConfig = {
-  apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
-  authDomain: "hotel-tracker-c3571.firebaseapp.com",
-  projectId: "hotel-tracker-c3571",
-  storageBucket: "hotel-tracker-c3571.firebasestorage.app",
-  messagingSenderId: "1024629386649",
-  appId: "1:1024629386649:web:c689f920c780e400797708"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
+    authDomain: "hotel-tracker-c3571.firebaseapp.com",
+    projectId: "hotel-tracker-c3571",
+    storageBucket: "hotel-tracker-c3571.firebasestorage.app",
+    messagingSenderId: "1024629386649",
+    appId: "1:1024629386649:web:c689f920c780e400797708"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   let HOTEL_ID = 'hotel-main';
-
-  const loadingScreen = document.getElementById('loadingScreen');
-  const loginScreen = document.getElementById('loginScreen');
-  const mainApp = document.getElementById('mainApp');
-  const errorBox = document.getElementById('errorBox');
-  const emailInput = document.getElementById('emailInput');
-  const passwordInput = document.getElementById('passwordInput');
-  const loginBtn = document.getElementById('loginBtn');
-  const loginBtnText = document.getElementById('loginBtnText');
-  const hdrUserEmail = document.getElementById('hdrUserEmail');
-  const hdrRoleBadge = document.getElementById('hdrRoleBadge');
-  const hdrHotelName = document.getElementById('hdrHotelName');
-  const syncStatus = document.getElementById('syncStatus');
-
   let currentUser = null;
   let currentRole = 'unknown';
   let permissions = {};
   let products = [], sales = {}, expenses = [], fixed = [], history = [];
+  let quickSales = []; // 🆕 የፈጣን ሽያጭ ዳታ
+  
   let categories = {
     'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
     'መጠጥ': ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
@@ -785,6 +786,19 @@ const db = getFirestore(app);
     manager: { sales: true, expense: true, product: true, cat: true, top: true, unsold: true, history: true, monthly: true, dashboard: true, settings: false, reset: true },
     accountant: { sales: true, expense: true, product: true, cat: true, top: false, unsold: false, history: false, monthly: false, dashboard: false, settings: false, reset: true }
   };
+
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loginScreen = document.getElementById('loginScreen');
+  const mainApp = document.getElementById('mainApp');
+  const errorBox = document.getElementById('errorBox');
+  const emailInput = document.getElementById('emailInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
+  const hdrUserEmail = document.getElementById('hdrUserEmail');
+  const hdrRoleBadge = document.getElementById('hdrRoleBadge');
+  const hdrHotelName = document.getElementById('hdrHotelName');
+  const syncStatus = document.getElementById('syncStatus');
 
   function money(n) { return (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
@@ -831,113 +845,70 @@ const db = getFirestore(app);
       if (!snap.exists()) await setDoc(ref, { name: 'Hotel Main', createdAt: serverTimestamp() });
     } catch (e) { console.warn(e); }
   }
- // 🆕 Payment Banner አሳይ (Popup እና ቋሚ ማስጠንቀቂያ)
-async function loadPaymentBanner() {
- // 🆕 ባለቤት (Owner) ብቻ እንዲያየው
-if (currentRole !== 'owner') return;
- 
-  try {
-    const snap = await getDoc(hotelRef());
-    if (!snap.exists()) return;
-    const data = snap.data();
-    const paidUntil = data.paidUntil;
-    if (!paidUntil) return;
 
-    const banner = document.getElementById('paymentBanner');
-    if (!banner) return;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const until = new Date(paidUntil);
-    until.setHours(0, 0, 0, 0);
-    const diffDays = Math.floor((until - today) / (1000 * 60 * 60 * 24));
-
-    let bg, color, border, msg;
-
-    if (diffDays < 0) {
-      // 🔴 ዘግይቷል - ሁልጊዜ ይታያል
-      bg = '#fff5f5'; color = '#c53030'; border = '#fc8181';
-      msg = '❌ ክፍያ ዘግይቷል — ' + Math.abs(diffDays) + ' ቀን አልፏል! እባክህ ይክፈሉ።';
-      
-      banner.style.background = bg;
-      banner.style.color = color;
-      banner.style.borderBottomColor = border;
-      banner.textContent = msg;
-      banner.style.display = 'block';
-
-    } else if (diffDays <= 5) {
-      // 🟡 5 ቀን ሲቀረው - ሁልጊዜ ይታያል (ማስጠንቀቂያ)
-      bg = '#fffaf0'; color = '#c05621'; border = '#fbd38d';
-      msg = '⚠️ ክፍያ ማድረግ ያስፈልጋል — ' + diffDays + ' ቀን ቀርቷል';
-      
-      banner.style.background = bg;
-      banner.style.color = color;
-      banner.style.borderBottomColor = border;
-      banner.textContent = msg;
-      banner.style.display = 'block';
-
-    } else {
-      // 🟢 ክፍያ ተከፍሏል - ለ 3 ሰከንድ ብቻ ታይቶ ይጠፋል (Popup)
-      bg = '#f0fff4'; color = '#22543d'; border = '#68d391';
-      msg = '✅ ክፍያ ተከፍሏል — ' + diffDays + ' ቀን ቀርቷል';
-      
-      banner.style.position = 'fixed';
-      banner.style.top = '60px'; 
-      banner.style.left = '50%';
-      banner.style.transform = 'translateX(-50%)';
-      banner.style.width = '90%';
-      banner.style.maxWidth = '400px';
-      banner.style.borderRadius = '10px';
-      banner.style.border = '2px solid ' + border;
-      banner.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-      banner.style.zIndex = '9999';
-      
-      banner.style.background = bg;
-      banner.style.color = color;
-      banner.textContent = msg;
-      banner.style.display = 'block';
-
-      banner.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        banner.style.opacity = '0';
-        setTimeout(() => {
-          banner.style.display = 'none';
-          banner.style.position = '';
-          banner.style.top = '';
-          banner.style.left = '';
-          banner.style.transform = '';
-          banner.style.width = '';
-          banner.style.maxWidth = '';
-          banner.style.borderRadius = '';
-          banner.style.border = '';
-          banner.style.boxShadow = '';
-          banner.style.opacity = '1';
-        }, 500);
-      }, 3000);
-    }
-  } catch (e) {
-    console.warn('Payment banner error:', e);
-  }
-}
-
- async function loadHotelName() {
-  try {
-    console.log('🏨 Loading:', HOTEL_ID);
-    const snap = await getDoc(hotelRef());
-    if (snap.exists()) {
+  async function loadPaymentBanner() {
+    if (currentRole !== 'owner') return;
+    try {
+      const snap = await getDoc(hotelRef());
+      if (!snap.exists()) return;
       const data = snap.data();
-      console.log('🏨 Data:', data);
-      if (data.name) {
-        hdrHotelName.textContent = data.name;
-        const inp = document.getElementById('hotelNameInput');
-        if (inp) inp.value = data.name;
+      const paidUntil = data.paidUntil;
+      if (!paidUntil) return;
+
+      const banner = document.getElementById('paymentBanner');
+      if (!banner) return;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const until = new Date(paidUntil);
+      until.setHours(0, 0, 0, 0);
+      const diffDays = Math.floor((until - today) / (1000 * 60 * 60 * 24));
+
+      let bg, color, border, msg;
+
+      if (diffDays < 0) {
+        bg = '#fff5f5'; color = '#c53030'; border = '#fc8181';
+        msg = '❌ ክፍያ ዘግይቷል — ' + Math.abs(diffDays) + ' ቀን አልፏል! እባክህ ይክፈሉ።';
+        banner.style.background = bg; banner.style.color = color; banner.style.borderBottomColor = border; banner.textContent = msg; banner.style.display = 'block';
+      } else if (diffDays <= 5) {
+        bg = '#fffaf0'; color = '#c05621'; border = '#fbd38d';
+        msg = '⚠️ ክፍያ ማድረግ ያስፈልጋል — ' + diffDays + ' ቀን ቀርቷል';
+        banner.style.background = bg; banner.style.color = color; banner.style.borderBottomColor = border; banner.textContent = msg; banner.style.display = 'block';
+      } else {
+        bg = '#f0fff4'; color = '#22543d'; border = '#68d391';
+        msg = '✅ ክፍያ ተከፍሏል — ' + diffDays + ' ቀን ቀርቷል';
+        banner.style.position = 'fixed'; banner.style.top = '60px'; banner.style.left = '50%'; banner.style.transform = 'translateX(-50%)'; banner.style.width = '90%'; banner.style.maxWidth = '400px'; banner.style.borderRadius = '10px'; banner.style.border = '2px solid ' + border; banner.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'; banner.style.zIndex = '9999';
+        banner.style.background = bg; banner.style.color = color; banner.textContent = msg; banner.style.display = 'block';
+        banner.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+          banner.style.opacity = '0';
+          setTimeout(() => {
+            banner.style.display = 'none'; banner.style.position = ''; banner.style.top = ''; banner.style.left = ''; banner.style.transform = ''; banner.style.width = ''; banner.style.maxWidth = ''; banner.style.borderRadius = ''; banner.style.border = ''; banner.style.boxShadow = ''; banner.style.opacity = '1';
+          }, 500);
+        }, 3000);
       }
-    } else {
-      console.log('❌ Not found:', HOTEL_ID);
-      hdrHotelName.textContent = HOTEL_ID;
-    }
-  } catch (e) { console.warn(e); }
-}
+    } catch (e) { console.warn('Payment banner error:', e); }
+  }
+
+  async function loadHotelName() {
+    try {
+      console.log('🏨 Loading:', HOTEL_ID);
+      const snap = await getDoc(hotelRef());
+      if (snap.exists()) {
+        const data = snap.data();
+        console.log('🏨 Data:', data);
+        if (data.name) {
+          hdrHotelName.textContent = data.name;
+          const inp = document.getElementById('hotelNameInput');
+          if (inp) inp.value = data.name;
+        }
+      } else {
+        console.log('❌ Not found:', HOTEL_ID);
+        hdrHotelName.textContent = HOTEL_ID;
+      }
+    } catch (e) { console.warn(e); }
+  }
+
   async function saveDoc(colRef, id, data) {
     setSyncStatus('syncing');
     try { await setDoc(doc(colRef, id), { ...data, updatedAt: serverTimestamp() }, { merge: true }); setSyncStatus('online'); }
@@ -989,35 +960,29 @@ if (currentRole !== 'owner') return;
     }
   };
 
- // 🆕 ፓስወርድ መቀየሪያ
-window.changePassword = async function() {
-  const currentPass = document.getElementById('currentPass').value;
-  const newPass = document.getElementById('newPass').value;
-
-  if (!currentPass || !newPass) { toast('⚠️ ሁለቱንም ፓስወርዶች አስገባ'); return; }
-  if (newPass.length < 6) { toast('⚠️ አዲሱ ፓስወርድ ቢያንስ 6 ፊደል ይሁን'); return; }
-
-  try {
-    const user = auth.currentUser;
-    if (!user) { toast('⚠️ እባክህ መጀመሪያ ግባ'); return; }
-
-    const credential = EmailAuthProvider.credential(user.email, currentPass);
-    await reauthenticateWithCredential(user, credential);
-    await updatePassword(user, newPass);
-
-    toast('✅ ፓስወርድ በተሳካ ሁኔታ ተቀይሯል!');
-    document.getElementById('currentPass').value = '';
-    document.getElementById('newPass').value = '';
-
-  } catch (err) {
-    console.error(err);
-    if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-      toast('❌ የድሮው ፓስወርድ ስህተት ነው');
-    } else {
-      toast('⚠️ ስህተት: ' + (err.message || err.code));
+  window.changePassword = async function() {
+    const currentPass = document.getElementById('currentPass').value;
+    const newPass = document.getElementById('newPass').value;
+    if (!currentPass || !newPass) { toast('⚠️ ሁለቱንም ፓስወርዶች አስገባ'); return; }
+    if (newPass.length < 6) { toast('⚠️ አዲሱ ፓስወርድ ቢያንስ 6 ፊደል ይሁን'); return; }
+    try {
+      const user = auth.currentUser;
+      if (!user) { toast('⚠️ እባክህ መጀመሪያ ግባ'); return; }
+      const credential = EmailAuthProvider.credential(user.email, currentPass);
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPass);
+      toast('✅ ፓስወርድ በተሳካ ሁኔታ ተቀይሯል!');
+      document.getElementById('currentPass').value = '';
+      document.getElementById('newPass').value = '';
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        toast('❌ የድሮው ፓስወርድ ስህተት ነው');
+      } else {
+        toast('⚠️ ስህተት: ' + (err.message || err.code));
+      }
     }
-  }
-};
+  };
 
   function fillPermissionsUI() {
     const keys = ['sales','expense','product','cat','top','unsold','history','monthly','dashboard','settings','reset'];
@@ -1159,7 +1124,6 @@ window.changePassword = async function() {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     console.log('✅ Login success:', result.user.email);
-    // 🆕 በቀጥታ ወደ showMainApp ሂድ
     await showMainApp(result.user);
   } catch (err) {
     let msg = 'የ Login ስህተት'; const code = err.code || '';
@@ -1172,37 +1136,35 @@ window.changePassword = async function() {
     showError(msg); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ';
   }
 };
+
   window.doLogout = async function() { if (!confirm('መውጣት ትፈልጋለህ?')) return; try { await signOut(auth); } catch (err) { showError(err.message); } };
   function showLogin() { loginScreen.classList.remove('hidden'); mainApp.classList.remove('show'); passwordInput.value = ''; }
 
-  // 🆕 ዋናው ተግባር — HOTEL_ID ከ users collection አንብቦ ከዚያ ብቻ ገጹን ያሳያል
   async function showMainApp(user) {
     console.log('🚀 showMainApp called for:', user.email);
     currentUser = user;
     currentRole = getUserRole(user.email);
     
-    // 🆕 HOTEL_ID ከ users collection አንብብ — ጊዜ ገደብ 5 ሰከንድ
     let hotelIdFound = false;
-try {
-  console.log('🔍 UID:', user.uid);
-  const userDoc = await getDoc(doc(db, 'users', user.uid));
-  console.log('📄 exists:', userDoc.exists());
-  
-  if (userDoc.exists()) {
-    const userData = userDoc.data();
-    console.log('📄 Data:', userData);
-    HOTEL_ID = userData.hotelId || 'hotel-main';
-    console.log('✅ HOTEL_ID:', HOTEL_ID);
-    hotelIdFound = true;
-    localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
-  } else {
-    console.log('❌ User doc not found');
-  }
-} catch (e) {
-  console.error('❌ Error:', e);
-}
+    try {
+      console.log('🔍 UID:', user.uid);
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      console.log('📄 exists:', userDoc.exists());
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log('📄 Data:', userData);
+        HOTEL_ID = userData.hotelId || 'hotel-main';
+        console.log('✅ HOTEL_ID:', HOTEL_ID);
+        hotelIdFound = true;
+        localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
+      } else {
+        console.log('❌ User doc not found');
+      }
+    } catch (e) {
+      console.error('❌ Error:', e);
+    }
     
-    // 🆕 ካልተገኘ — localStorage ሞክር
     if (!hotelIdFound) {
       const saved = localStorage.getItem('hotel_id_' + user.uid);
       if (saved) {
@@ -1211,7 +1173,6 @@ try {
       }
     }
     
-    // 🆕 አሁን ገጹን አሳይ
     loginScreen.classList.add('hidden');
     mainApp.classList.add('show');
     hdrUserEmail.textContent = user.email;
@@ -1234,20 +1195,19 @@ try {
     renderAll();
   }
 
-  // 🆕 onAuthStateChanged — አንድ ጊዜ ብቻ
-onAuthStateChanged(auth, async (user) => {
-  hideLoading();
-  if (user) {
-    console.log('✅ Auth state changed - user:', user.email);
-    await showMainApp(user);
-  } else {
-    console.log('❌ Auth state changed - no user');
-    showLogin();
-    showMainAppCalled = false;
-    loginBtn.disabled = false;
-    loginBtnText.textContent = '🔓 ግባ';
-  }
-});
+  onAuthStateChanged(auth, async (user) => {
+    hideLoading();
+    if (user) {
+      console.log('✅ Auth state changed - user:', user.email);
+      await showMainApp(user);
+    } else {
+      console.log('❌ Auth state changed - no user');
+      showLogin();
+      showMainAppCalled = false;
+      loginBtn.disabled = false;
+      loginBtnText.textContent = '🔓 ግባ';
+    }
+  });
 
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) doLogin(); });
 
@@ -1262,12 +1222,20 @@ onAuthStateChanged(auth, async (user) => {
     onSnapshot(categoriesCol(), snap => { if (snap.empty) return; const nc = {}; snap.forEach(d => { nc[d.id] = d.data().subs || []; }); categories = nc; renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); renderProducts(); });
     onSnapshot(expCatsCol(), snap => { if (snap.empty) return; const arr = []; snap.forEach(d => arr.push(d.data().name)); if (arr.length) { expCats = arr; renderExpCatDropdown(); renderExpCatTags(); } });
     onSnapshot(fixCatsCol(), snap => { if (snap.empty) return; const arr = []; snap.forEach(d => arr.push(d.data().name)); if (arr.length) { fixCats = arr; renderFixCatDropdown(); renderFixCatTags(); } });
+
+    onSnapshot(collection(db, 'hotels', HOTEL_ID, 'quickSales'), snap => { 
+      quickSales = []; 
+      snap.forEach(d => quickSales.push({ id: d.id, ...d.data() })); 
+      renderDaily(); 
+      renderMonthly(); 
+      if (typeof renderQuickSales === 'function') renderQuickSales(); 
+    });
   }
 
   window.toggleSection = function(h, b) { const hd = document.getElementById(h); const bd = document.getElementById(b); if (!hd || !bd) return; const o = bd.classList.toggle('open'); hd.classList.toggle('open', o); };
-  window.onSaleDateChange = function() { const inp = document.getElementById('saleDateInput'); if (!inp.value) { inp.value = todayStr(); return; } currentSaleDate = inp.value; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ' + formatDate(currentSaleDate)); };
-  window.setTodaySaleDate = function() { currentSaleDate = todayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ዛሬ'); };
-  window.setYesterdaySaleDate = function() { currentSaleDate = yesterdayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ትናንት'); };
+  window.onSaleDateChange = function() { const inp = document.getElementById('saleDateInput'); if (!inp.value) { inp.value = todayStr(); return; } currentSaleDate = inp.value; updateDateBadge(); renderProducts(); renderQuickSales(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ' + formatDate(currentSaleDate)); };
+  window.setTodaySaleDate = function() { currentSaleDate = todayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderQuickSales(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ዛሬ'); };
+  window.setYesterdaySaleDate = function() { currentSaleDate = yesterdayStr(); document.getElementById('saleDateInput').value = currentSaleDate; updateDateBadge(); renderProducts(); renderQuickSales(); renderDaily(); renderMonthly(); const c = document.getElementById('chartDayInput'); if (c) c.value = currentSaleDate; renderDailyLineChart(); toast('📅 ትናንት'); };
   function updateDateBadge() { const b = document.getElementById('hdrDateBadge'); const s = document.getElementById('selectedDateStatus'); if (!b || !s) return; if (currentSaleDate === todayStr()) { b.textContent = 'ዛሬ'; b.style.background = '#c6f6d5'; b.style.color = '#22543d'; s.textContent = '✅ ዛሬ'; s.style.color = '#276749'; } else if (currentSaleDate === yesterdayStr()) { b.textContent = 'ትናንት'; b.style.background = '#feebc8'; b.style.color = '#7b341e'; s.textContent = '⚠️ ትናንት'; s.style.color = '#c05621'; } else { b.textContent = 'ያለፈ ቀን'; b.style.background = '#feebc8'; b.style.color = '#7b341e'; s.textContent = '⚠️ ያለፈ — ' + formatDate(currentSaleDate); s.style.color = '#c05621'; } }
   window.onSearchProduct = function() { searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase(); renderProducts(); };
   window.saveHotelName = async function() { if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; } const name = document.getElementById('hotelNameInput').value.trim(); if (!name) { toast('⚠️ ስም'); return; } setSyncStatus('syncing'); try { await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true }); hdrHotelName.textContent = name; document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል'; setTimeout(() => document.getElementById('hotelNameStatus').textContent = '', 3000); setSyncStatus('online'); toast('✅'); } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); } };
@@ -1301,13 +1269,105 @@ onAuthStateChanged(auth, async (user) => {
   window.toggleAllCategories = function(o) { Object.keys(categories).forEach(c => openCats[c] = o); openSubCats = {}; if (o) Object.keys(categories).forEach(c => categories[c].forEach(s => openSubCats[c + '||' + s] = true)); renderProducts(); toast(o ? '📂' : '📁'); };
   function renderProducts() { const w = document.getElementById('productList'); if (products.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ምርት የለም።</div>'; updateSalesTotals(); return; } let f = products; if (searchQuery) { f = products.filter(p => p.name.toLowerCase().includes(searchQuery) || p.main.toLowerCase().includes(searchQuery) || p.sub.toLowerCase().includes(searchQuery)); if (f.length === 0) { w.innerHTML = '<div class="empty-msg">🔍 "' + esc(searchQuery) + '" አልተገኘም።</div>'; updateSalesTotals(); return; } } const ds = getSalesForDate(currentSaleDate); const g = {}; f.forEach(p => { if (!g[p.main]) g[p.main] = {}; if (!g[p.main][p.sub]) g[p.main][p.sub] = []; g[p.main][p.sub].push(p); }); let h = ''; Object.keys(g).forEach(main => { const mo = !!openCats[main] || !!searchQuery; let mt = 0, mc = 0; Object.keys(g[main]).forEach(sub => g[main][sub].forEach(p => { const s = ds[p.id]; mt += (s ? s.qty : 0) * p.price; mc++; })); h += `<div class="cat-section"><div class="cat-header ${mo?'open':''}" onclick="toggleCategory('${escJs(main)}')"><div class="cat-left"><span class="cat-arrow">▶</span><span class="cat-icon">📁</span><span class="cat-name">${esc(main)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="cat-count">${mc}</span><span class="cat-total">${money(mt)} ብር</span></div></div><div class="cat-body ${mo?'open':''}">`; Object.keys(g[main]).forEach(sub => { const sk = main + '||' + sub; const so = !!openSubCats[sk] || !!searchQuery; h += `<div class="sub-header ${so?'open':''}" onclick="toggleSubCategory('${escJs(main)}','${escJs(sub)}')"><div class="sub-left"><span class="sub-arrow">▶</span><span>↳ ${esc(sub)}</span></div><span class="sub-count">${g[main][sub].length}</span></div><div class="sub-body ${so?'open':''}">`; g[main][sub].forEach(p => { const s = ds[p.id]; const q = s ? s.qty : ''; h += `<div class="list-item" style="margin-left:14px;"><div class="info"><div class="name">${esc(p.name)}</div><div class="meta">${money(p.price)} ብር</div></div><input class="qty-input" type="number" inputmode="numeric" min="0" placeholder="0" value="${q}" onchange="setQty('${p.id}', this.value)" oninput="setQty('${p.id}', this.value)" onclick="event.stopPropagation()">${can('product') ? `<button class="btn btn-primary btn-sm" style="margin-left:4px;padding:8px 10px;background:#3182ce;margin-top:0;" onclick="event.stopPropagation();openEditProduct('${p.id}')">✏️</button><button class="btn btn-danger btn-sm" style="margin-left:4px;padding:8px 10px;margin-top:0;" onclick="event.stopPropagation();deleteProduct('${p.id}')">✕</button>` : ''}</div>`; }); h += '</div>'; }); h += '</div></div>'; }); w.innerHTML = h; updateSalesTotals(); }
   function updateSalesTotals() { const ds = getSalesForDate(currentSaleDate); let t = 0; products.forEach(p => { const s = ds[p.id]; if (s) t += s.qty * p.price; }); document.getElementById('todaySalesTotal').textContent = money(t) + ' ብር'; document.getElementById('hdrSaleTotal').textContent = money(t) + ' ብር'; renderDaily(); }
+
+  window.addQuickSale = async function() {
+    if (!can('sales')) { toast('⚠️ ፈቃድ የለህም'); return; }
+    const cat = document.getElementById('quickSaleCat').value;
+    const amt = parseFloat(document.getElementById('quickSaleAmount').value);
+    
+    if (isNaN(amt) || amt <= 0) { toast('⚠️ ትክክለኛ ዋጋ አስገባ'); return; }
+    
+    const id = uid();
+    await saveDoc(collection(db, 'hotels', HOTEL_ID, 'quickSales'), id, { 
+      cat, amount: amt, date: currentSaleDate 
+    });
+    
+    document.getElementById('quickSaleAmount').value = '';
+    toast('✅ ተጨምሯል');
+  };
+
+  window.deleteQuickSale = async function(id) {
+    if (!can('sales')) return;
+    await deleteDocById(collection(db, 'hotels', HOTEL_ID, 'quickSales'), id);
+    toast('🗑️ ተሰርዟል');
+  };
+
+  function renderQuickSales() {
+    const w = document.getElementById('quickSaleList');
+    if (!w) return;
+    
+    const todaysQuick = quickSales.filter(q => q.date === currentSaleDate);
+    
+    if (todaysQuick.length === 0) { w.innerHTML = ''; return; }
+    
+    w.innerHTML = todaysQuick.map(q => `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #e2e8f0;">
+        <span style="font-size:13px; font-weight:600;">📦 ${esc(q.cat)}</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:700; color:#276749;">${money(q.amount)} ብር</span>
+          ${can('sales') ? `<button onclick="deleteQuickSale('${q.id}')" style="background:#c53030; color:#fff; border:none; padding:2px 8px; border-radius:4px; cursor:pointer; font-weight:700;">✕</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
   window.addExpense = async function() { if (!can('expense')) { toast('⚠️'); return; } const c = document.getElementById('expCat').value; const n = document.getElementById('expName').value.trim(); const a = parseFloat(document.getElementById('expAmount').value); if (!c) { toast('⚠️ ምድብ'); return; } if (isNaN(a) || a <= 0) { toast('⚠️ መጠን'); return; } const id = uid(); await saveDoc(expensesCol(), id, { cat: c, note: n, amount: a, date: currentSaleDate }); document.getElementById('expName').value = ''; document.getElementById('expAmount').value = ''; toast('✅'); };
   window.deleteExpense = async function(id) { if (!can('expense')) return; await deleteDocById(expensesCol(), id); toast('🗑️'); };
   function getTodaySaleItems() { const items = []; const ds = getSalesForDate(currentSaleDate); products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) items.push({ productId: p.id, name: p.name, main: p.main, sub: p.sub, price: p.price, qty: s.qty, total: s.qty * p.price }); }); return items; }
-  function renderDaily() { const ds = getSalesForDate(currentSaleDate); let inc = 0; products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); document.getElementById('dailyIncome').innerHTML = money(inc) + ' <small>ብር</small>'; document.getElementById('hdrDailyIncomeBadge').textContent = money(inc) + ' ብር'; const de = expenses.filter(e => e.date === currentSaleDate); const w = document.getElementById('expenseList'); let et = 0; if (de.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ወጪ የለም።</div>'; } else { w.innerHTML = de.map(e => `<div class="list-item"><div class="info"><div class="name">${esc(e.cat)}</div>${e.note?'<div class="meta">'+esc(e.note)+'</div>':''}</div><span class="amount red">${money(e.amount)} ብር</span>${can('expense') ? `<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense('${e.id}')">✕</button>` : ''}</div>`).join(''); de.forEach(e => et += e.amount); } document.getElementById('dailyExpTotal').textContent = money(et) + ' ብር'; document.getElementById('hdrDailyExpBadge').textContent = money(et) + ' ብር'; const net = inc - et; document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>'; document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር'; const b = document.getElementById('netProfitBox'); b.classList.remove('green','red'); b.classList.add(net >= 0 ? 'green' : 'red'); document.getElementById('savePreviewIncome').textContent = money(inc) + ' ብር'; document.getElementById('savePreviewExp').textContent = money(et) + ' ብር'; document.getElementById('savePreviewNet').textContent = money(net) + ' ብር'; document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length; renderTodayTopSellers(); renderTodayUnsold(); }
+  
+  function renderDaily() { 
+    const ds = getSalesForDate(currentSaleDate); 
+    let inc = 0; 
+    products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); 
+
+    // 🆕 የፈጣን ሽያጮችን ደምር
+    let quickTotal = 0;
+    quickSales.forEach(q => { if(q.date === currentSaleDate) quickTotal += q.amount; });
+    inc += quickTotal;
+
+    document.getElementById('dailyIncome').innerHTML = money(inc) + ' <small>ብር</small>'; 
+    document.getElementById('hdrDailyIncomeBadge').textContent = money(inc) + ' ብር'; 
+    const de = expenses.filter(e => e.date === currentSaleDate); 
+    const w = document.getElementById('expenseList'); 
+    let et = 0; 
+    if (de.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም ወጪ የለም።</div>'; } else { w.innerHTML = de.map(e => `<div class="list-item"><div class="info"><div class="name">${esc(e.cat)}</div>${e.note?'<div class="meta">'+esc(e.note)+'</div>':''}</div><span class="amount red">${money(e.amount)} ብር</span>${can('expense') ? `<button class="btn btn-danger btn-sm" style="margin-left:8px;padding:8px 10px;" onclick="deleteExpense('${e.id}')">✕</button>` : ''}</div>`).join(''); de.forEach(e => et += e.amount); } 
+    document.getElementById('dailyExpTotal').textContent = money(et) + ' ብር'; 
+    document.getElementById('hdrDailyExpBadge').textContent = money(et) + ' ብር'; 
+    const net = inc - et; 
+    document.getElementById('dailyNet').innerHTML = money(net) + ' <small>ብር</small>'; 
+    document.getElementById('hdrDailyNetBadge').textContent = money(net) + ' ብር'; 
+    const b = document.getElementById('netProfitBox'); 
+    b.classList.remove('green','red'); b.classList.add(net >= 0 ? 'green' : 'red'); 
+    document.getElementById('savePreviewIncome').textContent = money(inc) + ' ብር'; 
+    document.getElementById('savePreviewExp').textContent = money(et) + ' ብር'; 
+    document.getElementById('savePreviewNet').textContent = money(net) + ' ብር'; 
+    document.getElementById('savePreviewItems').textContent = getTodaySaleItems().length; 
+    renderTodayTopSellers(); 
+    renderTodayUnsold(); 
+  }
+
   function renderTodayTopSellers() { const w = document.getElementById('todayTopSellers'); const it = getTodaySaleItems(); document.getElementById('hdrTodayTopBadge').textContent = it.length; if (it.length === 0) { w.innerHTML = '<div class="empty-msg">ምንም አልተሸጠም።</div>'; return; } it.sort((a,b) => b.qty - a.qty); const t = it.slice(0,5); const m = ['🥇','🥈','🥉','4️⃣','5️⃣']; const c = ['gold','silver','bronze','','']; w.innerHTML = t.map((x,i) => `<div class="seller-item ${c[i]}"><div class="rank">${m[i]}</div><div class="seller-info"><div class="seller-name">${esc(x.name)}</div><div class="seller-meta">${esc(x.main)} • ${x.qty} × ${money(x.price)} ብር</div></div><div class="seller-amount">${money(x.total)} ብር</div></div>`).join(''); }
   function renderTodayUnsold() { const w = document.getElementById('todayUnsold'); const ds = getSalesForDate(currentSaleDate); const u = products.filter(p => !ds[p.id] || ds[p.id].qty === 0); document.getElementById('hdrTodayUnsoldBadge').textContent = u.length; if (u.length === 0) { w.innerHTML = '<div class="empty-msg" style="color:#276749;">🎉 ሁሉም ተሸጠዋል!</div>'; return; } w.innerHTML = u.map(p => `<div class="unsold-item"><div><div class="u-name">${esc(p.name)}</div><div class="u-cat">${esc(p.main)} → ${esc(p.sub)}</div></div><div class="u-badge">0</div></div>`).join(''); }
-  window.saveTodayToHistory = async function() { const d = currentSaleDate; const ds = getSalesForDate(d); let inc = 0; products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); const de = expenses.filter(e => e.date === d); let et = 0; de.forEach(e => et += e.amount); const net = inc - et; if (inc === 0 && et === 0) { toast('⚠️ ውሂብ የለም'); return; } const items = getTodaySaleItems(); await saveDoc(historyCol(), d, { date: d, income: inc, expense: et, net, items }); toast('✅ ተቀምጧል'); };
+  
+  window.saveTodayToHistory = async function() { 
+    const d = currentSaleDate; 
+    const ds = getSalesForDate(d); 
+    let inc = 0; 
+    products.forEach(p => { const s = ds[p.id]; if (s) inc += s.qty * p.price; }); 
+
+    // 🆕 የፈጣን ሽያጮችን ደምር
+    quickSales.forEach(q => { if(q.date === currentSaleDate) inc += q.amount; });
+
+    const de = expenses.filter(e => e.date === d); 
+    let et = 0; 
+    de.forEach(e => et += e.amount); 
+    const net = inc - et; 
+    if (inc === 0 && et === 0) { toast('⚠️ ውሂብ የለም'); return; } 
+    const items = getTodaySaleItems(); 
+    await saveDoc(historyCol(), d, { date: d, income: inc, expense: et, net, items }); 
+    toast('✅ ተቀምጧል'); 
+  };
+
   window.deleteHistory = async function(id) { if (!can('history')) return; if (!confirm('ማጥፋት?')) return; await deleteDocById(historyCol(), id); toast('🗑️'); };
   function renderHistory() { const w = document.getElementById('historyList'); document.getElementById('hdrHistoryBadge').textContent = history.length; if (history.length === 0) { w.innerHTML = '<div class="empty-msg">ታሪክ የለም።</div>'; return; } const s = [...history].sort((a,b) => (b.date||'').localeCompare(a.date||'')); w.innerHTML = s.map(h => { const nc = h.net >= 0 ? 'green' : 'red'; const ic = (h.items && h.items.length) || 0; const sel = h.date === currentSaleDate; return `<div class="history-item" style="${sel?'border:2px solid #2c5282;':''}"><div class="h-top"><span class="h-date">📆 ${esc(formatDate(h.date))}${sel?' ✓':''}</span><span class="h-net ${nc}">${money(h.net)} ብር</span></div><div class="h-details"><span>💰 ${money(h.income)}</span><span>💸 ${money(h.expense)}</span><span>📦 ${ic}</span>${can('history') ? `<button class="btn btn-danger btn-sm" style="margin-left:auto;padding:6px 10px;font-size:11px;" onclick="deleteHistory('${h.id}')">✕</button>` : ''}</div></div>`; }).join(''); }
   window.changeMonth = function(d) { currentMonth += d; if (currentMonth < 0) { currentMonth = 11; currentYear--; } if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderMonthly(); };
@@ -1320,7 +1380,7 @@ onAuthStateChanged(auth, async (user) => {
   function renderMonthlyPieChart() { const c = document.getElementById('pieChart'); if (!c) return; const mp = currentYear + '-' + String(currentMonth + 1).padStart(2,'0'); const mr = history.filter(h => (h.date||'').startsWith(mp)); const sm = {}; mr.forEach(h => { if (h.items && Array.isArray(h.items)) { h.items.forEach(it => { if (!sm[it.productId]) sm[it.productId] = { name: it.name, qty: 0 }; sm[it.productId].qty += it.qty; }); } }); const s = Object.values(sm).sort((a,b) => b.qty - a.qty).slice(0,5); if (s.length === 0) { if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; } const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = document.body.classList.contains('dark') ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } const l = s.map(x => x.name); const d = s.map(x => x.qty); const colors = ['#2c5282','#3182ce','#63b3ed','#90cdf4','#bee3f8']; if (pieChartInstance) pieChartInstance.destroy(); pieChartInstance = new Chart(c, { type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: colors, borderWidth: 2, borderColor: document.body.classList.contains('dark') ? '#2d3748' : '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: document.body.classList.contains('dark') ? '#e2e8f0' : '#2d3748', font: { size: 11 }, padding: 8 } }, tooltip: { callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' ብዛት' } } } } }); }
   window.renderDailyLineChart = function() { const c = document.getElementById('dayLineChart'); if (!c) return; const inp = document.getElementById('chartDayInput'); if (!inp) return; if (!inp.value) inp.value = todayStr(); const d = inp.value; const isDark = document.body.classList.contains('dark'); const ds = getSalesForDate(d); const ct = {}; products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) { if (!ct[p.main]) ct[p.main] = 0; ct[p.main] += s.qty * p.price; } }); const l = Object.keys(ct); const da = Object.values(ct); if (dayLineChartInstance) dayLineChartInstance.destroy(); if (l.length === 0) { const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = isDark ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } dayLineChartInstance = new Chart(c, { type: 'line', data: { labels: l, datasets: [{ label: 'ሽያጭ', data: da, borderColor: isDark ? '#63b3ed' : '#2c5282', backgroundColor: isDark ? 'rgba(99,179,237,0.2)' : 'rgba(44,82,130,0.2)', fill: true, tension: 0.3, pointBackgroundColor: isDark ? '#63b3ed' : '#2c5282', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => money(ctx.parsed.y) + ' ብር' } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } }, x: { ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } } } } }); };
   window.resetSelectedDateSales = async function() { const d = currentSaleDate; if (!confirm('📅 ' + formatDate(d) + '\n\nየዚህን ቀን ማጥፋት?')) return; setSyncStatus('syncing'); try { const b = writeBatch(db); const ss = await getDocs(salesCol()); ss.forEach(x => { const s = x.data(); if (s && s.date === d) b.delete(x.ref); }); const es = await getDocs(expensesCol()); es.forEach(x => { const e = x.data(); if (e && e.date === d) b.delete(x.ref); }); await b.commit(); setSyncStatus('online'); toast('🔄 ተጠፍቷል'); } catch (e) { setSyncStatus('error'); console.error(e); } };
-  function renderAll() { renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange(); renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags(); renderProducts(); renderDaily(); renderMonthly(); updateDateBadge(); }
+  function renderAll() { renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange(); renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags(); renderProducts(); renderQuickSales(); renderDaily(); renderMonthly(); updateDateBadge(); }
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
