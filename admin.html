@@ -101,6 +101,7 @@
       </div>
       <div class="card-body open">
         <div class="error-box" id="errorBox"></div>
+        <div class="success-box" id="successBoxLogin"></div>
         <div class="form-group">
           <label>📧 Email</label>
           <input type="email" id="emailInput" placeholder="admin@hotel.com">
@@ -112,6 +113,9 @@
         <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
           <span id="loginBtnText">🔓 ግባ</span>
         </button>
+        <div style="text-align:center; margin-top:15px;">
+          <a href="#" onclick="forgotPassword()" style="color:#3182ce; font-size:13px; font-weight:600; text-decoration:none;">🔑 Password ረሳሁ?</a>
+        </div>
       </div>
     </div>
   </div>
@@ -249,6 +253,25 @@
       </div>
     </div>
 
+    <!-- 🆕 Change Password -->
+    <div class="card">
+      <div class="card-header" id="hdrAdminPass" onclick="toggleCard('hdrAdminPass', 'bodyAdminPass')">
+        <h2>🔒 የይለፍ ቃል ቀይር</h2>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="card-body" id="bodyAdminPass">
+        <div class="form-group">
+          <label>የአሁኑ ፓስወርድ</label>
+          <input type="password" id="currentPass" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>አዲስ ፓስወርድ (ቢያንስ 6 ፊደል)</label>
+          <input type="password" id="newPass" placeholder="••••••••">
+        </div>
+        <button class="btn btn-warning" onclick="changePassword()">🔐 ፓስወርድ ቀይር</button>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body open" style="border-top: none; padding-top: 0;">
         <button class="btn btn-danger btn-sm" onclick="doLogout()">🚪 ውጣ</button>
@@ -292,7 +315,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
@@ -320,6 +343,7 @@
   const errorBox = document.getElementById('errorBox');
   const errorBox2 = document.getElementById('errorBox2');
   const successBox = document.getElementById('successBox');
+  const successBoxLogin = document.getElementById('successBoxLogin');
   const emailInput = document.getElementById('emailInput');
   const passwordInput = document.getElementById('passwordInput');
   const loginBtn = document.getElementById('loginBtn');
@@ -328,7 +352,7 @@
   const addHotelBtnText = document.getElementById('addHotelBtnText');
   const hotelList = document.getElementById('hotelList');
 
-  let allHotels = []; // 🆕 ሁሉንም ሆቴሎች ለማስቀመጥ
+  let allHotels = [];
 
   window.toggleCard = function(headerId, bodyId) {
     const header = document.getElementById(headerId);
@@ -362,6 +386,7 @@
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
     errorBox.classList.add('show');
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   function showError2(msg) {
     errorBox2.textContent = '⚠️ ' + msg;
@@ -393,6 +418,57 @@
   window.doLogout = async function() {
     if (!confirm('እርግጠኛ ነህ?')) return;
     await signOut(auth);
+  };
+
+  // 🆕 Password ረሳሁ (Email Reset)
+  window.forgotPassword = async function() {
+    const email = emailInput.value.trim();
+    if (!email) {
+      showError('እባክህ መጀመሪያ Email አስገባ');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      successBoxLogin.textContent = '✅ የፓስወርድ መቀየሪያ ሊንክ ወደ ' + email + ' ተልኳል! ኢሜልህን አረጋግጥ።';
+      successBoxLogin.classList.add('show');
+      errorBox.classList.remove('show');
+      setTimeout(() => successBoxLogin.classList.remove('show'), 10000);
+    } catch (err) {
+      showError('ስህተት: ' + (err.message || err.code));
+    }
+  };
+
+  // 🆕 Password መቀየሪያ (ከውስጥ)
+  window.changePassword = async function() {
+    const currentPass = document.getElementById('currentPass').value;
+    const newPass = document.getElementById('newPass').value;
+
+    if (!currentPass || !newPass) { showError2('ሁለቱንም ፓስወርዶች አስገባ'); return; }
+    if (newPass.length < 6) { showError2('አዲሱ ፓስወርድ ቢያንስ 6 ፊደል ይሁን'); return; }
+
+    try {
+      const user = auth.currentUser;
+      if (!user) { showError2('እባክህ መጀመሪያ ግባ'); return; }
+
+      // የድሮውን ፓስወርድ አረጋግጥ
+      const credential = EmailAuthProvider.credential(user.email, currentPass);
+      await reauthenticateWithCredential(user, credential);
+
+      // አዲሱን ፓስወርድ ቀይር
+      await updatePassword(user, newPass);
+
+      showSuccess('✅ ፓስወርድ በተሳካ ሁኔታ ተቀይሯል!');
+      document.getElementById('currentPass').value = '';
+      document.getElementById('newPass').value = '';
+
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        showError2('❌ የድሮው ፓስወርድ ስህተት ነው');
+      } else {
+        showError2('⚠️ ስህተት: ' + (err.message || err.code));
+      }
+    }
   };
 
   onAuthStateChanged(auth, async (user) => {
