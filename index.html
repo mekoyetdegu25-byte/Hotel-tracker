@@ -249,27 +249,44 @@
   .perm-section .perm-title { font-size: 13px; font-weight: 800; color: #2c5282; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   body.dark .perm-section .perm-title { color: #63b3ed; }
 
- /* 🆕 ለታብሌት እና ዴስክቶፕ (Responsive Grid) */
+ /* 🆕 ለታብሌት እና ዴስክቶፕ የሚሆን ትክክለኛ አቀማመጥ */
 @media (min-width: 600px) {
   .panel { padding: 20px 30px; }
   .tabs label { flex: 0 1 120px; } /* Tabs እንዳይሰፉ */
 }
 
 @media (min-width: 768px) {
-  #panel1, #panel2, #panel3, #panel4 {
+  /* 1. በዴስክቶፕ ላይ የተመረጠው ታብ ብቻ እንዲታይ ማድረግ */
+  .panels > .panel {
+    display: none;
+  }
+  
+  /* 2. የተመረጠው ታብ ሲከፈት ግሪድ (2 አምድ) እንዲሆን */
+  #tab1:checked ~ .panels #panel1,
+  #tab2:checked ~ .panels #panel2,
+  #tab3:checked ~ .panels #panel3,
+  #tab4:checked ~ .panels #panel4,
+  #tab5:checked ~ .panels #panel5 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 16px;
     align-items: start;
   }
-  /* አንዳንድ ካርዶች ሙሉ ስፋት እንዲይዙ */
-  #hdrDatePicker, #secDatePicker, #secHistory, #secTodayTop, #secTodayUnsold, 
-  #secHotelSettings, #secPermissions, .section-collapsible:first-child {
-    grid-column: 1 / -1; 
+
+  /* 3. ሰፊ ይዘት ያላቸው ካርዶች ሙሉ ስፋት እንዲይዙ */
+  #secDatePicker,
+  #secHistory,
+  #secTodayTop,
+  #secTodayUnsold,
+  #secHotelSettings,
+  #secPermissions,
+  #secAddProduct,
+  #secCatMgr,
+  #hdrSaveToday {
+    grid-column: span 2; 
   }
-  .summary-box { max-width: 100%; margin: 0 auto 14px auto; }
-  .section-header { border-radius: 14px 14px 0 0; }
-  .list-item { max-width: 100%; }
+
+  .section-collapsible { margin-bottom: 0; width: 100%; }
 }
 </style>
 </head>
