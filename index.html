@@ -1155,6 +1155,18 @@
         const userData = userDoc.data();
         console.log('📄 Data:', userData);
         HOTEL_ID = userData.hotelId || 'hotel-main';
+
+       // 🆕 ሆቴሉ መቋረጡን አረጋግጥ
+const hotelSnap = await getDoc(doc(db, 'hotels', HOTEL_ID));
+if (hotelSnap.exists()) {
+  const hotelData = hotelSnap.data();
+  if (hotelData.status === 'inactive') {
+    await signOut(auth);
+    alert("⚠️ ይህ ሆቴል አገልግሎቱ ተቋርጧል። እባክዎ አስተዳዳሪውን ያነጋግሩ።");
+    window.location.reload();
+    return;
+  }
+}
         console.log('✅ HOTEL_ID:', HOTEL_ID);
         hotelIdFound = true;
         localStorage.setItem('hotel_id_' + user.uid, HOTEL_ID);
