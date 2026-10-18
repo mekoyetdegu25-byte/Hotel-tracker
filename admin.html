@@ -6,117 +6,30 @@
 <title>Super Admin - Hotel Tracker</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f2f4f8;
-    color: #1a202c;
-    min-height: 100vh;
-  }
-  .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-  header {
-    background: linear-gradient(135deg, #1a365d, #2c5282);
-    color: white;
-    padding: 20px 24px;
-    border-radius: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(26, 54, 93, 0.2);
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f2f4f8; color: #1a202c; min-height: 100vh; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  header { background: linear-gradient(135deg, #1a365d, #2c5282); color: white; padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(26, 54, 93, 0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 22px; font-weight: 800; }
   header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-
-  .card {
-    background: white;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    overflow: hidden;
-  }
-  .card-header {
-    padding: 16px 20px;
-    cursor: pointer;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    transition: background 0.2s;
-  }
+  .btn-export { background: #276749; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+  
+  .card { background: white; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+  .card-header { padding: 16px 20px; cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: background 0.2s; }
   .card-header:hover { background: #f7fafc; }
-  .card-header h2 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #2d3748;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-header .arrow {
-    font-size: 14px;
-    font-weight: 900;
-    color: #4a5568;
-    transition: transform 0.25s;
-    display: inline-block;
-  }
+  .card-header h2 { font-size: 16px; font-weight: 700; color: #2d3748; display: flex; align-items: center; gap: 8px; }
+  .card-header .arrow { font-size: 14px; font-weight: 900; color: #4a5568; transition: transform 0.25s; display: inline-block; }
   .card-header.open .arrow { transform: rotate(90deg); }
-  .card-header .badge-count {
-    background: #2c5282;
-    color: white;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .card-body {
-    display: none;
-    padding: 0 20px 20px 20px;
-    border-top: 2px solid #e2e8f0;
-    padding-top: 16px;
-  }
+  .card-body { display: none; padding: 0 20px 20px 20px; border-top: 2px solid #e2e8f0; padding-top: 16px; }
   .card-body.open { display: block; }
 
-  .card h3 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c5282;
-    margin: 16px 0 10px 0;
-    padding: 8px 12px;
-    background: #ebf4ff;
-    border-radius: 8px;
-  }
+  .card h3 { font-size: 14px; font-weight: 700; color: #2c5282; margin: 16px 0 10px 0; padding: 8px 12px; background: #ebf4ff; border-radius: 8px; }
   .card h3:first-of-type { margin-top: 0; }
-
   .form-group { margin-bottom: 14px; }
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #4a5568;
-    margin-bottom: 6px;
-  }
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 14px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
-    background: #f7fafc;
-  }
-  .form-group input:focus,
-  .form-group select:focus {
-    outline: none;
-    border-color: #2c5282;
-    background: white;
-  }
-  .btn {
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: 700;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+  .form-group input, .form-group select { width: 100%; padding: 10px 14px; font-size: 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; background: #f7fafc; outline: none;}
+  .form-group input:focus, .form-group select:focus { border-color: #2c5282; background: white; }
+  
+  .btn { padding: 12px 20px; font-size: 14px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
   .btn-primary { background: #2c5282; color: white; width: 100%; }
   .btn-primary:hover { background: #1a365d; }
   .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
@@ -124,121 +37,56 @@
   .btn-success { background: #276749; color: white; }
   .btn-danger { background: #e53e3e; color: white; }
   .btn-warning { background: #c05621; color: white; }
+  .btn-blue { background: #3182ce; color: white; }
 
   .hotel-list { display: grid; gap: 12px; }
-  .hotel-item {
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .hotel-item-info h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a202c;
-    margin-bottom: 4px;
-    background: none;
-    padding: 0;
-  }
+  .hotel-item { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .hotel-item-info h3 { font-size: 15px; font-weight: 700; color: #1a202c; margin-bottom: 4px; background: none; padding: 0; }
   .hotel-item-info p { font-size: 12px; color: #718096; }
   
-  .payment-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 20px;
-    margin-top: 4px;
-  }
+  .payment-badge { display: inline-block; padding: 4px 12px; font-size: 12px; font-weight: 700; border-radius: 20px; margin-top: 4px; }
   .payment-paid { background: #c6f6d5; color: #22543d; }
   .payment-due { background: #fefcbf; color: #744210; }
   .payment-overdue { background: #fed7d7; color: #742a2a; }
+  .payment-inactive { background: #e2e8f0; color: #4a5568; }
 
-  .hotel-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .history-section {
-    display: none;
-    background: white;
-    border-radius: 8px;
-    padding: 12px;
-    margin-top: 8px;
-    border: 1px solid #e2e8f0;
-  }
+  .hotel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .history-section { display: none; background: white; border-radius: 8px; padding: 12px; margin-top: 8px; border: 1px solid #e2e8f0; }
   .history-section.open { display: block; }
-
-  .history-item {
-    background: #f7fafc;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .history-item { background: #f7fafc; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
   .history-item .month { font-weight: 700; color: #2c5282; font-size: 13px; }
   .history-item .amount { font-weight: 700; color: #276749; font-size: 13px; }
   .history-item .date { font-size: 11px; color: #718096; }
 
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  }
-  .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    color: #2c5282;
-    margin-bottom: 4px;
-  }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: white; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .stat-value { font-size: 28px; font-weight: 800; color: #2c5282; margin-bottom: 4px; }
   .stat-value.green { color: #276749; }
   .stat-value.red { color: #c53030; }
   .stat-value.orange { color: #c05621; }
   .stat-label { font-size: 12px; color: #718096; font-weight: 600; }
 
-  .error-box {
-    background: #fff5f5;
-    border: 1.5px solid #fc8181;
-    color: #c53030;
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 14px;
-    display: none;
-  }
+  .error-box { background: #fff5f5; border: 1.5px solid #fc8181; color: #c53030; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; }
   .error-box.show { display: block; }
-  .success-box {
-    background: #f0fff4;
-    border: 1.5px solid #68d391;
-    color: #22543d;
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 14px;
-    display: none;
-    white-space: pre-wrap;
-    line-height: 1.6;
-  }
+  .success-box { background: #f0fff4; border: 1.5px solid #68d391; color: #22543d; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; white-space: pre-wrap; line-height: 1.6; }
   .success-box.show { display: block; }
   .hidden { display: none !important; }
+  
+  /* Search and Filters */
+  .search-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+  .search-bar input { flex: 1; min-width: 200px; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+  .search-bar select { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; min-width: 120px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.show { display: flex; }
+  .modal-box { background: white; border-radius: 16px; padding: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+  .modal-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; text-align: center; color: #1a365d; }
 
   @media (max-width: 600px) {
     .hotel-actions { flex-direction: column; }
     .hotel-actions .btn { width: 100%; }
+    .search-bar { flex-direction: column; }
   }
 </style>
 </head>
@@ -270,8 +118,11 @@
 
   <div id="mainApp" class="hidden">
     <header>
-      <h1>👑 Super Admin Panel</h1>
-      <p>የሁሉም ሆቴሎች ማስተዳደሪያ</p>
+      <div>
+        <h1>👑 Super Admin Panel</h1>
+        <p>የሁሉም ሆቴሎች ማስተዳደሪያ</p>
+      </div>
+      <button class="btn-export" onclick="exportToCSV()">📊 Excel (CSV) አውጣ</button>
     </header>
 
     <div class="stats">
@@ -307,6 +158,7 @@
     <div class="error-box" id="errorBox2"></div>
     <div class="success-box" id="successBox"></div>
 
+    <!-- ➕ አዲስ ሆቴል መጨመሪያ -->
     <div class="card">
       <div class="card-header" id="hdrAddHotel" onclick="toggleCard('hdrAddHotel', 'bodyAddHotel')">
         <h2>➕ አዲስ ሆቴል ጨምር</h2>
@@ -372,12 +224,25 @@
       </div>
     </div>
 
+    <!-- 📋 የሆቴሎች ዝርዝር -->
     <div class="card">
       <div class="card-header" id="hdrHotelList" onclick="toggleCard('hdrHotelList', 'bodyHotelList')">
-        <h2>📋 የሆቴሎች ዝርዝር <span class="badge-count" id="hotelCountBadge">0</span></h2>
+        <h2>📋 የሆቴሎች ዝርዝር <span class="badge-count" id="hotelCountBadge" style="background:#2c5282;color:white;padding:2px 10px;border-radius:20px;font-size:12px;">0</span></h2>
         <span class="arrow">▶</span>
       </div>
       <div class="card-body" id="bodyHotelList">
+        
+        <!-- 🆕 Search and Filter -->
+        <div class="search-bar">
+          <input type="text" id="searchHotel" placeholder="🔍 ሆቴል በስም ወይም በኢሜል ፈልግ..." oninput="renderHotelsList()">
+          <select id="filterStatus" onchange="renderHotelsList()">
+            <option value="all">ሁሉም ስታተስ</option>
+            <option value="paid">✅ ተከፍሏል</option>
+            <option value="due">⏳ የክፍያ ጊዜ</option>
+            <option value="overdue">❌ ዘግይቷል</option>
+          </select>
+        </div>
+
         <div class="hotel-list" id="hotelList">
           <p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>
         </div>
@@ -391,6 +256,38 @@
     </div>
   </div>
 
+</div>
+
+<!-- 🆕 Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <h3>✏️ ሆቴል አሻሽል</h3>
+    <input type="hidden" id="editHotelId">
+    <div class="form-group">
+      <label>🏢 የሆቴል ስም</label>
+      <input type="text" id="editHotelName">
+    </div>
+    <div class="form-group">
+      <label>🌐 ዶሜይን</label>
+      <input type="text" id="editHotelDomain">
+    </div>
+    <div class="form-group">
+      <label>💰 ወርሃዊ ክፍያ (ብር)</label>
+      <input type="number" id="editHotelPrice">
+    </div>
+    <div class="form-group">
+      <label>📅 ስታተስ</label>
+      <select id="editHotelStatus">
+        <option value="trial">⏳ በሙከራ</option>
+        <option value="active">✅ ንቁ</option>
+        <option value="inactive">❌ ተቋርጧል</option>
+      </select>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="btn btn-outline" style="flex:1; border:1.5px solid #2c5282; background:transparent; color:#2c5282;" onclick="closeEditModal()">ሰርዝ</button>
+      <button class="btn btn-success" style="flex:1;" onclick="saveEditHotel()">💾 አስቀምጥ</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -431,6 +328,8 @@
   const addHotelBtnText = document.getElementById('addHotelBtnText');
   const hotelList = document.getElementById('hotelList');
 
+  let allHotels = []; // 🆕 ሁሉንም ሆቴሎች ለማስቀመጥ
+
   window.toggleCard = function(headerId, bodyId) {
     const header = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
@@ -457,7 +356,7 @@
     }
     if (hotel.status === 'trial') return { status: 'trial', label: '⏳ በሙከራ', cls: 'payment-due' };
     if (hotel.status === 'active') return { status: 'paid', label: '✅ ንቁ', cls: 'payment-paid' };
-    return { status: 'inactive', label: '❌ ተቋርጧል', cls: 'payment-overdue' };
+    return { status: 'inactive', label: '❌ ተቋርጧል', cls: 'payment-inactive' };
   }
 
   function showError(msg) {
@@ -623,6 +522,7 @@
         paidUntil: paidUntil
       });
 
+      // 🆕 የምርት ምድቦች ጨምር
       const defaultProdCats = {
         'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
         'መጠጥ': ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
@@ -634,6 +534,7 @@
         });
       }
 
+      // 🆕 የወጪ ምድቦች
       const defaultExpCats = ['ትራንስፖርት', 'የዕቃ ግዢ', 'ጥገና', 'ነዳጅ', 'ሌላ'];
       for (const cat of defaultExpCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'expenseCategories', cat), {
@@ -641,6 +542,7 @@
         });
       }
 
+      // 🆕 የቋሚ ወጪ ምድቦች
       const defaultFixCats = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
       for (const cat of defaultFixCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'fixedCategories', cat), {
@@ -791,85 +693,170 @@
     }
   };
 
+  // 🆕 Edit Hotel Modal
+  window.openEditModal = function(hotelId) {
+    const h = allHotels.find(x => x.id === hotelId);
+    if (!h) return;
+    document.getElementById('editHotelId').value = hotelId;
+    document.getElementById('editHotelName').value = h.name || '';
+    document.getElementById('editHotelDomain').value = h.domain || '';
+    document.getElementById('editHotelPrice').value = h.monthlyPrice || 0;
+    document.getElementById('editHotelStatus').value = h.status || 'active';
+    document.getElementById('editModal').classList.add('show');
+  };
+
+  window.closeEditModal = function() {
+    document.getElementById('editModal').classList.remove('show');
+  };
+
+  window.saveEditHotel = async function() {
+    const id = document.getElementById('editHotelId').value;
+    const name = document.getElementById('editHotelName').value.trim();
+    const domain = document.getElementById('editHotelDomain').value.trim();
+    const price = parseFloat(document.getElementById('editHotelPrice').value);
+    const status = document.getElementById('editHotelStatus').value;
+
+    if (!name || !domain || isNaN(price)) {
+      alert('እባክህ ሁሉንም መስኮች በትክክል ሙላ');
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, 'hotels', id), {
+        name, domain, monthlyPrice: price, status
+      });
+      closeEditModal();
+      showSuccess('✅ የሆቴል መረጃ በተሳካ ሁኔታ ተሻሽሏል!');
+      await loadHotels();
+    } catch (err) {
+      showError2('ማሻሻል አልተቻለም: ' + err.message);
+    }
+  };
+
+  // 🆕 ሆቴል ማቆሚያ / ማስጀመሪያ
+  window.toggleHotelStatus = async function(hotelId, newStatus) {
+    const isSuspending = newStatus === 'inactive';
+    const msg = isSuspending 
+      ? '⚠️ ይህን ሆቴል ማቆም ትፈልጋለህ?\n\nዳታው አይጠፋም። ግን ተጠቃሚዎቹ መግባት አይችሉም።'
+      : '✅ ይህን ሆቴል እንደገና ማስጀመር ትፈልጋለህ?';
+
+    if (!confirm(msg)) return;
+
+    try {
+      await updateDoc(doc(db, 'hotels', hotelId), {
+        status: newStatus
+      });
+      showSuccess(isSuspending ? '⏸️ ሆቴሉ ተቋርጧል (ዳታው አልጠፋም)' : '▶️ ሆቴሉ እንደገና ተጀምሯል');
+      await loadHotels();
+    } catch (err) {
+      showError2('ስታተስ መቀየር አልተቻለም: ' + err.message);
+    }
+  };
+
   async function loadHotels() {
     try {
       const snapshot = await getDocs(collection(db, 'hotels'));
-      const hotels = [];
-      snapshot.forEach(doc => hotels.push({ id: doc.id, ...doc.data() }));
+      allHotels = [];
+      snapshot.forEach(doc => allHotels.push({ id: doc.id, ...doc.data() }));
+      
+      document.getElementById('hotelCountBadge').textContent = allHotels.length;
 
-      document.getElementById('hotelCountBadge').textContent = hotels.length;
-
+      // Statistics
       let paid = 0, due = 0, overdue = 0, paidRevenue = 0, expectedRevenue = 0;
-      hotels.forEach(h => {
+      allHotels.forEach(h => {
         const ps = getPaymentStatus(h);
         if (ps.status === 'paid') { paid++; paidRevenue += (h.monthlyPrice || 0); }
         else if (ps.status === 'due' || ps.status === 'trial') { due++; expectedRevenue += (h.monthlyPrice || 0); }
         else { overdue++; expectedRevenue += (h.monthlyPrice || 0); }
       });
-      document.getElementById('totalHotels').textContent = hotels.length;
+      document.getElementById('totalHotels').textContent = allHotels.length;
       document.getElementById('paidHotels').textContent = paid;
       document.getElementById('dueHotels').textContent = due;
       document.getElementById('overdueHotels').textContent = overdue;
       document.getElementById('monthlyRevenue').textContent = paidRevenue.toLocaleString();
       document.getElementById('expectedRevenue').textContent = expectedRevenue.toLocaleString();
 
-      if (hotels.length === 0) {
-        hotelList.innerHTML = '<p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል የለም...</p>';
-        return;
-      }
-
-      let html = '';
-      for (const h of hotels) {
-        const ps = getPaymentStatus(h);
-        const managerInfo = h.managerEmail ? `🎯 ${h.managerEmail}` : '🎯 —';
-        const accInfo = h.accountantEmail ? `💼 ${h.accountantEmail}` : '💼 —';
-        
-        const payments = await loadPaymentHistory(h.id);
-        const historyHtml = payments.length === 0
-          ? '<p style="text-align:center; color:#a0aec0; padding:12px; font-size:13px;">ምንም የክፍያ ታሪክ የለም</p>'
-          : payments.map(p => `
-            <div class="history-item" style="display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <div class="month">📅 ${p.month} ${p.monthsCovered ? `(${p.monthsCovered} ወር)` : ''}</div>
-                <div class="date">${p.paidAt || '—'}</div>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="amount">💰 ${p.amount} ብር</div>
-                <button class="btn btn-sm btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deletePayment('${p.id}', '${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️</button>
-              </div>
-            </div>
-          `).join('');
-
-        html += `
-          <div class="hotel-item">
-            <div class="hotel-item-info">
-              <h3>🏢 ${h.name || 'ስም የለም'}</h3>
-              <p>🌐 ${h.domain || '—'}</p>
-              <p>👑 ${h.ownerEmail || '—'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
-              <p style="margin-top:2px;">${managerInfo} • ${accInfo}</p>
-              <span class="payment-badge ${ps.cls}">${ps.label}</span>
-              ${h.paidUntil ? `<p style="font-size:11px;color:#718096;margin-top:2px;">📅 እስከ ${h.paidUntil}</p>` : ''}
-            </div>
-            
-            <div class="hotel-actions">
-              <button class="btn btn-sm btn-success" onclick="markAsPaid('${h.id}', '${(h.name || '').replace(/'/g, '')}', ${h.monthlyPrice || 0})">💰 ክፍያ ተከፈለ</button>
-              <button class="btn btn-sm btn-primary" onclick="toggleHistory('${h.id}')">📜 ታሪክ (${payments.length})</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️ አጥፋ</button>
-            </div>
-            
-            <div class="history-section" id="history-${h.id}">
-              <div style="font-weight:700;color:#2c5282;margin-bottom:8px;font-size:13px;">📜 የክፍያ ታሪክ</div>
-              ${historyHtml}
-            </div>
-          </div>
-        `;
-      }
-      hotelList.innerHTML = html;
+      renderHotelsList(); // 🆕 ዝርዝሩን አሳይ
     } catch (err) {
       console.error(err);
       showError2('የሆቴሎችን ዝርዝር ማግኘት አልተቻለም');
     }
   }
+
+  // 🆕 የሆቴሎችን ዝርዝር ማሳያ (Search/Filter ጋር)
+  window.renderHotelsList = async function() {
+    const searchTerm = document.getElementById('searchHotel').value.toLowerCase();
+    const filterStatus = document.getElementById('filterStatus').value;
+
+    // Filter አድርግ
+    const filtered = allHotels.filter(h => {
+      const matchSearch = (h.name || '').toLowerCase().includes(searchTerm) || (h.ownerEmail || '').toLowerCase().includes(searchTerm);
+      const ps = getPaymentStatus(h);
+      const matchStatus = filterStatus === 'all' || ps.status === filterStatus;
+      return matchSearch && matchStatus;
+    });
+
+    if (filtered.length === 0) {
+      hotelList.innerHTML = '<p style="text-align:center; color:#718096; padding:20px;">ምንም ሆቴል አልተገኘም...</p>';
+      return;
+    }
+
+    let html = '';
+    for (const h of filtered) {
+      const ps = getPaymentStatus(h);
+      const managerInfo = h.managerEmail ? `🎯 ${h.managerEmail}` : '🎯 —';
+      const accInfo = h.accountantEmail ? `💼 ${h.accountantEmail}` : '💼 —';
+      
+      const payments = await loadPaymentHistory(h.id);
+      const historyHtml = payments.length === 0
+        ? '<p style="text-align:center; color:#a0aec0; padding:12px; font-size:13px;">ምንም የክፍያ ታሪክ የለም</p>'
+        : payments.map(p => `
+          <div class="history-item" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="month">📅 ${p.month} ${p.monthsCovered ? `(${p.monthsCovered} ወር)` : ''}</div>
+              <div class="date">${p.paidAt || '—'}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="amount">💰 ${p.amount} ብር</div>
+              <button class="btn btn-sm btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deletePayment('${p.id}', '${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+
+      html += `
+        <div class="hotel-item">
+          <div class="hotel-item-info">
+            <h3>🏢 ${h.name || 'ስም የለም'}</h3>
+            <p>🌐 ${h.domain || '—'}</p>
+            <p>👑 ${h.ownerEmail || '—'} • 💰 ${h.monthlyPrice || 0} ብር/ወር</p>
+            <p style="margin-top:2px;">${managerInfo} • ${accInfo}</p>
+            <span class="payment-badge ${ps.cls}">${ps.label}</span>
+            ${h.paidUntil ? `<p style="font-size:11px;color:#718096;margin-top:2px;">📅 እስከ ${h.paidUntil}</p>` : ''}
+          </div>
+          
+          <div class="hotel-actions">
+            <button class="btn btn-sm btn-success" onclick="markAsPaid('${h.id}', '${(h.name || '').replace(/'/g, '')}', ${h.monthlyPrice || 0})">💰 ክፍያ ተከፈለ</button>
+            <button class="btn btn-sm btn-blue" onclick="openEditModal('${h.id}')">✏️ አሻሽል</button>
+            
+            <!-- 🆕 Suspend/Activate ቁልፍ -->
+            ${h.status === 'inactive' 
+              ? `<button class="btn btn-sm btn-warning" onclick="toggleHotelStatus('${h.id}', 'active')">▶️ አስጀምር</button>`
+              : `<button class="btn btn-sm btn-warning" onclick="toggleHotelStatus('${h.id}', 'inactive')">⏸️ አቁም</button>`
+            }
+
+            <button class="btn btn-sm btn-primary" onclick="toggleHistory('${h.id}')">📜 ታሪክ (${payments.length})</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}', '${(h.name || '').replace(/'/g, '')}')">🗑️ አጥፋ</button>
+          </div>
+          
+          <div class="history-section" id="history-${h.id}">
+            <div style="font-weight:700;color:#2c5282;margin-bottom:8px;font-size:13px;">📜 የክፍያ ታሪክ</div>
+            ${historyHtml}
+          </div>
+        </div>
+      `;
+    }
+    hotelList.innerHTML = html;
+  };
 
   window.deleteHotel = async function(hotelId, hotelName) {
     if (!confirm('"' + hotelName + '"\n\n⚠️ ማስጠንቀቂያ፦ ይህ ሆቴል + ሁሉም ተጠቃሚዎች + ሁሉም ክፍያዎች ይጠፋሉ!\n\nእርግጠኛ ነህ?')) return;
@@ -901,6 +888,25 @@
       console.error(err);
       showError2('ማጥፋት አልተቻለም: ' + err.message);
     }
+  };
+
+  // 🆕 Export to CSV
+  window.exportToCSV = function() {
+    if (allHotels.length === 0) { alert('ምንም ሆቴል የለም'); return; }
+    
+    let csv = '\uFEFFስም,ዶሜይን,Owner Email,ወርሃዊ ክፍያ,ስታተስ,የመጨረሻ ክፍያ,የሚያልቅበት ቀን\n';
+    
+    allHotels.forEach(h => {
+      const ps = getPaymentStatus(h);
+      csv += `"${h.name || ''}","${h.domain || ''}","${h.ownerEmail || ''}",${h.monthlyPrice || 0},"${ps.label}","${h.lastPaymentDate || '-'}","${h.paidUntil || '-'}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); 
+    a.href = url; 
+    a.download = `hotels-report-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   };
 
   document.addEventListener('keydown', (e) => {
