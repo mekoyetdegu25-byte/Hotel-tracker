@@ -166,6 +166,11 @@
         <span class="arrow">▶</span>
       </div>
       <div class="card-body open" id="bodyAlerts">
+        <!-- 🆕 የማጽጃ ቁልፍ -->
+        <div style="text-align: right; margin-bottom: 10px;">
+          <button class="btn btn-sm btn-danger" onclick="clearResolvedAlerts()">🗑️ የተፈቱትን አጽዳ</button>
+        </div>
+        
         <div id="alertList" style="display:grid; gap:10px;">
           <p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>
         </div>
@@ -1055,6 +1060,29 @@
     } catch (e) {
       console.error("Reset error:", e);
       alert('⚠️ ስህተት: ' + (e.message || e.code) + '\n\nእባክህ የተጠቃሚው ኢሜይል ትክክል መሆኑን አረጋግጥ።');
+    }
+  };
+
+  // 🆕 የተፈቱ ጥያቄዎችን በሙሉ ለማጥፋት
+  window.clearResolvedAlerts = async function() {
+    if (!confirm('✅ የተፈቱትን ጥያቄዎች በሙሉ ማጥፋት ትፈልጋለህ?')) return;
+    
+    try {
+      // 💡 'resolved' የሆኑትን ብቻ ፈልጎ ማጥፋት
+      const q = query(collection(db, 'adminAlerts'), where('status', '==', 'resolved'));
+      const snap = await getDocs(q);
+      
+      let deletedCount = 0;
+      for (const docSnap of snap.docs) {
+        await deleteDoc(doc(db, 'adminAlerts', docSnap.id));
+        deletedCount++;
+      }
+      
+      alert(`✅ ${deletedCount} የተፈቱ ጥያቄዎች ተጠፍተዋል!`);
+      setupAdminAlertsListener(); // ዝርዝሩን እንደገና አድስ
+    } catch (e) {
+      console.error(e);
+      alert('⚠️ ስህተት: ' + e.message);
     }
   };
 
