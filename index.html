@@ -1279,16 +1279,19 @@ window.requestPasswordReset = async function() {
   if (!confirm(`የ "${email}" የፓስወርድ ማስተካከያ ጥያቄ ወደ አስተዳዳሪው ይላካል።\n\nእርግጠኛ ነህ?`)) return;
 
   try {
-    await saveDoc(collection(db, 'adminAlerts'), uid(), {
+    // 💡 saveDoc ሳይሆን በቀጥታ setDoc እንጠቀማለን (ስህተቱ በትክክል እንዲታወቅ)
+    const docRef = doc(db, 'adminAlerts', uid());
+    await setDoc(docRef, {
       type: 'password_reset',
       email: email,
       requestedAt: serverTimestamp(),
       status: 'pending'
     });
+    
     alert('✅ ጥያቄህ ወደ አስተዳዳሪው ተልኳል!\n\nአስተዳዳሪው ፓስወርድህን ካስተካከለ በኋላ በአዲሱ ፓስወርድ መግባት ትችላለህ።');
   } catch (err) {
-    console.error(err);
-    showError('ጥያቄ መላክ አልተቻለም: ' + err.message);
+    console.error("የፓስወርድ ጥያቄ ስህተት:", err);
+    showError('ጥያቄ መላክ አልተቻለም: ' + (err.message || err.code));
   }
 };
 
