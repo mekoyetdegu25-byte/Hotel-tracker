@@ -113,9 +113,6 @@
         <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
           <span id="loginBtnText">🔓 ግባ</span>
         </button>
-        <div style="text-align:center; margin-top:15px;">
-          <a href="#" onclick="forgotPassword()" style="color:#3182ce; font-size:13px; font-weight:600; text-decoration:none;">🔑 Password ረሳሁ?</a>
-        </div>
       </div>
     </div>
   </div>
@@ -161,6 +158,19 @@
 
     <div class="error-box" id="errorBox2"></div>
     <div class="success-box" id="successBox"></div>
+
+    <!-- 🆕 የፓስወርድ ጥያቄዎች -->
+    <div class="card">
+      <div class="card-header open" id="hdrAlerts" onclick="toggleCard('hdrAlerts', 'bodyAlerts')">
+        <h2>🔔 የፓስወርድ ማስተካከያ ጥያቄዎች <span class="badge-count" id="alertCount" style="background:#c53030;color:white;padding:2px 10px;border-radius:20px;font-size:12px;">0</span></h2>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="card-body open" id="bodyAlerts">
+        <div id="alertList" style="display:grid; gap:10px;">
+          <p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>
+        </div>
+      </div>
+    </div>
 
     <!-- ➕ አዲስ ሆቴል መጨመሪያ -->
     <div class="card">
@@ -236,7 +246,6 @@
       </div>
       <div class="card-body" id="bodyHotelList">
         
-        <!-- 🆕 Search and Filter -->
         <div class="search-bar">
           <input type="text" id="searchHotel" placeholder="🔍 ሆቴል በስም ወይም በኢሜል ፈልግ..." oninput="renderHotelsList()">
           <select id="filterStatus" onchange="renderHotelsList()">
@@ -315,9 +324,9 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc }
+  import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -354,6 +363,17 @@
 
   let allHotels = [];
 
+  // 🆕 Notification ፈቃድ መጠየቅ
+  if ("Notification" in window) {
+    if (Notification.permission === "default") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          console.log("✅ Notification ተፈቅዷል!");
+        }
+      });
+    }
+  }
+
   window.toggleCard = function(headerId, bodyId) {
     const header = document.getElementById(headerId);
     const body = document.getElementById(bodyId);
@@ -386,7 +406,6 @@
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
     errorBox.classList.add('show');
-    errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   function showError2(msg) {
     errorBox2.textContent = '⚠️ ' + msg;
@@ -420,47 +439,20 @@
     await signOut(auth);
   };
 
-  // 🆕 Password ረሳሁ (Email Reset)
-  window.forgotPassword = async function() {
-    const email = emailInput.value.trim();
-    if (!email) {
-      showError('እባክህ መጀመሪያ Email አስገባ');
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      successBoxLogin.textContent = '✅ የፓስወርድ መቀየሪያ ሊንክ ወደ ' + email + ' ተልኳል! ኢሜልህን አረጋግጥ።';
-      successBoxLogin.classList.add('show');
-      errorBox.classList.remove('show');
-      setTimeout(() => successBoxLogin.classList.remove('show'), 10000);
-    } catch (err) {
-      showError('ስህተት: ' + (err.message || err.code));
-    }
-  };
-
-  // 🆕 Password መቀየሪያ (ከውስጥ)
   window.changePassword = async function() {
     const currentPass = document.getElementById('currentPass').value;
     const newPass = document.getElementById('newPass').value;
-
     if (!currentPass || !newPass) { showError2('ሁለቱንም ፓስወርዶች አስገባ'); return; }
     if (newPass.length < 6) { showError2('አዲሱ ፓስወርድ ቢያንስ 6 ፊደል ይሁን'); return; }
-
     try {
       const user = auth.currentUser;
       if (!user) { showError2('እባክህ መጀመሪያ ግባ'); return; }
-
-      // የድሮውን ፓስወርድ አረጋግጥ
       const credential = EmailAuthProvider.credential(user.email, currentPass);
       await reauthenticateWithCredential(user, credential);
-
-      // አዲሱን ፓስወርድ ቀይር
       await updatePassword(user, newPass);
-
       showSuccess('✅ ፓስወርድ በተሳካ ሁኔታ ተቀይሯል!');
       document.getElementById('currentPass').value = '';
       document.getElementById('newPass').value = '';
-
     } catch (err) {
       console.error(err);
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
@@ -481,6 +473,7 @@
       loginScreen.classList.add('hidden');
       mainApp.classList.remove('hidden');
       await loadHotels();
+      setupAdminAlertsListener();
     } else {
       loginScreen.classList.remove('hidden');
       mainApp.classList.add('hidden');
@@ -598,7 +591,6 @@
         paidUntil: paidUntil
       });
 
-      // 🆕 የምርት ምድቦች ጨምር
       const defaultProdCats = {
         'ምግብ': ['ቀይ ወጥ', 'ዶሮ ወጥ', 'ሽሮ', 'ፓስታ', 'ስጋ ወጥ', 'አሳ ወጥ', 'ጥብስ'],
         'መጠጥ': ['ቢራ', 'ሶዳ', 'ውሃ', 'ጭማቂ', 'ቡና', 'ሻይ', 'ወይን'],
@@ -610,7 +602,6 @@
         });
       }
 
-      // 🆕 የወጪ ምድቦች
       const defaultExpCats = ['ትራንስፖርት', 'የዕቃ ግዢ', 'ጥገና', 'ነዳጅ', 'ሌላ'];
       for (const cat of defaultExpCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'expenseCategories', cat), {
@@ -618,7 +609,6 @@
         });
       }
 
-      // 🆕 የቋሚ ወጪ ምድቦች
       const defaultFixCats = ['የሰራተኛ ደሞዝ', 'የቤት ኪራይ', 'መብራት', 'ውሃ', 'ታክስ', 'ኢንተርኔት', 'ሌላ'];
       for (const cat of defaultFixCats) {
         await setDoc(doc(db, 'hotels', hotelId, 'fixedCategories', cat), {
@@ -734,7 +724,6 @@
     }
   };
 
-  // 🆕 የተሳሳተ ክፍያ ማጥፊያ
   window.deletePayment = async function(paymentId, hotelId, hotelName) {
     if (!confirm(`⚠️ "${hotelName}"\n\nይህ የክፍያ መዝገብ ይጠፋል።\nየሆቴሉ የክፍያ ቀን (paidUntil) እንደገና ይሰላል።\n\nእርግጠኛ ነህ?`)) return;
 
@@ -769,7 +758,6 @@
     }
   };
 
-  // 🆕 Edit Hotel Modal
   window.openEditModal = function(hotelId) {
     const h = allHotels.find(x => x.id === hotelId);
     if (!h) return;
@@ -809,7 +797,6 @@
     }
   };
 
-  // 🆕 ሆቴል ማቆሚያ / ማስጀመሪያ
   window.toggleHotelStatus = async function(hotelId, newStatus) {
     const isSuspending = newStatus === 'inactive';
     const msg = isSuspending 
@@ -837,7 +824,6 @@
       
       document.getElementById('hotelCountBadge').textContent = allHotels.length;
 
-      // Statistics
       let paid = 0, due = 0, overdue = 0, paidRevenue = 0, expectedRevenue = 0;
       allHotels.forEach(h => {
         const ps = getPaymentStatus(h);
@@ -852,19 +838,17 @@
       document.getElementById('monthlyRevenue').textContent = paidRevenue.toLocaleString();
       document.getElementById('expectedRevenue').textContent = expectedRevenue.toLocaleString();
 
-      renderHotelsList(); // 🆕 ዝርዝሩን አሳይ
+      renderHotelsList();
     } catch (err) {
       console.error(err);
       showError2('የሆቴሎችን ዝርዝር ማግኘት አልተቻለም');
     }
   }
 
-  // 🆕 የሆቴሎችን ዝርዝር ማሳያ (Search/Filter ጋር)
   window.renderHotelsList = async function() {
     const searchTerm = document.getElementById('searchHotel').value.toLowerCase();
     const filterStatus = document.getElementById('filterStatus').value;
 
-    // Filter አድርግ
     const filtered = allHotels.filter(h => {
       const matchSearch = (h.name || '').toLowerCase().includes(searchTerm) || (h.ownerEmail || '').toLowerCase().includes(searchTerm);
       const ps = getPaymentStatus(h);
@@ -914,7 +898,6 @@
             <button class="btn btn-sm btn-success" onclick="markAsPaid('${h.id}', '${(h.name || '').replace(/'/g, '')}', ${h.monthlyPrice || 0})">💰 ክፍያ ተከፈለ</button>
             <button class="btn btn-sm btn-blue" onclick="openEditModal('${h.id}')">✏️ አሻሽል</button>
             
-            <!-- 🆕 Suspend/Activate ቁልፍ -->
             ${h.status === 'inactive' 
               ? `<button class="btn btn-sm btn-warning" onclick="toggleHotelStatus('${h.id}', 'active')">▶️ አስጀምር</button>`
               : `<button class="btn btn-sm btn-warning" onclick="toggleHotelStatus('${h.id}', 'inactive')">⏸️ አቁም</button>`
@@ -966,7 +949,6 @@
     }
   };
 
-  // 🆕 Export to CSV
   window.exportToCSV = function() {
     if (allHotels.length === 0) { alert('ምንም ሆቴል የለም'); return; }
     
@@ -983,6 +965,70 @@
     a.href = url; 
     a.download = `hotels-report-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  };
+
+  // 🆕 የፓስወርድ ጥያቄዎችን በየ 5 ሰከንዱ ማረጋገጥ እና Notification መላክ
+  let knownAlerts = new Set();
+  function setupAdminAlertsListener() {
+    const checkAlerts = async () => {
+      try {
+        const q = query(collection(db, 'adminAlerts'), where('status', '==', 'pending'));
+        const snap = await getDocs(q);
+        const alerts = [];
+        snap.forEach(d => alerts.push({ id: d.id, ...d.data() }));
+        
+        alerts.forEach(a => {
+          if (!knownAlerts.has(a.id)) {
+            knownAlerts.add(a.id);
+            if (Notification.permission === "granted") {
+              new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
+                body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
+                icon: "logo.jpg"
+              });
+            }
+          }
+        });
+
+        document.getElementById('alertCount').textContent = alerts.length;
+        const list = document.getElementById('alertList');
+        
+        if (alerts.length === 0) {
+          list.innerHTML = '<p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>';
+          return;
+        }
+        
+        list.innerHTML = alerts.map(a => `
+          <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-weight:700; color:#c53030;">📧 ${a.email}</div>
+              <div style="font-size:12px; color:#718096;">ጥያቄ የቀረበበት: ${a.requestedAt ? new Date(a.requestedAt.seconds * 1000).toLocaleString() : '—'}</div>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Alerts check error:', e);
+      }
+    };
+
+    checkAlerts();
+    setInterval(checkAlerts, 5000);
+  }
+
+  window.resolvePasswordReset = async function(alertId, email) {
+    const newPass = prompt(`የ "${email}" አዲስ ፓስወርድ አስገባ (ቢያንስ 6 ፊደል):`);
+    if (!newPass) return;
+    if (newPass.length < 6) { alert('ቢያንስ 6 ፊደል ይሁን'); return; }
+    
+    alert(`⚠️ ለደህንነት ሲባል ፓስወርድ መቀየር የሚቻለው በ Firebase Console በኩል ነው።\n\nእባክህ ወደ Firebase Console → Authentication → Users ሄደው "${email}" ፈልገው "Reset Password" ይጫኑ።\n\nከቀየሩ በኋላ ይህን ጥያቄ ለማጽዳት "OK" ይጫኑ።`);
+    
+    try {
+      await updateDoc(doc(db, 'adminAlerts', alertId), { status: 'resolved' });
+      knownAlerts.delete(alertId);
+      setupAdminAlertsListener();
+    } catch (e) {
+      alert('ስህተት: ' + e.message);
+    }
   };
 
   document.addEventListener('keydown', (e) => {
