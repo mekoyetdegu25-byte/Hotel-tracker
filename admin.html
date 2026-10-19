@@ -968,52 +968,68 @@
   };
 
   // 🆕 የፓስወርድ ጥያቄዎችን በየ 5 ሰከንዱ ማረጋገጥ እና Notification መላክ
-  let knownAlerts = new Set();
-  function setupAdminAlertsListener() {
-    const checkAlerts = async () => {
-      try {
-        const q = query(collection(db, 'adminAlerts'), where('status', '==', 'pending'));
-        const snap = await getDocs(q);
-        const alerts = [];
-        snap.forEach(d => alerts.push({ id: d.id, ...d.data() }));
-        
-        alerts.forEach(a => {
-          if (!knownAlerts.has(a.id)) {
-            knownAlerts.add(a.id);
-            if (Notification.permission === "granted") {
-              new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
-                body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
-                icon: "logo.jpg"
-              });
-            }
+let knownAlerts = new Set();
+function setupAdminAlertsListener() {
+  const checkAlerts = async () => {
+    try {
+      // 💡 ሁኔታው 'pending' የሆነውን ብቻ ሳይሆን ሁሉንም እናምጣ (ምክንያቱም የድሮ ጥያቄዎች status ላይኖራቸው ይችላል)
+      const q = query(collection(db, 'adminAlerts'));
+      const snap = await getDocs(q);
+      const alerts = [];
+      snap.forEach(d => alerts.push({ id: d.id, ...d.data() }));
+      
+      // አዲሱ መጀመሪያ እንዲመጣ ስርዝ
+      alerts.sort((a, b) => {
+        const timeA = a.requestedAt ? a.requestedAt.seconds : 0;
+        const timeB = b.requestedAt ? b.requestedAt.seconds : 0;
+        return timeB - timeA;
+      });
+
+      alerts.forEach(a => {
+        // Notification መላክ
+        if (!knownAlerts.has(a.id)) {
+          knownAlerts.add(a.id);
+          if (Notification.permission === "granted") {
+            new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
+              body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
+              icon: "logo.jpg"
+            });
           }
-        });
-
-        document.getElementById('alertCount').textContent = alerts.length;
-        const list = document.getElementById('alertList');
-        
-        if (alerts.length === 0) {
-          list.innerHTML = '<p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>';
-          return;
         }
-        
-        list.innerHTML = alerts.map(a => `
-          <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div>
-              <div style="font-weight:700; color:#c53030;">📧 ${a.email}</div>
-              <div style="font-size:12px; color:#718096;">ጥያቄ የቀረበበት: ${a.requestedAt ? new Date(a.requestedAt.seconds * 1000).toLocaleString() : '—'}</div>
-            </div>
-            <button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>
-          </div>
-        `).join('');
-      } catch (e) {
-        console.error('Alerts check error:', e);
-      }
-    };
+      });
 
-    checkAlerts();
-    setInterval(checkAlerts, 5000);
-  }
+      document.getElementById('alertCount').textContent = alerts.length;
+      const list = document.getElementById('alertList');
+      
+      if (alerts.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>';
+        return;
+      }
+      
+      list.innerHTML = alerts.map(a => {
+        // ሁኔታው pending ከሆነ ብቻ ቁልፉን አሳይ
+        const showBtn = a.status === 'pending' || !a.status ? 
+          `<button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>` : 
+          `<span style="color:#38a169; font-size:12px; font-weight:bold;">✅ ተፈትቷል</span>`;
+
+        return `
+        <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+          <div>
+            <div style="font-weight:700; color:#c53030;">📧 ${a.email}</div>
+            <div style="font-size:12px; color:#718096;">ጥያቄ የቀረበበት: ${a.requestedAt ? new Date(a.requestedAt.seconds * 1000).toLocaleString() : '—'}</div>
+          </div>
+          ${showBtn}
+        </div>
+      `}).join('');
+    } catch (e) {
+      console.error('Alerts check error:', e);
+      document.getElementById('alertList').innerHTML = `<p style="color:red; padding:10px;">Error: ${e.message}</p>`;
+    }
+  };
+
+  checkAlerts();
+  setInterval(checkAlerts, 5000);
+}
 
   window.resolvePasswordReset = async function(alertId, email) {
     const newPass = prompt(`የ "${email}" አዲስ ፓስወርድ አስገባ (ቢያንስ 6 ፊደል):`);
