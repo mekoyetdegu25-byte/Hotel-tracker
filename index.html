@@ -345,6 +345,9 @@
     <button class="btn-login" id="loginBtn" onclick="doLogin()">
       <span id="loginBtnText">🔓 ግባ</span>
     </button>
+   <div style="text-align:center; margin-top:15px;">
+  <a href="#" onclick="requestPasswordReset()" style="color:#3182ce; font-size:13px; font-weight:600; text-decoration:none;">🔑 Password ረሳሁ?</a>
+</div>
   </div>
 </div>
 
@@ -1265,6 +1268,27 @@ window.switchPermTab = function(role) {
     else if (code.includes('network')) msg = 'ኢንተርኔት የለም';
     else msg += ': ' + (err.message || code);
     showError(msg); loginBtn.disabled = false; loginBtnText.textContent = '🔓 ግባ';
+  }
+};
+
+ // 🆕 ፓስወርድ ረሳሁ - ጥያቄ ወደ አድሚን መላክ
+window.requestPasswordReset = async function() {
+  const email = emailInput.value.trim();
+  if (!email) { showError('እባክህ መጀመሪያ Email አስገባ'); return; }
+  
+  if (!confirm(`የ "${email}" የፓስወርድ ማስተካከያ ጥያቄ ወደ አስተዳዳሪው ይላካል።\n\nእርግጠኛ ነህ?`)) return;
+
+  try {
+    await saveDoc(collection(db, 'adminAlerts'), uid(), {
+      type: 'password_reset',
+      email: email,
+      requestedAt: serverTimestamp(),
+      status: 'pending'
+    });
+    alert('✅ ጥያቄህ ወደ አስተዳዳሪው ተልኳል!\n\nአስተዳዳሪው ፓስወርድህን ካስተካከለ በኋላ በአዲሱ ፓስወርድ መግባት ትችላለህ።');
+  } catch (err) {
+    console.error(err);
+    showError('ጥያቄ መላክ አልተቻለም: ' + err.message);
   }
 };
 
