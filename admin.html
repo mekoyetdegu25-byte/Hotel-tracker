@@ -204,8 +204,8 @@
 
         <h3>👑 የባለቤት (Owner) መለያ</h3>
         <div class="form-group">
-          <label>📧 የባለቤት Email</label>
-          <input type="email" id="ownerEmail" placeholder="owner@hanani.com">
+          <label>📧 የባለቤት Email (ትክክለኛ የራሳቸውን Gmail ያስገቡ)</label>
+          <input type="email" id="ownerEmail" placeholder="ለምሳሌ: owner@gmail.com">
         </div>
         <div class="form-group">
           <label>🔒 የባለቤት Password</label>
@@ -214,8 +214,8 @@
 
         <h3>🎯 ማናጀር (Manager) — አማራጭ</h3>
         <div class="form-group">
-          <label>📧 የማናጀር Email (ባዶ ለቅ)</label>
-          <input type="email" id="managerEmail" placeholder="manager@hanani.com">
+          <label>📧 የማናጀር Email (ትክክለኛ የራሳቸውን Gmail ያስገቡ)</label>
+          <input type="email" id="managerEmail" placeholder="ለምሳሌ: manager@gmail.com (ባዶ ለቅ)">
         </div>
         <div class="form-group">
           <label>🔒 የማናጀር Password</label>
@@ -224,8 +224,8 @@
 
         <h3>💼 አካውንታንት (Accountant) — አማራጭ</h3>
         <div class="form-group">
-          <label>📧 የአካውንታንት Email (ባዶ ለቅ)</label>
-          <input type="email" id="accountantEmail" placeholder="accountant@hanani.com">
+          <label>📧 የአካውንታንት Email (ትክክለኛ የራሳቸውን Gmail ያስገቡ)</label>
+          <input type="email" id="accountantEmail" placeholder="ለምሳሌ: accountant@gmail.com (ባዶ ለቅ)">
         </div>
         <div class="form-group">
           <label>🔒 የአካውንታንት Password</label>
@@ -324,7 +324,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, serverTimestamp, query, where, updateDoc, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
@@ -968,85 +968,93 @@
   };
 
   // 🆕 የፓስወርድ ጥያቄዎችን በየ 5 ሰከንዱ ማረጋገጥ እና Notification መላክ
-let knownAlerts = new Set();
-function setupAdminAlertsListener() {
-  const checkAlerts = async () => {
-    try {
-      // 💡 ሁሉንም እናምጣ (የድሮ ጥያቄዎች status ላይኖራቸው ይችላል)
-      const q = query(collection(db, 'adminAlerts'));
-      const snap = await getDocs(q);
-      const alerts = [];
-      snap.forEach(d => alerts.push({ id: d.id, ...d.data() }));
-      
-      // አዲሱ መጀመሪያ እንዲመጣ ስርዝ
-      alerts.sort((a, b) => {
-        const timeA = a.requestedAt ? a.requestedAt.seconds : 0;
-        const timeB = b.requestedAt ? b.requestedAt.seconds : 0;
-        return timeB - timeA;
-      });
+  let knownAlerts = new Set();
+  function setupAdminAlertsListener() {
+    const checkAlerts = async () => {
+      try {
+        // 💡 ሁሉንም እናምጣ
+        const q = query(collection(db, 'adminAlerts'));
+        const snap = await getDocs(q);
+        const alerts = [];
+        snap.forEach(d => alerts.push({ id: d.id, ...d.data() }));
+        
+        // አዲሱ መጀመሪያ እንዲመጣ ስርዝ
+        alerts.sort((a, b) => {
+          const timeA = a.requestedAt ? a.requestedAt.seconds : 0;
+          const timeB = b.requestedAt ? b.requestedAt.seconds : 0;
+          return timeB - timeA;
+        });
 
-      alerts.forEach(a => {
-        if (!knownAlerts.has(a.id)) {
-          knownAlerts.add(a.id);
-          // 💡 በስልክ ላይ Notification ሲላክ ስህተት እንዳይፈጥር try-catch ውስጥ አድርገነዋል
-          try {
-            if (Notification.permission === "granted") {
-              new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
-                body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
-                icon: "logo.jpg"
-              });
+        alerts.forEach(a => {
+          // Notification መላክ
+          if (!knownAlerts.has(a.id)) {
+            knownAlerts.add(a.id);
+            // 💡 ስህተት እንዳይፈጥር try-catch ውስጥ አድርገነዋል
+            try {
+              if (Notification.permission === "granted") {
+                new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
+                  body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
+                  icon: "logo.jpg"
+                });
+              }
+            } catch (notifErr) {
+              console.warn("Notification error (ስልክ ላይ ስለሆነ ሊከለከል ይችላል):", notifErr);
             }
-          } catch (notifErr) {
-            console.warn("Notification error (ስልክ ላይ ሊከለከል ይችላል):", notifErr);
           }
+        });
+
+        document.getElementById('alertCount').textContent = alerts.length;
+        const list = document.getElementById('alertList');
+        
+        if (alerts.length === 0) {
+          list.innerHTML = '<p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>';
+          return;
         }
-      });
+        
+        list.innerHTML = alerts.map(a => {
+          // ሁኔታው pending ከሆነ ወይም status ከሌለው ቁልፉን አሳይ
+          const showBtn = (a.status === 'pending' || !a.status) ? 
+            `<button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>` : 
+            `<span style="color:#38a169; font-size:12px; font-weight:bold;">✅ ተፈትቷል</span>`;
 
-      document.getElementById('alertCount').textContent = alerts.length;
-      const list = document.getElementById('alertList');
-      
-      if (alerts.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color:#718096; padding:10px;">ምንም ጥያቄ የለም...</p>';
-        return;
-      }
-      
-      list.innerHTML = alerts.map(a => {
-        // ሁኔታው pending ከሆነ ወይም status ከሌለው ቁልፉን አሳይ
-        const showBtn = (a.status === 'pending' || !a.status) ? 
-          `<button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>` : 
-          `<span style="color:#38a169; font-size:12px; font-weight:bold;">✅ ተፈትቷል</span>`;
-
-        return `
-        <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
-          <div>
-            <div style="font-weight:700; color:#c53030;">📧 ${a.email}</div>
-            <div style="font-size:12px; color:#718096;">ጥያቄ የቀረበበት: ${a.requestedAt ? new Date(a.requestedAt.seconds * 1000).toLocaleString() : '—'}</div>
+          return `
+          <div style="background:#fff5f5; border:1px solid #fed7d7; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+            <div>
+              <div style="font-weight:700; color:#c53030;">📧 ${a.email}</div>
+              <div style="font-size:12px; color:#718096;">ጥያቄ የቀረበበት: ${a.requestedAt ? new Date(a.requestedAt.seconds * 1000).toLocaleString() : '—'}</div>
+            </div>
+            ${showBtn}
           </div>
-          ${showBtn}
-        </div>
-      `}).join('');
-    } catch (e) {
-      console.error('Alerts check error:', e);
-      document.getElementById('alertList').innerHTML = `<p style="color:red; padding:10px;">Error: ${e.message}</p>`;
-    }
-  };
+        `}).join('');
+      } catch (e) {
+        console.error('Alerts check error:', e);
+        document.getElementById('alertList').innerHTML = `<p style="color:red; padding:10px;">Error: ${e.message}</p>`;
+      }
+    };
 
-  checkAlerts();
-  setInterval(checkAlerts, 5000);
-}
+    checkAlerts();
+    setInterval(checkAlerts, 5000);
+  }
+
   window.resolvePasswordReset = async function(alertId, email) {
-    const newPass = prompt(`የ "${email}" አዲስ ፓስወርድ አስገባ (ቢያንስ 6 ፊደል):`);
-    if (!newPass) return;
-    if (newPass.length < 6) { alert('ቢያንስ 6 ፊደል ይሁን'); return; }
-    
-    alert(`⚠️ ለደህንነት ሲባል ፓስወርድ መቀየር የሚቻለው በ Firebase Console በኩል ነው።\n\nእባክህ ወደ Firebase Console → Authentication → Users ሄደው "${email}" ፈልገው "Reset Password" ይጫኑ።\n\nከቀየሩ በኋላ ይህን ጥያቄ ለማጽዳት "OK" ይጫኑ።`);
-    
+    if (!confirm(`የ "${email}" የፓስወርድ ማስተካከያ ሊንክ መላክ ትፈልጋለህ?`)) return;
+
     try {
+      // 💡 የሪሴት ሊንክ ወደ ተጠቃሚው ኢሜይል ይላካል
+      await sendPasswordResetEmail(auth, email);
+      
+      alert(`✅ የፓስወርድ ማስተካከያ ሊንክ ወደ "${email}" ተልኳል!\n\nተጠቃሚው ኢሜሉን ከፍቶ (የስፓም ሳጥኑንም መመልከት አይርሳ) ሊንኩን ተጭኖ አዲስ ፓስወርድ ማስገባት ይችላል።`);
+
+      // ጥያቄውን በዳታቤዝ ውስጥ 'resolved' በማድረግ ከዝርዝሩ ላይ እናስወግደው
       await updateDoc(doc(db, 'adminAlerts', alertId), { status: 'resolved' });
       knownAlerts.delete(alertId);
-      setupAdminAlertsListener();
+      
+      // ዝርዝሩን እንደገና አድስ
+      setupAdminAlertsListener(); 
+      
     } catch (e) {
-      alert('ስህተት: ' + e.message);
+      console.error("Reset error:", e);
+      alert('⚠️ ስህተት: ' + (e.message || e.code) + '\n\nእባክህ የተጠቃሚው ኢሜይል ትክክል መሆኑን አረጋግጥ።');
     }
   };
 
