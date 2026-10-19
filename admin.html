@@ -972,7 +972,7 @@ let knownAlerts = new Set();
 function setupAdminAlertsListener() {
   const checkAlerts = async () => {
     try {
-      // 💡 ሁኔታው 'pending' የሆነውን ብቻ ሳይሆን ሁሉንም እናምጣ (ምክንያቱም የድሮ ጥያቄዎች status ላይኖራቸው ይችላል)
+      // 💡 ሁሉንም እናምጣ (የድሮ ጥያቄዎች status ላይኖራቸው ይችላል)
       const q = query(collection(db, 'adminAlerts'));
       const snap = await getDocs(q);
       const alerts = [];
@@ -986,14 +986,18 @@ function setupAdminAlertsListener() {
       });
 
       alerts.forEach(a => {
-        // Notification መላክ
         if (!knownAlerts.has(a.id)) {
           knownAlerts.add(a.id);
-          if (Notification.permission === "granted") {
-            new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
-              body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
-              icon: "logo.jpg"
-            });
+          // 💡 በስልክ ላይ Notification ሲላክ ስህተት እንዳይፈጥር try-catch ውስጥ አድርገነዋል
+          try {
+            if (Notification.permission === "granted") {
+              new Notification("🔔 አዲስ የፓስወርድ ጥያቄ!", {
+                body: `${a.email} ፓስወርድ ማስተካከያ ጠይቋል።`,
+                icon: "logo.jpg"
+              });
+            }
+          } catch (notifErr) {
+            console.warn("Notification error (ስልክ ላይ ሊከለከል ይችላል):", notifErr);
           }
         }
       });
@@ -1007,8 +1011,8 @@ function setupAdminAlertsListener() {
       }
       
       list.innerHTML = alerts.map(a => {
-        // ሁኔታው pending ከሆነ ብቻ ቁልፉን አሳይ
-        const showBtn = a.status === 'pending' || !a.status ? 
+        // ሁኔታው pending ከሆነ ወይም status ከሌለው ቁልፉን አሳይ
+        const showBtn = (a.status === 'pending' || !a.status) ? 
           `<button class="btn btn-sm btn-primary" onclick="resolvePasswordReset('${a.id}', '${a.email}')">🔑 ፓስወርድ ቀይር</button>` : 
           `<span style="color:#38a169; font-size:12px; font-weight:bold;">✅ ተፈትቷል</span>`;
 
@@ -1030,7 +1034,6 @@ function setupAdminAlertsListener() {
   checkAlerts();
   setInterval(checkAlerts, 5000);
 }
-
   window.resolvePasswordReset = async function(alertId, email) {
     const newPass = prompt(`የ "${email}" አዲስ ፓስወርድ አስገባ (ቢያንስ 6 ፊደል):`);
     if (!newPass) return;
