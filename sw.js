@@ -1,10 +1,10 @@
 // ===== NITSUH Hotel Tracker Service Worker =====
 const CACHE_NAME = 'nitsuh-hotel-v3';
 const ASSETS = [
-  '/Hotel-tracker/',
-  '/Hotel-tracker/index.html',
-  '/Hotel-tracker/manifest.json',
-  '/Hotel-tracker/logo.jpg'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/logo.png'
 ];
 
 // ===== Install =====
