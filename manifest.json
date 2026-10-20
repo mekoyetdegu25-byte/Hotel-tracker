@@ -1,7 +1,7 @@
 {
   "id": "/Hotel-tracker/",
   "name": "NITSUH Hotel Sales Tracker",
-  "short_name": "Hotel Tracker",
+  "short_name": "NITSUH Hotel System",
   "description": "Hotel Sales and Expense Tracker",
   "start_url": "/index.html",
   "scope": "/",
