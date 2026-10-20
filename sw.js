@@ -64,7 +64,7 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(() => {
         if (event.request.mode === 'navigate') {
-          return caches.match('/Hotel-tracker/index.html');
+          return caches.match('/index.html'); // 🆕 እዚህ ጋር ተስተካክሏል
         }
       });
     })
