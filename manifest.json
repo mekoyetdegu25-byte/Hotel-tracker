@@ -3,8 +3,8 @@
   "name": "NITSUH Hotel Sales Tracker",
   "short_name": "Hotel Tracker",
   "description": "Hotel Sales and Expense Tracker",
-  "start_url": "/Hotel-tracker/index.html",
-  "scope": "/Hotel-tracker/",
+  "start_url": "/index.html"
+  "scope": "/"
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1a365d",
@@ -14,19 +14,19 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/Hotel-tracker/logo.png",
+      "src": "/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Hotel-tracker/logo.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Hotel-tracker/logo.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
