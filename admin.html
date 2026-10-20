@@ -285,6 +285,29 @@
     <div id="backupStatus" style="margin-top:10px; font-size:13px; color:#276749;"></div>
   </div>
 </div>
+
+<!-- 📞 የድጋፍ መረጃ -->
+<div class="card">
+  <div class="card-header" id="hdrSupport" onclick="toggleCard('hdrSupport', 'bodySupport')">
+    <h2>📞 የድጋፍ መረጃ (Support Info)</h2>
+    <span class="arrow">▶</span>
+  </div>
+  <div class="card-body" id="bodySupport">
+    <p style="font-size:13px; color:#718096; margin-bottom:15px;">
+      ሆቴሎች ችግር ሲያጋጥማቸው የሚያገኙህበትን መረጃ እዚህ አስገባ።
+    </p>
+    <div class="form-group">
+      <label>📱 የስልክ ቁጥር</label>
+      <input type="text" id="supportPhone" placeholder="ለምሳሌ: +251 911 234 567">
+    </div>
+    <div class="form-group">
+      <label>✈️ የቴሌግራም መለያ (Username)</label>
+      <input type="text" id="supportTelegram" placeholder="ለምሳሌ: @nitsuh_support">
+    </div>
+    <button class="btn btn-success" onclick="saveSupportInfo()">💾 አስቀምጥ</button>
+    <div id="supportStatus" style="margin-top:10px; font-size:13px; color:#276749;"></div>
+  </div>
+</div>
    
     <!-- 🆕 Change Password -->
     <div class="card">
@@ -497,6 +520,7 @@
       loginScreen.classList.add('hidden');
       mainApp.classList.remove('hidden');
       await loadHotels();
+      await loadSupportInfo();
       setupAdminAlertsListener();
     } else {
       loginScreen.classList.remove('hidden');
@@ -1105,6 +1129,51 @@
     }
   };
 
+// 📞 የድጋፍ መረጃ ማስቀመጥ
+window.saveSupportInfo = async function() {
+  const phone = document.getElementById('supportPhone').value.trim();
+  const telegram = document.getElementById('supportTelegram').value.trim();
+  const statusEl = document.getElementById('supportStatus');
+  
+  if (!phone && !telegram) {
+    statusEl.textContent = '⚠️ ቢያንስ አንድ መረጃ አስገባ';
+    statusEl.style.color = '#c53030';
+    return;
+  }
+  
+  statusEl.textContent = '⏳ በማስቀመጥ ላይ...';
+  statusEl.style.color = '#c05621';
+  
+  try {
+    await setDoc(doc(db, 'settings', 'supportInfo'), {
+      phone: phone,
+      telegram: telegram,
+      updatedAt: serverTimestamp()
+    });
+    statusEl.textContent = '✅ የድጋፍ መረጃ ተቀምጧል!';
+    statusEl.style.color = '#276749';
+  } catch (e) {
+    statusEl.textContent = '❌ ስህተት: ' + e.message;
+    statusEl.style.color = '#c53030';
+  }
+};
+
+// 📞 ገጹ ሲከፈት ያለውን መረጃ ማምጣት
+async function loadSupportInfo() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'supportInfo'));
+    if (snap.exists()) {
+      const data = snap.data();
+      const phoneEl = document.getElementById('supportPhone');
+      const telegramEl = document.getElementById('supportTelegram');
+      if (phoneEl) phoneEl.value = data.phone || '';
+      if (telegramEl) telegramEl.value = data.telegram || '';
+    }
+  } catch (e) {
+    console.warn('Support info load error:', e);
+  }
+}
+ 
 // 💾 ሙሉ ዳታ ማውጣት (Export)
 window.exportFullBackup = async function() {
   const statusEl = document.getElementById('backupStatus');
