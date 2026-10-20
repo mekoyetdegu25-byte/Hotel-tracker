@@ -797,6 +797,19 @@
     <div id="hotelBackupStatus" style="margin-top:10px; font-size:13px; color:#276749;"></div>
   </div>
 </div>
+
+<!-- 📞 የድጋፍ መረጃ -->
+<div class="section-collapsible" id="secSupportInfo">
+  <div class="section-header" id="hdrSupportInfo" onclick="toggleSection('hdrSupportInfo','bodySupportInfo')">
+    <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">📞</span><span class="sec-title">የድጋፍ መረጃ (Support)</span></div>
+  </div>
+  <div class="section-body" id="bodySupportInfo">
+    <div class="info-banner">ችግር ካጋጠመዎት ከዚህ ያግኙን፦</div>
+    <div id="supportInfoDisplay" style="font-size:14px; line-height:1.8;">
+      <p>⏳ በመጫን ላይ...</p>
+    </div>
+  </div>
+</div>
        
         <div class="section-collapsible" id="secPermissions">
           <div class="section-header open" id="hdrPermissions" onclick="toggleSection('hdrPermissions','bodyPermissions')">
@@ -1445,6 +1458,29 @@ window.requestPasswordReset = async function() {
   window.onSearchProduct = function() { searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase(); renderProducts(); };
   window.saveHotelName = async function() { if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; } const name = document.getElementById('hotelNameInput').value.trim(); if (!name) { toast('⚠️ ስም'); return; } setSyncStatus('syncing'); try { await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true }); hdrHotelName.textContent = name; document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል'; setTimeout(() => document.getElementById('hotelNameStatus').textContent = '', 3000); setSyncStatus('online'); toast('✅'); } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); } };
 
+ // 📞 የድጋፍ መረጃ ማሳየት
+async function loadSupportInfoDisplay() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'supportInfo'));
+    const displayEl = document.getElementById('supportInfoDisplay');
+    
+    if (!snap.exists()) {
+      displayEl.innerHTML = '<p style="color:#718096;">የድጋፍ መረጃ አልተገኘም።</p>';
+      return;
+    }
+    
+    const data = snap.data();
+    let html = '';
+    if (data.phone) html += `<p>📱 <b>ስልክ፦</b> <a href="tel:${data.phone}" style="color:#2c5282;">${data.phone}</a></p>`;
+    if (data.telegram) html += `<p>✈️ <b>ቴሌግራም፦</b> <a href="https://t.me/${data.telegram.replace('@','')}" target="_blank" style="color:#2c5282;">${data.telegram}</a></p>`;
+    
+    if (!html) html = '<p style="color:#718096;">የድጋፍ መረጃ አልተገኘም።</p>';
+    displayEl.innerHTML = html;
+  } catch (e) {
+    console.warn(e);
+  }
+}
+ 
 // 💾 የሆቴል ዳታ ማውጣት
 window.exportHotelBackup = async function() {
   if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; }
@@ -1719,7 +1755,23 @@ window.importHotelBackup = function(event) {
   function renderMonthlyPieChart() { const c = document.getElementById('pieChart'); if (!c) return; const mp = currentYear + '-' + String(currentMonth + 1).padStart(2,'0'); const mr = history.filter(h => (h.date||'').startsWith(mp)); const sm = {}; mr.forEach(h => { if (h.items && Array.isArray(h.items)) { h.items.forEach(it => { if (!sm[it.productId]) sm[it.productId] = { name: it.name, qty: 0 }; sm[it.productId].qty += it.qty; }); } }); const s = Object.values(sm).sort((a,b) => b.qty - a.qty).slice(0,5); if (s.length === 0) { if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; } const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = document.body.classList.contains('dark') ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } const l = s.map(x => x.name); const d = s.map(x => x.qty); const colors = ['#2c5282','#3182ce','#63b3ed','#90cdf4','#bee3f8']; if (pieChartInstance) pieChartInstance.destroy(); pieChartInstance = new Chart(c, { type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: colors, borderWidth: 2, borderColor: document.body.classList.contains('dark') ? '#2d3748' : '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: document.body.classList.contains('dark') ? '#e2e8f0' : '#2d3748', font: { size: 11 }, padding: 8 } }, tooltip: { callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' ብዛት' } } } } }); }
   window.renderDailyLineChart = function() { const c = document.getElementById('dayLineChart'); if (!c) return; const inp = document.getElementById('chartDayInput'); if (!inp) return; if (!inp.value) inp.value = todayStr(); const d = inp.value; const isDark = document.body.classList.contains('dark'); const ds = getSalesForDate(d); const ct = {}; products.forEach(p => { const s = ds[p.id]; if (s && s.qty > 0) { if (!ct[p.main]) ct[p.main] = 0; ct[p.main] += s.qty * p.price; } }); const l = Object.keys(ct); const da = Object.values(ct); if (dayLineChartInstance) dayLineChartInstance.destroy(); if (l.length === 0) { const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = isDark ? '#718096' : '#a0aec0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('ውሂብ የለም', c.width/2, c.height/2); return; } dayLineChartInstance = new Chart(c, { type: 'line', data: { labels: l, datasets: [{ label: 'ሽያጭ', data: da, borderColor: isDark ? '#63b3ed' : '#2c5282', backgroundColor: isDark ? 'rgba(99,179,237,0.2)' : 'rgba(44,82,130,0.2)', fill: true, tension: 0.3, pointBackgroundColor: isDark ? '#63b3ed' : '#2c5282', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => money(ctx.parsed.y) + ' ብር' } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } }, x: { ticks: { color: isDark ? '#a0aec0' : '#718096', font: { size: 10 } } } } } }); };
   window.resetSelectedDateSales = async function() { const d = currentSaleDate; if (!confirm('📅 ' + formatDate(d) + '\n\nየዚህን ቀን ማጥፋት?')) return; setSyncStatus('syncing'); try { const b = writeBatch(db); const ss = await getDocs(salesCol()); ss.forEach(x => { const s = x.data(); if (s && s.date === d) b.delete(x.ref); }); const es = await getDocs(expensesCol()); es.forEach(x => { const e = x.data(); if (e && e.date === d) b.delete(x.ref); }); await b.commit(); setSyncStatus('online'); toast('🔄 ተጠፍቷል'); } catch (e) { setSyncStatus('error'); console.error(e); } };
-  function renderAll() { renderMainCatDropdown(); renderMainCatTags(); renderSubCatTags(); onMainCatChange(); renderExpCatDropdown(); renderExpCatTags(); renderFixCatDropdown(); renderFixCatTags(); renderProducts(); renderQuickSales(); renderQuickSaleCatDropdown(); renderDaily(); renderMonthly(); updateDateBadge(); }
+  function renderAll() { 
+  renderMainCatDropdown(); 
+  renderMainCatTags(); 
+  renderSubCatTags(); 
+  onMainCatChange(); 
+  renderExpCatDropdown(); 
+  renderExpCatTags(); 
+  renderFixCatDropdown(); 
+  renderFixCatTags(); 
+  renderProducts(); 
+  renderQuickSales(); 
+  renderQuickSaleCatDropdown(); 
+  renderDaily(); 
+  renderMonthly(); 
+  updateDateBadge(); 
+  loadSupportInfoDisplay(); // 🆕 የድጋፍ መረጃን ለማሳየት የተጨመረ
+}
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
