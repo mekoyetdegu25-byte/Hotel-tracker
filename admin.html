@@ -267,6 +267,25 @@
       </div>
     </div>
 
+<!-- 💾 Backup / Restore -->
+<div class="card">
+  <div class="card-header" id="hdrBackup" onclick="toggleCard('hdrBackup', 'bodyBackup')">
+    <h2>💾 ዳታ ማስቀመጥ እና መመለስ (Backup / Restore)</h2>
+    <span class="arrow">▶</span>
+  </div>
+  <div class="card-body" id="bodyBackup">
+    <p style="font-size:13px; color:#718096; margin-bottom:15px;">
+      ሁሉንም ሆቴሎች፣ ተጠቃሚዎች፣ ክፍያዎች እና ዳታዎች በአንድ ፋይል ማስቀመጥ ትችላለህ።
+    </p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-success" style="flex:1;" onclick="exportFullBackup()">📥 ሙሉ ዳታ አውጣ (Backup)</button>
+      <button class="btn btn-warning" style="flex:1;" onclick="document.getElementById('restoreFileInput').click()">📤 ዳታ መልስ (Restore)</button>
+      <input type="file" id="restoreFileInput" accept=".json" style="display:none;" onchange="importFullBackup(event)">
+    </div>
+    <div id="backupStatus" style="margin-top:10px; font-size:13px; color:#276749;"></div>
+  </div>
+</div>
+   
     <!-- 🆕 Change Password -->
     <div class="card">
       <div class="card-header" id="hdrAdminPass" onclick="toggleCard('hdrAdminPass', 'bodyAdminPass')">
@@ -1086,6 +1105,108 @@
     }
   };
 
+// 💾 ሙሉ ዳታ ማውጣት (Export)
+window.exportFullBackup = async function() {
+  const statusEl = document.getElementById('backupStatus');
+  statusEl.textContent = '⏳ ዳታ በመሰብሰብ ላይ...';
+  statusEl.style.color = '#c05621';
+
+  try {
+    const backupData = { exportedAt: new Date().toISOString(), hotels: {} };
+
+    const hotelsSnap = await getDocs(collection(db, 'hotels'));
+    for (const hotelDoc of hotelsSnap.docs) {
+      const hId = hotelDoc.id;
+      backupData.hotels[hId] = {
+        info: hotelDoc.data(),
+        collections: {}
+      };
+
+      const collectionsToBackup = ['products', 'sales', 'expenses', 'fixedExpenses', 'categories', 'expenseCategories', 'fixedCategories', 'history', 'quickSales', 'quickSaleCategories'];
+      
+      for (const colName of collectionsToBackup) {
+        const colSnap = await getDocs(collection(db, 'hotels', hId, colName));
+        backupData.hotels[hId].collections[colName] = [];
+        colSnap.forEach(d => backupData.hotels[hId].collections[colName].push({ id: d.id, ...d.data() }));
+      }
+    }
+
+    const usersSnap = await getDocs(collection(db, 'users'));
+    backupData.users = [];
+    usersSnap.forEach(d => backupData.users.push({ id: d.id, ...d.data() }));
+
+    const paymentsSnap = await getDocs(collection(db, 'payments'));
+    backupData.payments = [];
+    paymentsSnap.forEach(d => backupData.payments.push({ id: d.id, ...d.data() }));
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); 
+    a.href = url; 
+    a.download = `hotel-full-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    statusEl.textContent = '✅ ዳታ በተሳካ ሁኔታ ወርዷል!';
+    statusEl.style.color = '#276749';
+  } catch (e) {
+    statusEl.textContent = '❌ ስህተት: ' + e.message;
+    statusEl.style.color = '#c53030';
+  }
+};
+
+// 💾 ዳታ መመለስ (Restore)
+window.importFullBackup = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('backupStatus');
+  
+  if (!confirm('⚠️ ማስጠንቀቂያ!\n\nይህ ዳታ መመለስ አሁን ያለውን ዳታ ሙሉ በሙሉ ይተካል!\n\nእርግጠኛ ነህ?')) {
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    statusEl.textContent = '⏳ ዳታ በመመለስ ላይ... (እባክህ ገጹን አትዝጋ)';
+    statusEl.style.color = '#c05621';
+    
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      for (const [hId, hotelData] of Object.entries(data.hotels || {})) {
+        await setDoc(doc(db, 'hotels', hId), hotelData.info);
+        for (const [colName, docs] of Object.entries(hotelData.collections || {})) {
+          for (const docData of docs) {
+            const { id, ...rest } = docData;
+            await setDoc(doc(db, 'hotels', hId, colName, id), rest);
+          }
+        }
+      }
+      
+      for (const user of (data.users || [])) {
+        const { id, ...rest } = user;
+        await setDoc(doc(db, 'users', id), rest);
+      }
+      
+      for (const pay of (data.payments || [])) {
+        const { id, ...rest } = pay;
+        await setDoc(doc(db, 'payments', id), rest);
+      }
+      
+      statusEl.textContent = '✅ ዳታ በተሳካ ሁኔታ ተመልሷል!';
+      statusEl.style.color = '#276749';
+      alert('✅ ሁሉም ዳታ በተሳካ ሁኔታ ተመልሷል!');
+      await loadHotels();
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = '❌ ስህተት: ' + err.message;
+      statusEl.style.color = '#c53030';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+};
+ 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !loginScreen.classList.contains('hidden')) {
       doLogin();
