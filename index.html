@@ -784,6 +784,20 @@
           </div>
         </div>
 
+<!-- 💾 Backup / Restore (ለሆቴል) -->
+<div class="section-collapsible" id="secBackup">
+  <div class="section-header" id="hdrBackup" onclick="toggleSection('hdrBackup','bodyBackup')">
+    <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">💾</span><span class="sec-title">ዳታ ማስቀመጥ / መመለስ</span></div>
+  </div>
+  <div class="section-body" id="bodyBackup">
+    <div class="info-banner">የዚህን ሆቴል ዳታ ብቻ ማስቀመጥ እና መመለስ ይችላሉ።</div>
+    <button class="btn btn-success" onclick="exportHotelBackup()">📥 ዳታ አውጣ (Backup)</button>
+    <button class="btn btn-warning" style="margin-top:10px;" onclick="document.getElementById('restoreHotelFile').click()">📤 ዳታ መልስ (Restore)</button>
+    <input type="file" id="restoreHotelFile" accept=".json" style="display:none;" onchange="importHotelBackup(event)">
+    <div id="hotelBackupStatus" style="margin-top:10px; font-size:13px; color:#276749;"></div>
+  </div>
+</div>
+       
         <div class="section-collapsible" id="secPermissions">
           <div class="section-header open" id="hdrPermissions" onclick="toggleSection('hdrPermissions','bodyPermissions')">
             <div class="sec-left"><span class="sec-arrow">▶</span><span class="sec-icon">🎯</span><span class="sec-title">የተጠቃሚዎች ፈቃዶች (Permissions)</span></div>
@@ -1431,6 +1445,77 @@ window.requestPasswordReset = async function() {
   window.onSearchProduct = function() { searchQuery = document.getElementById('searchProductInput').value.trim().toLowerCase(); renderProducts(); };
   window.saveHotelName = async function() { if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; } const name = document.getElementById('hotelNameInput').value.trim(); if (!name) { toast('⚠️ ስም'); return; } setSyncStatus('syncing'); try { await setDoc(hotelRef(), { name, updatedAt: serverTimestamp() }, { merge: true }); hdrHotelName.textContent = name; document.getElementById('hotelNameStatus').textContent = '✅ ተቀምጧል'; setTimeout(() => document.getElementById('hotelNameStatus').textContent = '', 3000); setSyncStatus('online'); toast('✅'); } catch (e) { setSyncStatus('error'); toast('⚠️ ' + e.message); } };
 
+// 💾 የሆቴል ዳታ ማውጣት
+window.exportHotelBackup = async function() {
+  if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); return; }
+  const statusEl = document.getElementById('hotelBackupStatus');
+  statusEl.textContent = '⏳ በመሰብሰብ ላይ...';
+  statusEl.style.color = '#c05621';
+  
+  try {
+    const backupData = { hotelId: HOTEL_ID, exportedAt: new Date().toISOString(), collections: {} };
+    const collectionsToBackup = ['products', 'sales', 'expenses', 'fixedExpenses', 'categories', 'expenseCategories', 'fixedCategories', 'history', 'quickSales', 'quickSaleCategories'];
+    
+    for (const colName of collectionsToBackup) {
+      const colSnap = await getDocs(collection(db, 'hotels', HOTEL_ID, colName));
+      backupData.collections[colName] = [];
+      colSnap.forEach(d => backupData.collections[colName].push({ id: d.id, ...d.data() }));
+    }
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); 
+    a.href = url; 
+    a.download = `hotel-backup-${HOTEL_ID}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    
+    statusEl.textContent = '✅ ዳታ ወርዷል!';
+    statusEl.style.color = '#276749';
+    toast('✅ ዳታ ወርዷል');
+  } catch (e) {
+    statusEl.textContent = '❌ ' + e.message;
+    statusEl.style.color = '#c53030';
+  }
+};
+
+// 💾 የሆቴል ዳታ መመለስ
+window.importHotelBackup = function(event) {
+  if (currentRole !== 'owner') { toast('⚠️ ባለቤት ብቻ'); event.target.value = ''; return; }
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!confirm('⚠️ ይህ ዳታ መመለስ አሁን ያለውን የሆቴል ዳታ ይተካል! እርግጠኛ ነህ?')) {
+    event.target.value = '';
+    return;
+  }
+  
+  const statusEl = document.getElementById('hotelBackupStatus');
+  statusEl.textContent = '⏳ በመመለስ ላይ...';
+  statusEl.style.color = '#c05621';
+  
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      for (const [colName, docs] of Object.entries(data.collections || {})) {
+        for (const docData of docs) {
+          const { id, ...rest } = docData;
+          await setDoc(doc(db, 'hotels', HOTEL_ID, colName, id), rest);
+        }
+      }
+      statusEl.textContent = '✅ ዳታ ተመልሷል!';
+      statusEl.style.color = '#276749';
+      toast('✅ ዳታ ተመልሷል! ገጹን አድስ');
+    } catch (err) {
+      statusEl.textContent = '❌ ' + err.message;
+      statusEl.style.color = '#c53030';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+};
+
+ 
   function renderMainCatDropdown() { const sel = document.getElementById('prodMainCat'); const cur = sel.value; let h = '<option value="">— ይምረጡ —</option>'; Object.keys(categories).forEach(c => h += `<option value="${esc(c)}">${esc(c)}</option>`); sel.innerHTML = h; if (categories[cur]) sel.value = cur; const ps = document.getElementById('subCatParent'); const c2 = ps.value; let h2 = '<option value="">— ዋና ምድብ ይምረጡ —</option>'; Object.keys(categories).forEach(c => h2 += `<option value="${esc(c)}">${esc(c)}</option>`); ps.innerHTML = h2; if (categories[c2]) ps.value = c2; }
   window.onMainCatChange = function() { const m = document.getElementById('prodMainCat').value; const ss = document.getElementById('prodSubCat'); document.getElementById('prodName').value = ''; if (!m || !categories[m]) { ss.innerHTML = '<option value="">— መጀመሪያ ዋና ምድብ ይምረጡ —</option>'; return; } let h = '<option value="">— ንዑስ ምድብ ይምረጡ —</option>'; categories[m].forEach(s => h += `<option value="${esc(s)}">${esc(s)}</option>`); ss.innerHTML = h; };
   window.onSubCatChange = function() { const s = document.getElementById('prodSubCat').value; if (s) document.getElementById('prodName').value = s; };
